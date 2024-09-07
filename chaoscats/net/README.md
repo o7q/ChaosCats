@@ -1,6 +1,6 @@
 # Notice
 
-A lot of this netcode was derived from **javidx9's YouTube networking series**:
+This netcode was derived from **javidx9's YouTube networking series**:
 
 - <https://www.youtube.com/watch?v=2hNdkYInj4g>
 - <https://www.youtube.com/watch?v=UbjxGvrDrbw>
