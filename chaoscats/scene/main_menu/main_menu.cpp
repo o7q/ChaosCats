@@ -1,5 +1,7 @@
 #include "main_menu.hpp"
 
+#include "../../math/collision/collision_mesh.hpp"
+
 #include <vector>
 
 CurrentScene Scene_MainMenu::run()
@@ -20,15 +22,18 @@ CurrentScene Scene_MainMenu::run()
         points.push_back(jmath::Point<float>(600, 600));
         points.push_back(jmath::Point<float>(800, 400));
         points.push_back(jmath::Point<float>(1000, 500));
-        points.push_back(jmath::Point<float>(1150, 200));
+        points.push_back(jmath::Point<float>(1000, 100));
+        points.push_back(jmath::Point<float>(600, 100));
+        points.push_back(jmath::Point<float>(200, 0));
 
-        for (size_t i = 0; i < points.size(); i++)
+        std::vector<jmath::Segment<float>> segments = segmentsFromPoints(points);
+
+        for (jmath::Segment<float> segment : segments)
         {
-            size_t index = std::min(i, points.size() - 2);
-            drawSegment(renderWindow, jmath::Segment<float>(points[index], points[index + 1]));
+            drawSegment(renderWindow, segment);
         }
 
-        player->update();
+        player->update(segments);
         player->draw();
     }
 

@@ -1,0 +1,38 @@
+#include "collision.hpp"
+
+namespace jmath
+{
+    float distancePointToSegment(jmath::Point<float> point, jmath::Point<float> segPoint1, jmath::Point<float> segPoint2)
+    {
+        float x0 = point.x;
+        float x1 = segPoint1.x;
+        float x2 = segPoint2.x;
+
+        float y0 = point.y;
+        float y1 = segPoint1.y;
+        float y2 = segPoint2.y;
+
+        float n = std::abs((y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1);
+        float d = std::sqrt(std::pow(y2 - y1, 2) + (x2 - x1, 2));
+
+        return n / d;
+    }
+
+    float minDistanceFromRectangleToSegment(const jmath::Rectangle<float> &rect, const jmath::Segment<float> &seg)
+    {
+        float minDist = std::numeric_limits<float>::max();
+
+        // Check distance from rectangle's corners to the segment
+        for (float x = 0; x <= rect.size.w; x += rect.size.w)
+        {
+            for (float y = 0; y <= rect.size.h; y += rect.size.h)
+            {
+                jmath::Point<float> corner(rect.position.x + x, rect.position.y + y);
+                float dist = jmath::distancePointToSegment(corner, seg.p1, seg.p2);
+                minDist = std::min(minDist, dist);
+            }
+        }
+
+        return minDist;
+    }
+}
