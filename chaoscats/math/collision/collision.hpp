@@ -24,7 +24,7 @@ namespace jmath
 
     struct SR_OverlapData : public SS_OverlapData
     {
-        CollisionSide CollisionSide = CollisionSide::None;
+        CollisionSide collisionSide = CollisionSide::None;
     };
 
     // segment/segment intersection

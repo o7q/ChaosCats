@@ -8,6 +8,18 @@ void drawTexture(sf::RenderWindow &renderWindow, sf::Texture texture, sf::Vector
 
     sf::Vector2u textureSize = texture.getSize();
 
+    sf::Vector2f newSize = imageAspect(texture, size);
+
+    textureSprite.setOrigin(textureSize.x / 2, textureSize.y / 2);
+    textureSprite.setPosition(position.x + newSize.x / 2, position.y + newSize.y / 2);
+    textureSprite.setScale(newSize.x / textureSize.x, newSize.y / textureSize.y);
+
+    renderWindow.draw(textureSprite);
+}
+
+sf::Vector2f imageAspect(sf::Texture& texture, sf::Vector2f size)
+{
+    sf::Vector2u textureSize = texture.getSize();
     float aspect = textureSize.y / static_cast<float>(textureSize.x);
 
     bool autoHeight = size.y <= 0;
@@ -15,9 +27,5 @@ void drawTexture(sf::RenderWindow &renderWindow, sf::Texture texture, sf::Vector
     float sizeX = size.x;
     float sizeY = autoHeight ? (size.x * aspect) : size.y;
 
-    textureSprite.setOrigin(textureSize.x / 2, textureSize.y / 2);
-    textureSprite.setPosition(position.x + sizeX / 2, position.y + sizeY / 2);
-    textureSprite.setScale(sizeX / textureSize.x, sizeY / textureSize.y);
-
-    renderWindow.draw(textureSprite);
+    return sf::Vector2f(sizeX, sizeY);
 }

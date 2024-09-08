@@ -55,3 +55,4 @@ void drawSegment(sf::RenderWindow &renderWindow, jmath::Segment<T> segment, sf::
 }
 
 void drawTexture(sf::RenderWindow &renderWindow, sf::Texture texture, sf::Vector2f position, sf::Vector2f size, float rotation = 0.0f);
+sf::Vector2f imageAspect(sf::Texture& texture, sf::Vector2f size);

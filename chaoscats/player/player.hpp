@@ -12,8 +12,12 @@
 class Player
 {
 public:
-    Player(sf::RenderWindow &renderWindow, sf::Texture &playerTexture) : renderWindow(renderWindow), playerTexture(playerTexture)
+    Player(sf::RenderWindow &renderWindow, sf::Texture &playerTexture, sf::Vector2f size) : renderWindow(renderWindow), playerTexture(playerTexture)
     {
+        playerSize = imageAspect(playerTexture, size);
+
+        collisionBox.size.w = playerSize.x;
+        collisionBox.size.h = playerSize.y;
     }
 
     void update(std::vector<jmath::Segment<float>> collisionMesh)
@@ -63,18 +67,18 @@ public:
 
                 // float distance = jmath::distancePointToSegment(jmath::Point<float>(position.x + collisionBox.size.w / 2, position.y + collisionBox.size.h / 2), seg.p1, seg.p2);
 
-                float distance = minDistanceFromRectangleToSegment(collisionBox, seg);
+                // float distance = minDistanceFromRectangleToSegment(collisionBox, seg);
 
-                float halfWidth = collisionBox.size.w / 2;
-                float halfHeight = collisionBox.size.h / 2;
-                float diagonal_dist = std::sqrt(halfWidth * halfWidth + halfHeight * halfHeight);
+                // float halfWidth = collisionBox.half_size.w;
+                // float halfHeight = collisionBox.half_size.h;
+                // float diagonal_dist = std::sqrt(halfWidth * halfWidth + halfHeight * halfHeight);
 
-                float over = distance - diagonal_dist + 63;
+                // float over = distance - diagonal_dist + 63;
 
-                std::cout << over << std::endl;
+                // std::cout << over << std::endl;
 
-                position.x -= over * d.x / s;
-                position.y -= over * d.y / s;
+                // position.x -= over * d.x / s;
+                // position.y -= over * d.y / s;
 
                 break;
             }
@@ -83,51 +87,62 @@ public:
         slope = std::clamp(slope, -100.0f, 100.0f);
         bool largeSlope = (slope > 10 || slope < -10);
 
-        // switch (collisionSide)
-        // {
-        // case jmath::CollisionSide::Left:
-        //     std::cout << "left" << std::endl;
-        //     position.x += vel.x * (largeSlope ? 0 : 1) + 1;
-        //     position.y += (1 + vel.y) * (largeSlope ? 0 : slope);
-        //     break;
-        // case jmath::CollisionSide::Top:
-        //     std::cout << "top" << std::endl;
-        //     position.x += vel.x * (largeSlope ? 0 : 1);
-        //     position.y += vel.y * (largeSlope ? 0 : -slope) + 1;
-        //     break;
-        // case jmath::CollisionSide::Right:
-        //     std::cout << "right" << std::endl;
-        //     position.x += vel.x * (largeSlope ? 0 : 1) - 1;
-        //     position.y += (1 + vel.y) * (largeSlope ? 0 : -slope);
-        //     break;
-        // case jmath::CollisionSide::Bottom:
-        //     std::cout << "bottom" << std::endl;
-        //     position.x += vel.x * (largeSlope ? 0 : 1);
-        //     position.y += vel.y * (largeSlope ? 0 : -slope) - 1;
-        //     break;
-        // case jmath::CollisionSide::None:
-        //     position.x += vel.x;
-        //     position.y += vel.y;
-        //     break;
-        // }
+        for (int i = 0; i < 10; i++)
+        {
+            switch (overlapData.collisionSide)
+            {
+            case jmath::CollisionSide::Left:
+                std::cout << "left" << std::endl;
+                position.x += (1 + vel.x) * (largeSlope ? 0 : 1);
+                position.y += (1 + vel.y) * (largeSlope ? 0 : slope);
+                break;
+            case jmath::CollisionSide::Top:
+                std::cout << "top" << std::endl;
+                position.x += vel.x * (largeSlope ? 0 : 1);
+                position.y += vel.y * (largeSlope ? 0 : -slope) + 1;
+                break;
+            case jmath::CollisionSide::Right:
+                std::cout << "right" << std::endl;
+                position.x += vel.x * (largeSlope ? 0 : 1) - 1;
+                position.y += (1 + vel.y) * (largeSlope ? 0 : -slope);
+                break;
+            case jmath::CollisionSide::Bottom:
+                std::cout << "bottom" << std::endl;
+                position.x += vel.x * (largeSlope ? 0 : 1);
+                position.y += vel.y * (largeSlope ? 0 : -slope) - 1;
+                break;
+            case jmath::CollisionSide::None:
+                break;
+            }
+        }
 
-        position.x += vel.x;
-        position.y += vel.y;
+        if (overlapData.collisionSide == jmath::CollisionSide::None)
+        {
+            position.x += vel.x;
+            position.y += vel.y;
+        }
 
-        collisionBox = jmath::Rectangle<float>(jmath::Point<float>(position.x + 5, position.y + 5), jmath::Size<float>(90, 90));
+        // position.x += vel.x;
+        // position.y += vel.y;
+
+        collisionBox.position.x = position.x;
+        collisionBox.position.y = position.y;
         drawRectangle(renderWindow, collisionBox, overlapData.overlapping ? sf::Color(255, 50, 50, 200) : sf::Color(50, 255, 50, 200), DrawMode::Outline);
+
         jmath::Rectangle<float> rect(jmath::Point<float>(position.x + collisionBox.size.w / 2, position.y + collisionBox.size.h / 2), jmath::Size<float>(20, 20));
         drawRectangle(renderWindow, rect, sf::Color(0, 0, 255, 255));
     }
 
     void draw()
     {
-        drawTexture(renderWindow, playerTexture, position, sf::Vector2f(100, -1));
+        drawTexture(renderWindow, playerTexture, position, playerSize);
     }
 
 protected:
     sf::RenderWindow &renderWindow;
     sf::Texture &playerTexture;
+    sf::Vector2f playerSize;
+
     jmath::Rectangle<float> collisionBox;
 
     sf::Vector2f position;

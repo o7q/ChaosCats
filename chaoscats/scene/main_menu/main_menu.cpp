@@ -10,7 +10,7 @@ CurrentScene Scene_MainMenu::run()
     {
         std::cout << "Main menu init" << std::endl;
 
-        player = new Player(renderWindow, gameAssets.TEXTURES.TEST_PLAYER_TEXTURE);
+        player = new Player(renderWindow, gameAssets.TEXTURES.TEST_WORLD_TEXTURE, sf::Vector2f(100, -1));
     }
 
     if (update())

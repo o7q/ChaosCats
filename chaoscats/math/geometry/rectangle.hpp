@@ -23,12 +23,16 @@ namespace jmath
         Point<T> position;
 
         Size<T> size;
+        Size<T> half_size;
 
     private:
         void init(Point<T> topLeft, Point<T> bottomRight)
         {
             size.w = bottomRight.x - topLeft.x;
             size.h = bottomRight.y - topLeft.y;
+
+            half_size.w = size.w / 2;
+            half_size.h = size.h / 2;
 
             position = topLeft;
 
