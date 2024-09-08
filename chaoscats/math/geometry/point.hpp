@@ -2,18 +2,19 @@
 
 namespace jmath
 {
-    namespace geo
+    template <typename T>
+    struct Point
     {
-        template <typename T>
-        struct Point
-        {
-            T x = 0, y = 0;
-        };
+        Point() = default;
+        Point(T x, T y) : x(x), y(y) {}
+        T x = 0, y = 0;
+    };
 
-        template <typename T>
-        struct Size
-        {
-            T w = 0, h = 0;
-        };
-    }
+    template <typename T>
+    struct Size
+    {
+        Size() = default;
+        Size(T w, T h) : w(w), h(h) {}
+        T w = 0, h = 0;
+    };
 }

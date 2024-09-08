@@ -1,25 +1,35 @@
 #include "main_menu.hpp"
 
+#include <vector>
+
 CurrentScene Scene_MainMenu::run()
 {
     if (init())
     {
         std::cout << "Main menu init" << std::endl;
+
+        player = new Player(renderWindow, gameAssets.TEXTURES.TEST_PLAYER_TEXTURE);
     }
 
     if (update())
     {
-        sf::Vector2i mousePosition = sf::Mouse::getPosition(renderWindow);
-        // jmath::geo::Segment<float> segment {100, 1000, mousePosition.x, mousePosition.y};
-        jmath::geo::Segment<float> segment2 {500, 500, 1000, 700};
-        // bool intersect = jmath::col::segmentSegment(segment, segment2);
-        // drawSegment(renderWindow, segment, sf::Color(100, 25, 255, 255));
+        std::vector<jmath::Point<float>> points;
 
-        jmath::geo::Rectangle<float> rectangle(jmath::geo::Point<float>{mousePosition.x, mousePosition.y}, jmath::geo::Size<float>{100, 100});
-        bool intersect = jmath::col::segmentRectangle(segment2, rectangle);
-        drawSegment(renderWindow, segment2);
-        drawRectangle(renderWindow, rectangle, intersect ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
-        // drawTexture(renderWindow, gameAssets.TEXTURES.DOG_TEXTURE, rectangle);
+        points.push_back(jmath::Point<float>(50, 600));
+        points.push_back(jmath::Point<float>(500, 700));
+        points.push_back(jmath::Point<float>(600, 600));
+        points.push_back(jmath::Point<float>(800, 400));
+        points.push_back(jmath::Point<float>(1000, 500));
+        points.push_back(jmath::Point<float>(1150, 200));
+
+        for (size_t i = 0; i < points.size(); i++)
+        {
+            size_t index = std::min(i, points.size() - 2);
+            drawSegment(renderWindow, jmath::Segment<float>(points[index], points[index + 1]));
+        }
+
+        player->update();
+        player->draw();
     }
 
     rot++;

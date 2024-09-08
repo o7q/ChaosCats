@@ -2,13 +2,12 @@
 
 namespace jmath
 {
-    namespace geo
+    template <typename T>
+    struct Segment
     {
-        template <typename T>
-        struct Segment
-        {
-            T x = 0, y = 0;
-            T x2 = 0, y2 = 0;
-        };
-    }
+        Segment() = default;
+        Segment(Point<T> p1, Point<T> p2) : p1(p1), p2(p2) {}
+
+        Point<T> p1, p2;
+    };
 }
