@@ -45,4 +45,4 @@ compile-windows:
 
 # Precompile net headers
 precompile-net-windows:
-	$(CXX) $(CXXFLAGS) -x c++-header -o "chaoscats/net/net_common.hpp.gch" "chaoscats/net/net_common.hpp" $(ASIO_INCLUDE)
+	$(CXX) $(CXXFLAGS) -H -x c++-header -o "chaoscats/net/net_common.hpp.gch" "chaoscats/net/net_common.hpp" $(ASIO_INCLUDE)
