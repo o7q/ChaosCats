@@ -11,7 +11,7 @@
 class Scene_MainMenu : public Scene
 {
 public:
-    Scene_MainMenu(sf::RenderWindow &renderWindow, AssetStorage &gameAssets) : Scene(renderWindow, gameAssets) {}
+    Scene_MainMenu(sf::RenderWindow &renderWindow, WindowInfo& windowInfo, AssetStorage &gameAssets) : Scene(renderWindow, windowInfo, gameAssets) {}
 
     CurrentScene run() override;
 

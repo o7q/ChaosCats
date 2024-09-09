@@ -38,11 +38,16 @@ namespace jmath
             return colSize;
         }
 
-        int rowSize = 0;
-        int colSize = 0;
+        bool inBounds(int row, int col)
+        {
+            return row >= 0 && row < rowSize && col >= 0 && col < colSize;
+        }
 
     private:
         T *matrix = nullptr;
+
+        int rowSize = 0;
+        int colSize = 0;
 
         int get1DIndex(int row, int col)
         {

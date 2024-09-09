@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "../assets/asset_manager.hpp"
+#include "../window/window_info.hpp"
 
 enum class CurrentScene
 {
@@ -13,7 +14,7 @@ enum class CurrentScene
 class Scene
 {
 public:
-    Scene(sf::RenderWindow &renderWindow, AssetStorage &gameAssets) : renderWindow(renderWindow), gameAssets(gameAssets) {}
+    Scene(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, AssetStorage &gameAssets) : renderWindow(renderWindow), windowInfo(windowInfo), gameAssets(gameAssets) {}
 
     virtual CurrentScene run() = 0;
 
@@ -31,6 +32,7 @@ protected:
     }
 
     sf::RenderWindow &renderWindow;
+    WindowInfo &windowInfo;
     AssetStorage &gameAssets;
 
     bool doInit = true;

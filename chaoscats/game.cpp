@@ -1,12 +1,12 @@
 #include "game.hpp"
 
-#include "math/matrix.hpp"
+#include "math/matrix/matrix.hpp"
 
 GameWindow::GameWindow(const std::string &name, int width, int height)
 {
     renderWindow.create(sf::VideoMode(width, height), name);
 
-    scene_mainMenu = new Scene_MainMenu(renderWindow, gameAssets);
+    scene_mainMenu = new Scene_MainMenu(renderWindow, windowInfo, gameAssets);
 
     renderWindow.setFramerateLimit(60);
 
@@ -23,10 +23,10 @@ GameWindow::GameWindow(const std::string &name, int width, int height)
                 renderWindow.close();
                 break;
             case sf::Event::GainedFocus:
-                windowInfo.isFocused = true;
+                windowInfo.IS_FOCUSED = true;
                 break;
             case sf::Event::LostFocus:
-                windowInfo.isFocused = false;
+                windowInfo.IS_FOCUSED = false;
                 break;
             default:
                 break;
@@ -38,7 +38,7 @@ GameWindow::GameWindow(const std::string &name, int width, int height)
         renderWindow.display();
 
         clock_t end = clock();
-        double elapsed_time = double(end - start) / CLOCKS_PER_SEC;
-        FRAMERATE = static_cast<int>(std::round(1 / elapsed_time));
+        windowInfo.DELTA_TIME = static_cast<float>(end - start) / CLOCKS_PER_SEC;
+        windowInfo.FRAMERATE = std::round(1 / windowInfo.DELTA_TIME);
     }
 }

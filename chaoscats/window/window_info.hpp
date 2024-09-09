@@ -2,5 +2,8 @@
 
 struct WindowInfo
 {
-    bool isFocused = false;
+    int FRAMERATE = 0;
+    float DELTA_TIME = 0;
+
+    bool IS_FOCUSED = false;
 };

@@ -18,7 +18,7 @@ namespace jmath
             init(topLeft, bottomRight);
         }
 
-        Segment<T> side_a, side_b, side_c, side_d;
+        Point<T> points[4];
 
         Point<T> position;
 
@@ -31,27 +31,19 @@ namespace jmath
             size.w = bottomRight.x - topLeft.x;
             size.h = bottomRight.y - topLeft.y;
 
-            half_size.w = size.w / 2;
-            half_size.h = size.h / 2;
+            half_size.w = size.w / 2.0f;
+            half_size.h = size.h / 2.0f;
 
             position = topLeft;
 
-            //    B
-            // A [-] C
-            //    D
+            // 1   2
+            //  [-]
+            // 4   3
 
-            side_a = jmath::Segment(
-                jmath::Point(topLeft.x, topLeft.y + size.h),
-                jmath::Point(topLeft.x, topLeft.y));
-            side_b = jmath::Segment(
-                jmath::Point(topLeft.x, topLeft.y),
-                jmath::Point(topLeft.x + size.w, topLeft.y));
-            side_c = jmath::Segment(
-                jmath::Point(topLeft.x + size.w, topLeft.y),
-                jmath::Point(bottomRight.x, bottomRight.y));
-            side_d = jmath::Segment(
-                jmath::Point(bottomRight.x, bottomRight.y),
-                jmath::Point(bottomRight.x - size.w, bottomRight.y));
+            points[0] = topLeft;
+            points[1] = jmath::Point<T>(topLeft.x + size.w, topLeft.y);
+            points[2] = jmath::Point<T>(topLeft.x + size.w, topLeft.y + size.h);
+            points[3] = jmath::Point<T>(topLeft.x, topLeft.y + size.h);
         }
     };
 }

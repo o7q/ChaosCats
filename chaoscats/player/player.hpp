@@ -16,11 +16,10 @@ public:
     {
         playerSize = imageAspect(playerTexture, size);
 
-        collisionBox.size.w = playerSize.x;
-        collisionBox.size.h = playerSize.y;
+        collisionBox = jmath::Rectangle<float>(jmath::Point<float>(0, 0), jmath::Size<float>(playerSize.x, playerSize.y));
     }
 
-    void update(std::vector<jmath::Segment<float>> collisionMesh)
+    void update(std::vector<jmath::Segment<float>> worldSegments, WindowInfo windowInfo)
     {
         float speed = 1.0f;
 
@@ -47,87 +46,61 @@ public:
             vel.x += speed;
         }
 
-        jmath::SR_OverlapData overlapData;
-        float slope = 0.0f;
-        for (jmath::Segment<float> seg : collisionMesh)
+        position.x += vel.x;
+        position.y += vel.y;
+
+        bool overlap = false;
+        for (jmath::Segment<float> world_segment : worldSegments)
         {
-            overlapData = jmath::segmentRectangle(seg, collisionBox);
-
-            if (overlapData.overlapping)
+            for (int shape = 0; shape < 2; ++shape)
             {
-                slope = -(seg.p2.y - seg.p1.y) / (seg.p2.x - seg.p1.x);
+                for (int i = 0; i < 2; ++i)
+                {
+                    jmath::Point<float> worldSegment_midpoint((world_segment.p1.x + world_segment.p2.x) / 2.0f, (world_segment.p1.y + world_segment.p2.y) / 2.0f);
+                    jmath::Point<float> worldSegment_point;
 
-                jmath::Point<float> segPoint((seg.p1.x + seg.p2.x) / 2, (seg.p1.y + seg.p2.y) / 2);
+                    worldSegment_point = i == 0 ? world_segment.p1 : world_segment.p2;
 
-                jmath::Point<float> d(segPoint.x - position.x, segPoint.y - position.y);
+                    jmath::Segment<float> worldSegmentDiagonal_diagonal(worldSegment_midpoint, worldSegment_point);
 
-                // static resolving math derived from: https://youtu.be/7Ik2vowGcU0?t=2140
+                    jmath::Point<float> displacement;
 
-                float s = std::sqrt(d.x * d.x + d.y * d.y);
+                    for (int j = 0; j < 4; ++j)
+                    {
+                        jmath::Point<float> collisionBox_start = jmath::Point<float>(position.x + collisionBox.points[j].x, position.y + collisionBox.points[j].y);
+                        jmath::Point<float> collisionBox_end = jmath::Point<float>(position.x + collisionBox.points[(j + 1) % 4].x, position.y + collisionBox.points[(j + 1) % 4].y);
 
-                // float distance = jmath::distancePointToSegment(jmath::Point<float>(position.x + collisionBox.size.w / 2, position.y + collisionBox.size.h / 2), seg.p1, seg.p2);
+                        jmath::Segment<float> collisionBox_edge(collisionBox_start, collisionBox_end);
 
-                // float distance = minDistanceFromRectangleToSegment(collisionBox, seg);
+                        jmath::Point<float> line_r1s = worldSegment_midpoint;
+                        jmath::Point<float> line_r1e = worldSegment_point;
 
-                // float halfWidth = collisionBox.half_size.w;
-                // float halfHeight = collisionBox.half_size.h;
-                // float diagonal_dist = std::sqrt(halfWidth * halfWidth + halfHeight * halfHeight);
+                        jmath::Point<float> line_r2s = collisionBox_start;
+                        jmath::Point<float> line_r2e = collisionBox_end;
 
-                // float over = distance - diagonal_dist + 63;
+                        // Standard "off the shelf" line segment intersection
+                        float h = (line_r2e.x - line_r2s.x) * (line_r1s.y - line_r1e.y) - (line_r1s.x - line_r1e.x) * (line_r2e.y - line_r2s.y);
+                        float t1 = ((line_r2s.y - line_r2e.y) * (line_r1s.x - line_r2s.x) + (line_r2e.x - line_r2s.x) * (line_r1s.y - line_r2s.y)) / h;
+                        float t2 = ((line_r1s.y - line_r1e.y) * (line_r1s.x - line_r2s.x) + (line_r1e.x - line_r1s.x) * (line_r1s.y - line_r2s.y)) / h;
+                        // jmath::SS_OverlapData overlapData = segmentSegment(collisionBox_edge, worldSegmentDiagonal_diagonal);
 
-                // std::cout << over << std::endl;
+                        if (t1 >= 0.0f && t1 < 1.0f && t2 >= 0.0f && t2 < 1.0f)
+                        {
+                            displacement.x += (1.0f - t1) * (line_r1e.x - line_r1s.x);
+                            displacement.y += (1.0f - t1) * (line_r1e.y - line_r1s.y);
+                            overlap = true;
+                        }
+                    }
 
-                // position.x -= over * d.x / s;
-                // position.y -= over * d.y / s;
-
-                break;
+                    position.x += displacement.x * (shape == 0 ? -1 : +1);
+                    position.y += displacement.y * (shape == 0 ? -1 : +1);
+                }
             }
         }
-
-        slope = std::clamp(slope, -100.0f, 100.0f);
-        bool largeSlope = (slope > 10 || slope < -10);
-
-        for (int i = 0; i < 10; i++)
-        {
-            switch (overlapData.collisionSide)
-            {
-            case jmath::CollisionSide::Left:
-                std::cout << "left" << std::endl;
-                position.x += (1 + vel.x) * (largeSlope ? 0 : 1);
-                position.y += (1 + vel.y) * (largeSlope ? 0 : slope);
-                break;
-            case jmath::CollisionSide::Top:
-                std::cout << "top" << std::endl;
-                position.x += vel.x * (largeSlope ? 0 : 1);
-                position.y += vel.y * (largeSlope ? 0 : -slope) + 1;
-                break;
-            case jmath::CollisionSide::Right:
-                std::cout << "right" << std::endl;
-                position.x += vel.x * (largeSlope ? 0 : 1) - 1;
-                position.y += (1 + vel.y) * (largeSlope ? 0 : -slope);
-                break;
-            case jmath::CollisionSide::Bottom:
-                std::cout << "bottom" << std::endl;
-                position.x += vel.x * (largeSlope ? 0 : 1);
-                position.y += vel.y * (largeSlope ? 0 : -slope) - 1;
-                break;
-            case jmath::CollisionSide::None:
-                break;
-            }
-        }
-
-        if (overlapData.collisionSide == jmath::CollisionSide::None)
-        {
-            position.x += vel.x;
-            position.y += vel.y;
-        }
-
-        // position.x += vel.x;
-        // position.y += vel.y;
 
         collisionBox.position.x = position.x;
         collisionBox.position.y = position.y;
-        drawRectangle(renderWindow, collisionBox, overlapData.overlapping ? sf::Color(255, 50, 50, 200) : sf::Color(50, 255, 50, 200), DrawMode::Outline);
+        drawRectangle(renderWindow, collisionBox, overlap ? sf::Color(255, 50, 50, 200) : sf::Color(50, 255, 50, 200), DrawMode::Outline);
 
         jmath::Rectangle<float> rect(jmath::Point<float>(position.x + collisionBox.size.w / 2, position.y + collisionBox.size.h / 2), jmath::Size<float>(20, 20));
         drawRectangle(renderWindow, rect, sf::Color(0, 0, 255, 255));

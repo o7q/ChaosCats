@@ -8,14 +8,16 @@ class TextureStorage
 {
 public:
     sf::Texture DOG_TEXTURE;
-    sf::Texture TEST_WORLD_TEXTURE;
     sf::Texture TEST_PLAYER_TEXTURE;
-    
+    sf::Texture TEST_WORLD_TEXTURE;
+    sf::Texture TEST_WORLD2_TEXTURE;
+
     TextureStorage()
     {
         loadTexture(DOG_TEXTURE, "assets/dog.jpg");
-        loadTexture(TEST_WORLD_TEXTURE, "assets/test_world.png");
         loadTexture(TEST_PLAYER_TEXTURE, "assets/test_player.png");
+        loadTexture(TEST_WORLD_TEXTURE, "assets/test_world.png");
+        loadTexture(TEST_WORLD2_TEXTURE, "assets/test_world2.png");
     };
 
     void loadTexture(sf::Texture &texture, const std::string &path)

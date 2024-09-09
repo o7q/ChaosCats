@@ -50,7 +50,6 @@ namespace jmath
         if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1)
         {
             return SS_OverlapData{true, uA, uB};
-            // return true;
         }
         return SS_OverlapData();
     }
@@ -60,27 +59,27 @@ namespace jmath
     template <typename T>
     SR_OverlapData segmentRectangle(jmath::Segment<T> segment, jmath::Rectangle<T> rectangle)
     {
-        SS_OverlapData left = segmentSegment(segment, rectangle.side_a);
-        SS_OverlapData top = segmentSegment(segment, rectangle.side_b);
-        SS_OverlapData right = segmentSegment(segment, rectangle.side_c);
-        SS_OverlapData bottom = segmentSegment(segment, rectangle.side_d);
+        // SS_OverlapData left = segmentSegment(segment, rectangle.side_a);
+        // SS_OverlapData top = segmentSegment(segment, rectangle.side_b);
+        // SS_OverlapData right = segmentSegment(segment, rectangle.side_c);
+        // SS_OverlapData bottom = segmentSegment(segment, rectangle.side_d);
 
-        if (left.overlapping)
-        {
-            return SR_OverlapData{left, CollisionSide::Left};
-        }
-        if (top.overlapping)
-        {
-            return SR_OverlapData{top, CollisionSide::Top};
-        }
-        if (right.overlapping)
-        {
-            return SR_OverlapData{right, CollisionSide::Right};
-        }
-        if (bottom.overlapping)
-        {
-            return SR_OverlapData{bottom, CollisionSide::Bottom};
-        }
+        // if (left.overlapping)
+        // {
+        //     return SR_OverlapData{left, CollisionSide::Left};
+        // }
+        // if (top.overlapping)
+        // {
+        //     return SR_OverlapData{top, CollisionSide::Top};
+        // }
+        // if (right.overlapping)
+        // {
+        //     return SR_OverlapData{right, CollisionSide::Right};
+        // }
+        // if (bottom.overlapping)
+        // {
+        //     return SR_OverlapData{bottom, CollisionSide::Bottom};
+        // }
 
         return SR_OverlapData();
     }

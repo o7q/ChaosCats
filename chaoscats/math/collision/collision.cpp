@@ -20,19 +20,19 @@ namespace jmath
 
     float minDistanceFromRectangleToSegment(const jmath::Rectangle<float> &rect, const jmath::Segment<float> &seg)
     {
-        float minDist = std::numeric_limits<float>::max();
+        // float minDist = std::numeric_limits<float>::max();
 
-        // Check distance from rectangle's corners to the segment
-        for (float x = 0; x <= rect.size.w; x += rect.size.w)
-        {
-            for (float y = 0; y <= rect.size.h; y += rect.size.h)
-            {
-                jmath::Point<float> corner(rect.position.x + x, rect.position.y + y);
-                float dist = jmath::distancePointToSegment(corner, seg.p1, seg.p2);
-                minDist = std::min(minDist, dist);
-            }
-        }
+        // // Check distance from rectangle's corners to the segment
+        // for (float x = 0; x <= rect.size.w; x += rect.size.w)
+        // {
+        //     for (float y = 0; y <= rect.size.h; y += rect.size.h)
+        //     {
+        //         jmath::Point<float> corner(rect.position.x + x, rect.position.y + y);
+        //         float dist = jmath::distancePointToSegment(corner, seg.p1, seg.p2);
+        //         minDist = std::min(minDist, dist);
+        //     }
+        // }
 
-        return minDist;
+        return 1.0f;;
     }
 }
