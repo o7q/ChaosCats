@@ -17,7 +17,20 @@ void drawTexture(sf::RenderWindow &renderWindow, sf::Texture texture, sf::Vector
     renderWindow.draw(textureSprite);
 }
 
-sf::Vector2f imageAspect(sf::Texture& texture, sf::Vector2f size)
+void drawText(sf::RenderWindow &renderWindow, const std::string &textString, sf::Font &font, sf::Vector2f position, int characterSize, sf::Color color)
+{
+    sf::Text text;
+    
+    text.setString(textString);
+    text.setFont(font);
+    text.setPosition(position);
+    text.setCharacterSize(characterSize);
+    text.setFillColor(color);
+
+    renderWindow.draw(text);
+}
+
+sf::Vector2f imageAspect(sf::Texture &texture, sf::Vector2f size)
 {
     sf::Vector2u textureSize = texture.getSize();
     float aspect = textureSize.y / static_cast<float>(textureSize.x);

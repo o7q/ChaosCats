@@ -55,4 +55,5 @@ void drawSegment(sf::RenderWindow &renderWindow, jmath::Segment<T> segment, sf::
 }
 
 void drawTexture(sf::RenderWindow &renderWindow, sf::Texture texture, sf::Vector2f position, sf::Vector2f size, float rotation = 0.0f);
+void drawText(sf::RenderWindow &renderWindow, const std::string &textString, sf::Font &font, sf::Vector2f position, int characterSize = 24, sf::Color color = sf::Color(255, 255, 255, 255));
 sf::Vector2f imageAspect(sf::Texture& texture, sf::Vector2f size);

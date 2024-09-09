@@ -31,4 +31,5 @@ private:
     CurrentScene currentScene = CurrentScene::SCENE_MAIN_MENU;
 
     Scene_MainMenu *scene_mainMenu;
+
 };
