@@ -4,5 +4,5 @@
 
 #include "matrix.hpp"
 
-jmath::Matrix2D<int> binaryMatrixFromTexture(sf::Texture &texture);
-jmath::Matrix2D<int> hollowBinaryMatrix(jmath::Matrix2D<int> &binaryMatrix);
+Matrix2D<int> binaryMatrixFromTexture(sf::Texture &texture);
+Matrix2D<int> hollowBinaryMatrix(Matrix2D<int> &binaryMatrix);

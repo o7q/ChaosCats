@@ -13,9 +13,9 @@ enum class DrawMode
 };
 
 template <typename T>
-void drawRectangle(
+void drawRect(
     sf::RenderWindow &renderWindow,
-    jmath::Rectangle<T> rectangle,
+    Rect<T> rectangle,
     sf::Color color = sf::Color(255, 255, 255, 255),
     DrawMode drawMode = DrawMode::Solid,
     float rotation = 0.0f)
@@ -43,7 +43,7 @@ void drawRectangle(
 }
 
 template <typename T>
-void drawSegment(sf::RenderWindow &renderWindow, jmath::Segment<T> segment, sf::Color color = sf::Color(255, 255, 255, 255))
+void drawSegment(sf::RenderWindow &renderWindow, Segment<T> segment, sf::Color color = sf::Color(255, 255, 255, 255))
 {
     sf::Vertex line[2];
     line[0].position = sf::Vector2f(segment.p1.x, segment.p1.y);

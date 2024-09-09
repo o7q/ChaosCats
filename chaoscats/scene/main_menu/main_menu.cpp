@@ -14,25 +14,25 @@ CurrentScene Scene_MainMenu::run()
 
         player = new Player(renderWindow, gameAssets.TEXTURES.TEST_PLAYER_TEXTURE, sf::Vector2f(100, -1));
 
-        // jmath::Matrix2D<int> binaryMatrix = binaryMatrixFromTexture(gameAssets.TEXTURES.TEST_WORLD2_TEXTURE);
+        // Matrix2D<int> binaryMatrix = binaryMatrixFromTexture(gameAssets.TEXTURES.TEST_WORLD2_TEXTURE);
     }
 
     if (update())
     {
-        // std::vector<jmath::Point<float>> points;
+        // std::vector<Point<float>> points;
 
-        // points.push_back(jmath::Point<float>(50, 600));
-        // points.push_back(jmath::Point<float>(500, 700));
-        // points.push_back(jmath::Point<float>(600, 600));
-        // points.push_back(jmath::Point<float>(800, 400));
-        // points.push_back(jmath::Point<float>(1000, 500));
-        // points.push_back(jmath::Point<float>(1000, 100));
-        // points.push_back(jmath::Point<float>(600, 100));
-        // points.push_back(jmath::Point<float>(200, 0));
+        // points.push_back(Point<float>(50, 600));
+        // points.push_back(Point<float>(500, 700));
+        // points.push_back(Point<float>(600, 600));
+        // points.push_back(Point<float>(800, 400));
+        // points.push_back(Point<float>(1000, 500));
+        // points.push_back(Point<float>(1000, 100));
+        // points.push_back(Point<float>(600, 100));
+        // points.push_back(Point<float>(200, 0));
 
-        // std::vector<jmath::Segment<float>> segments = segmentPathFromPoints(points);
+        // std::vector<Segment<float>> segments = segmentPathFromPoints(points);
 
-        // for (jmath::Segment<float> segment : segments)
+        // for (Segment<float> segment : segments)
         // {
         //     drawSegment(renderWindow, segment);
         // }
@@ -40,21 +40,35 @@ CurrentScene Scene_MainMenu::run()
         // player->update(segments, windowInfo);
         // player->draw();
 
-        jmath::Matrix2D<int> binaryMatrix = binaryMatrixFromTexture(gameAssets.TEXTURES.TEST_WORLD2_TEXTURE);
+        Matrix2D<int> binaryMatrix = binaryMatrixFromTexture(gameAssets.TEXTURES.TEST_WORLD3_TEXTURE);
 
-        jmath::Matrix2D<int> hollowMatrix = hollowBinaryMatrix(binaryMatrix);
+        Matrix2D<int> hollowMatrix = hollowBinaryMatrix(binaryMatrix);
 
-        for (int y = 0; y < hollowMatrix.getRowSize(); ++y)
+        std::vector<Point<int>> points = pointsFromHollowBinaryMatrix(hollowMatrix);
+
+        for (Point<int> point : points)
         {
-            for (int x = 0; x < hollowMatrix.getColSize(); ++x)
-            {
-                if (hollowMatrix.get(y, x) == 1)
-                {
-                    jmath::Rectangle<int> rect(jmath::Point<int>(x * 2, y * 2), jmath::Size<int>(2, 2));
-                    drawRectangle(renderWindow, rect);
-                }
-            }
+            std::cout << point.x << " " << point.y << std::endl;
         }
+
+        // std::vector<Segment<int>> collisionMesh = segmentPathFromPoints(points);
+
+        // for (Segment<int> segment : collisionMesh)
+        // {
+        //     drawSegment(renderWindow, segment);
+        // }
+
+        // for (int y = 0; y < hollowMatrix.getRowSize(); ++y)
+        // {
+        //     for (int x = 0; x < hollowMatrix.getColSize(); ++x)
+        //     {
+        //         if (hollowMatrix.get(y, x) == 1)
+        //         {
+        //             Rectangle<int> rect(Point<int>(x * 2, y * 2), Size<int>(2, 2));
+        //             drawRectangle(renderWindow, rect);
+        //         }
+        //     }
+        // }
     }
 
     rot++;

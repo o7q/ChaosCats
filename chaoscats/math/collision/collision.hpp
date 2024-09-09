@@ -30,7 +30,7 @@ namespace jmath
     // segment/segment intersection
     // from: https://www.jeffreythompson.org/collision-detection/line-line.php
     template <typename T>
-    SS_OverlapData segmentSegment(jmath::Segment<T> a, jmath::Segment<T> b)
+    SS_OverlapData segmentSegment(Segment<T> a, Segment<T> b)
     {
         float x1 = a.p1.x;
         float x2 = a.p2.x;
@@ -57,7 +57,7 @@ namespace jmath
     // segment/rectangle intersection
     // from: https://www.jeffreythompson.org/collision-detection/line-rect.php
     template <typename T>
-    SR_OverlapData segmentRectangle(jmath::Segment<T> segment, jmath::Rectangle<T> rectangle)
+    SR_OverlapData segmentRect(Segment<T> segment, Rect<T> rectangle)
     {
         // SS_OverlapData left = segmentSegment(segment, rectangle.side_a);
         // SS_OverlapData top = segmentSegment(segment, rectangle.side_b);
@@ -86,7 +86,7 @@ namespace jmath
 
     // point to segment distance
     // from: https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
-    float distancePointToSegment(jmath::Point<float> point, jmath::Point<float> segPoint1, jmath::Point<float> segPoint2);
+    float distancePointToSegment(Point<float> point, Point<float> segPoint1, Point<float> segPoint2);
 
-    float minDistanceFromRectangleToSegment(const jmath::Rectangle<float> &rect, const jmath::Segment<float> &seg);
+    float minDistanceFromRectToSegment(const Rect<float> &rect, const Segment<float> &seg);
 }

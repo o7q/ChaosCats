@@ -1,11 +1,11 @@
 #include "matrix_math.hpp"
 
-jmath::Matrix2D<int> binaryMatrixFromTexture(sf::Texture &texture)
+Matrix2D<int> binaryMatrixFromTexture(sf::Texture &texture)
 {
     sf::Vector2u textureSize = texture.getSize();
     sf::Image textureImage = texture.copyToImage();
 
-    jmath::Matrix2D<int> binaryMatrix(textureSize.y, textureSize.x);
+    Matrix2D<int> binaryMatrix(textureSize.y, textureSize.x);
 
     for (int y = 0; y < textureSize.y; ++y)
     {
@@ -21,12 +21,12 @@ jmath::Matrix2D<int> binaryMatrixFromTexture(sf::Texture &texture)
     return binaryMatrix;
 }
 
-jmath::Matrix2D<int> hollowBinaryMatrix(jmath::Matrix2D<int> &binaryMatrix)
+Matrix2D<int> hollowBinaryMatrix(Matrix2D<int> &binaryMatrix)
 {
     int rowSize = binaryMatrix.getRowSize();
     int colSize = binaryMatrix.getColSize();
 
-    jmath::Matrix2D<int> hollowMatrix(rowSize, colSize);
+    Matrix2D<int> hollowMatrix(rowSize, colSize);
 
     for (int row = 0; row < rowSize; ++row)
     {
