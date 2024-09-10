@@ -1,6 +1,7 @@
 #include "main_menu.hpp"
 
 #include "../../math/matrix/matrix.hpp"
+#include "../../math/matrix/matrix_math.hpp"
 
 #include <vector>
 
@@ -11,7 +12,7 @@ CurrentScene Scene_MainMenu::run()
         std::cout << "Main menu init" << std::endl;
 
         player = new Player(renderWindow, gameAssets.TEXTURES.TEST_PLAYER_TEXTURE, sf::Vector2f(100, -1));
-        world = new World(renderWindow, 256, 80, 5);
+        world = new World(renderWindow, 128, 80, 5);
 
         // Matrix2D<int> binaryMatrix = binaryMatrixFromTexture(gameAssets.TEXTURES.TEST_WORLD2_TEXTURE);
     }
@@ -39,22 +40,46 @@ CurrentScene Scene_MainMenu::run()
         // player->update(segments, windowInfo);
         // player->draw();
 
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        // Particle particle;
+        // particle.physicsType = PhysicsType::Sand;
+        // particle.matterType = MatterType::Solid;
+        // particle.playerCollisionType = PlayerCollisionType::Solid;
+        // particle.color = sf::Color(255, 255, 0, 255);
+
+        // world->setParticle(0, 0, particle);
+        // world->setParticle(0, 1, particle);
+        // world->setParticle(0, 2, particle);
+
+        // world->setParticle(0, 3, particle);
+        // world->setParticle(1, 3, particle);
+        // world->setParticle(2, 3, particle);
+        // world->setParticle(3, 3, particle);
+        // world->setParticle(4, 3, particle);
+        // world->setParticle(1, 2, particle);
+        // world->setParticle(2, 2, particle);
+        // world->setParticle(3, 2, particle);
+        // world->setParticle(2, 1, particle);
+
+        // if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        // {
+        //     sf::Vector2i localMouse = sf::Mouse::getPosition(renderWindow);
+        //     world->drawParticles(localMouse.x / 5, localMouse.y / 5, particle, 2);
+        // }
+        // world->update();
+        // world->render();
+
+        Mat2D<int> binaryMatrix = binaryMatrixFromTexture(gameAssets.TEXTURES.TEST_WORLD_TEXTURE);
+
+        Mat2D<int> hollowMatrix = hollowBinaryMatrix(binaryMatrix);
+
+        std::vector<Point2D<int>> points = generateCollisionMesh(hollowMatrix, 1);
+
+        for (Point2D<int> point : points)
         {
-            sf::Vector2i localMouse = sf::Mouse::getPosition(renderWindow);
-            Particle particle;
-            particle.physicsType = PhysicsType::Sand;
-            particle.matterType = MatterType::Solid;
-            particle.playerCollisionType = PlayerCollisionType::Solid;
-            particle.color = sf::Color(255, 255, 0, 255);
-            world->drawParticles(localMouse.x / 5, localMouse.y / 5, particle, 2);
+            std::cout << point.x << " " << point.y << std::endl;
         }
-        world->update();
-        world->render();
 
-        // Mat2D<int> binaryMatrix = binaryMatrixFromTexture(gameAssets.TEXTURES.TEST_WORLD3_TEXTURE);
-
-        // Mat2D<int> hollowMatrix = hollowBinaryMatrix(binaryMatrix);
+        system("pause");
 
         // std::vector<Segment<int>> segments = generateCollisionMesh(hollowMatrix);
 

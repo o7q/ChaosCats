@@ -44,9 +44,15 @@ public:
 
     void update()
     {
-        particles_update();
-        Mat2D<int> binmat = particleMatrixToHollowBinaryMatrix(particles, PlayerCollisionType::Solid);
-        collisionMesh = generateCollisionMesh(binmat, pixelSize);
+        // particles_update();
+        // Mat2D<int> binmat = particleMatrixToHollowBinaryMatrix(particles, PlayerCollisionType::Solid);
+        // collisionMesh = generateCollisionMesh(binmat, pixelSize);
+
+        // for (Segment<int> seg : collisionMesh)
+        // {
+        //     std::cout << seg.p1.x << " " << seg.p1.y << " " << seg.p2.x << " " << seg.p2.y << std::endl;
+        // }
+        // system("pause");
     }
 
     void render()

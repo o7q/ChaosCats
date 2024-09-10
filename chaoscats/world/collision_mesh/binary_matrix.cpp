@@ -11,6 +11,7 @@ Mat2D<int> particleMatrixToHollowBinaryMatrix(Mat2D<Particle> &particleMatrix, P
     {
         for (int x = 0; x < width; ++x)
         {
+            binaryCollisionMatrix.set(y, x, 0);
             if (particleMatrix.get(y, x).playerCollisionType == collisionType)
             {
                 //    2
