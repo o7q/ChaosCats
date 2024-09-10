@@ -86,7 +86,7 @@ namespace jmath
 
     // point to segment distance
     // from: https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
-    float distancePointToSegment(Point<float> point, Point<float> segPoint1, Point<float> segPoint2);
+    float distancePointToSegment(Point2D<float> point, Point2D<float> segPoint1, Point2D<float> segPoint2);
 
     float minDistanceFromRectToSegment(const Rect<float> &rect, const Segment<float> &seg);
 }

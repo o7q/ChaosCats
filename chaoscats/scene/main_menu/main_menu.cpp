@@ -1,8 +1,6 @@
 #include "main_menu.hpp"
 
-#include "../../math/collision/collision_mesh.hpp"
 #include "../../math/matrix/matrix.hpp"
-#include "../../math/matrix/matrix_math.hpp"
 
 #include <vector>
 
@@ -13,6 +11,7 @@ CurrentScene Scene_MainMenu::run()
         std::cout << "Main menu init" << std::endl;
 
         player = new Player(renderWindow, gameAssets.TEXTURES.TEST_PLAYER_TEXTURE, sf::Vector2f(100, -1));
+        world = new World(renderWindow, 256, 80, 5);
 
         // Matrix2D<int> binaryMatrix = binaryMatrixFromTexture(gameAssets.TEXTURES.TEST_WORLD2_TEXTURE);
     }
@@ -40,34 +39,40 @@ CurrentScene Scene_MainMenu::run()
         // player->update(segments, windowInfo);
         // player->draw();
 
-        Matrix2D<int> binaryMatrix = binaryMatrixFromTexture(gameAssets.TEXTURES.TEST_WORLD3_TEXTURE);
-
-        Matrix2D<int> hollowMatrix = hollowBinaryMatrix(binaryMatrix);
-
-        std::vector<Point<int>> points = pointsFromHollowBinaryMatrix(hollowMatrix);
-
-        for (Point<int> point : points)
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
-            std::cout << point.x << " " << point.y << std::endl;
+            sf::Vector2i localMouse = sf::Mouse::getPosition(renderWindow);
+            Particle particle;
+            particle.physicsType = PhysicsType::Sand;
+            particle.matterType = MatterType::Solid;
+            particle.playerCollisionType = PlayerCollisionType::Solid;
+            particle.color = sf::Color(255, 255, 0, 255);
+            world->drawParticles(localMouse.x / 5, localMouse.y / 5, particle, 2);
         }
+        world->update();
+        world->render();
 
-        // std::vector<Segment<int>> collisionMesh = segmentPathFromPoints(points);
+        // Mat2D<int> binaryMatrix = binaryMatrixFromTexture(gameAssets.TEXTURES.TEST_WORLD3_TEXTURE);
 
-        // for (Segment<int> segment : collisionMesh)
+        // Mat2D<int> hollowMatrix = hollowBinaryMatrix(binaryMatrix);
+
+        // std::vector<Segment<int>> segments = generateCollisionMesh(hollowMatrix);
+
+        // for (int y = 0; y < binaryMatrix.getRowSize(); ++y)
         // {
-        //     drawSegment(renderWindow, segment);
-        // }
-
-        // for (int y = 0; y < hollowMatrix.getRowSize(); ++y)
-        // {
-        //     for (int x = 0; x < hollowMatrix.getColSize(); ++x)
+        //     for (int x = 0; x < binaryMatrix.getColSize(); ++x)
         //     {
-        //         if (hollowMatrix.get(y, x) == 1)
+        //         if (binaryMatrix.get(y, x) == 1)
         //         {
-        //             Rectangle<int> rect(Point<int>(x * 2, y * 2), Size<int>(2, 2));
-        //             drawRectangle(renderWindow, rect);
+        //             Rect<int> rect(Point2D<int>(x * 5, y * 5), Size2D<int>(5, 5));
+        //             drawRect(renderWindow, rect, sf::Color(0, 0, 255, 255));
         //         }
         //     }
+        // }
+
+        // for (Segment<int> segment : segments)
+        // {
+        //     drawSegment(renderWindow, Segment<int>(Point2D<int>(segment.p1.x * 5, segment.p1.y * 5), Point2D<int>(segment.p2.x * 5, segment.p2.y * 5)), sf::Color(0, 255, 0, 255));
         // }
     }
 

@@ -7,16 +7,19 @@
 #include "../../math/collision/collision.hpp"
 
 #include "../../player/player.hpp"
+#include "../../world/world.hpp"
 
 class Scene_MainMenu : public Scene
 {
 public:
-    Scene_MainMenu(sf::RenderWindow &renderWindow, WindowInfo& windowInfo, AssetStorage &gameAssets) : Scene(renderWindow, windowInfo, gameAssets) {}
+    Scene_MainMenu(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, AssetStorage &gameAssets) : Scene(renderWindow, windowInfo, gameAssets) {}
 
     CurrentScene run() override;
 
-    Player* player = nullptr;
 
 private:
     float rot = 0;
+    
+    Player *player = nullptr;
+    World *world = nullptr;
 };

@@ -1,9 +1,9 @@
 #pragma once
 
 template <typename T>
-struct Matrix2D
+struct Mat2D
 {
-    Matrix2D(int rowSize, int colSize)
+    Mat2D(int rowSize, int colSize)
     {
         matrix = new T[rowSize * colSize];
 
@@ -11,7 +11,7 @@ struct Matrix2D
         this->colSize = colSize;
     }
 
-    ~Matrix2D()
+    ~Mat2D()
     {
         delete[] matrix;
     }

@@ -1,6 +1,6 @@
 #include "collision.hpp"
 
-float distancePointToSegment(Point<float> point, Point<float> segPoint1, Point<float> segPoint2)
+float distancePointToSegment(Point2D<float> point, Point2D<float> segPoint1, Point2D<float> segPoint2)
 {
     float x0 = point.x;
     float x1 = segPoint1.x;
