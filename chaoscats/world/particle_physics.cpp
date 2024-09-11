@@ -14,6 +14,9 @@ void World::particles_update()
         case PhysicsType::Sand:
             p_sand(particle, x, y, boundRules);
             break;
+        case PhysicsType::Water:
+            p_water(particle, x, y, boundRules);
+            break;
         }
     };
 

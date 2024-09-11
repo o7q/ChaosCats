@@ -39,6 +39,32 @@ public:
         this->width = width;
         this->height = height;
         this->pixelSize = pixelSize;
+
+        worldPixels = new sf::Uint8[width * height * 4];
+        worldTexture.create(width, height);
+
+        if (!shader.loadFromFile("assets\\shaders\\particle\\shader.vert", "assets\\shaders\\particle\\shader.frag"))
+        {
+        }
+
+        shader.setUniform("tex", worldTexture);
+        shader.setUniform("texSize", sf::Vector2f(width, height));
+        shader.setUniform("resolution", renderWindow.getView().getSize());
+
+        quad.resize(4);
+        quad.setPrimitiveType(sf::Quads);
+        quad[0].position = sf::Vector2f(-1, -1);
+        quad[1].position = sf::Vector2f(1, -1);
+        quad[2].position = sf::Vector2f(1, 1);
+        quad[3].position = sf::Vector2f(-1, 1);
+        quad[0].texCoords = sf::Vector2f(0, 1);
+        quad[1].texCoords = sf::Vector2f(1, 1);
+        quad[2].texCoords = sf::Vector2f(1, 0);
+        quad[3].texCoords = sf::Vector2f(0, 0);
+    }
+    ~World()
+    {
+        delete[] worldPixels;
     }
 
     void update()
@@ -49,16 +75,7 @@ public:
 
     void render()
     {
-        for (int y = 0; y < height; ++y)
-        {
-            for (int x = 0; x < width; ++x)
-            {
-                Particle particle = particles.get(y, x);
-                Rect<int> rect(Point2D<int>(x * pixelSize, y * pixelSize), Size2D<int>(pixelSize, pixelSize));
-                drawRect(renderWindow, rect, sf::Color(particle.color));
-            }
-        }
-
+        renderWindow.draw(quad, &shader);
         for (Segment<int> segment : collisionMesh)
         {
             drawSegment(renderWindow, segment, sf::Color(0, 0, 255, 255));
@@ -68,6 +85,13 @@ public:
     void setParticle(int x, int y, Particle particle)
     {
         particles.set(y, x, particle);
+
+        int index = y * width + x;
+
+        worldPixels[index + 0] = particle.color.r;
+        worldPixels[index + 1] = particle.color.g;
+        worldPixels[index + 2] = particle.color.b;
+        worldPixels[index + 3] = particle.color.a;
     }
 
     void removeParticle(int x, int y)
@@ -113,6 +137,12 @@ private:
     sf::RenderWindow &renderWindow;
     Mat2D<Particle> particles;
 
+    sf::Uint8 *worldPixels;
+    sf::Texture worldTexture;
+
+    sf::Shader shader;
+    sf::VertexArray quad;
+
     std::vector<Segment<int>> collisionMesh;
 
     int width;
@@ -121,4 +151,5 @@ private:
 
     void particles_update();
     void p_sand(Particle, int, int, BoundRules);
+    void p_water(Particle, int, int, BoundRules);
 };

@@ -40,4 +40,10 @@ struct Particle
                matterType == MatterType::Liquid ||
                matterType == MatterType::None;
     }
+
+    bool air()
+    {
+        return matterType == MatterType::Gas ||
+               matterType == MatterType::None;
+    }
 };
