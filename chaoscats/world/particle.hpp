@@ -5,6 +5,7 @@
 enum class PhysicsType
 {
     Sand,
+    Water,
 
     None
 };

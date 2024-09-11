@@ -7,7 +7,6 @@
 #include "../math/matrix/matrix.hpp"
 #include "../rendering/draw.hpp"
 
-#include "collision_mesh/binary_matrix.hpp"
 #include "collision_mesh/collision_mesh.hpp"
 
 struct BoundRules
@@ -44,15 +43,8 @@ public:
 
     void update()
     {
-        // particles_update();
-        // Mat2D<int> binmat = particleMatrixToHollowBinaryMatrix(particles, PlayerCollisionType::Solid);
-        // collisionMesh = generateCollisionMesh(binmat, pixelSize);
-
-        // for (Segment<int> seg : collisionMesh)
-        // {
-        //     std::cout << seg.p1.x << " " << seg.p1.y << " " << seg.p2.x << " " << seg.p2.y << std::endl;
-        // }
-        // system("pause");
+        particles_update();
+        updateCollisionMesh(collisionMesh, particles, PlayerCollisionType::Solid, pixelSize);
     }
 
     void render()

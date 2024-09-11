@@ -1,317 +1,110 @@
-#include "collision_mesh.hpp"
-
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
-std::vector<Point2D<int>> generateCollisionMesh(Mat2D<int> &hollowBinaryMatrix, int scale)
+#include "collision_mesh.hpp"
+#include "../particle.hpp"
+
+// collision mesh generator/updater
+// implements: https://en.wikipedia.org/wiki/Marching_squares
+void updateCollisionMesh(std::vector<Segment<int>> &collisionMesh, Mat2D<Particle> &particleWorld, PlayerCollisionType collisionType, int scale)
 {
-    int rowSize = hollowBinaryMatrix.getRowSize();
-    int colSize = hollowBinaryMatrix.getColSize();
+    int rowSize = particleWorld.getRowSize();
+    int colSize = particleWorld.getColSize();
 
-    std::vector<Point2D<int>> points;
+    collisionMesh.clear();
 
-    bool complete = false;
-
-    while (!complete)
+    for (int y = 0; y < rowSize - 1; ++y)
     {
-        bool break2 = false;
-
-        bool valuesExist = false;
-
-        Point2D<int> headPoint;
-        for (int y = 0; y < rowSize; ++y)
+        for (int x = 0; x < colSize - 1; ++x)
         {
-            for (int x = 0; x < colSize; ++x)
-            {
-                int value = hollowBinaryMatrix.get(y, x);
-                if (value == 1)
-                {
-                    headPoint = Point2D<int>(x, y);
-                    break2 = true;
-                    valuesExist = true;
-                    break;
-                }
-            }
+            // [d][c]
+            // [a][b]
 
-            if (break2)
-            {
-                break;
-            }
-        }
+            int a = particleWorld.get(y + 1, x    ).playerCollisionType == collisionType ? 1 : 0;
+            int b = particleWorld.get(y + 1, x + 1).playerCollisionType == collisionType ? 1 : 0;
+            int c = particleWorld.get(y,     x + 1).playerCollisionType == collisionType ? 1 : 0;
+            int d = particleWorld.get(y,     x    ).playerCollisionType == collisionType ? 1 : 0;
 
-        if (!valuesExist)
-        {
-            complete = true;
-            break;
-        }
+            int lookupIndex = getLookupIndex(a, b, c, d);
 
-        auto countNeighbors = [&]()
-        {
-            int neighborCount = 0;
-            if (hollowBinaryMatrix.inBounds(headPoint.y, headPoint.x - 1))
-            {
-                if (hollowBinaryMatrix.get(headPoint.y, headPoint.x - 1) == 1)
-                {
-                    ++neighborCount;
-                }
-            }
-            if (hollowBinaryMatrix.inBounds(headPoint.y + 1, headPoint.x - 1))
-            {
-                if (hollowBinaryMatrix.get(headPoint.y + 1, headPoint.x - 1) == 1)
-                {
-                    ++neighborCount;
-                }
-            }
-            if (hollowBinaryMatrix.inBounds(headPoint.y + 1, headPoint.x))
-            {
-                if (hollowBinaryMatrix.get(headPoint.y + 1, headPoint.x) == 1)
-                {
-                    ++neighborCount;
-                }
-            }
-            if (hollowBinaryMatrix.inBounds(headPoint.y + 1, headPoint.x + 1))
-            {
-                if (hollowBinaryMatrix.get(headPoint.y + 1, headPoint.x + 1) == 1)
-                {
-                    ++neighborCount;
-                }
-            }
-            if (hollowBinaryMatrix.inBounds(headPoint.y, headPoint.x + 1))
-            {
-                if (hollowBinaryMatrix.get(headPoint.y, headPoint.x + 1) == 1)
-                {
-                    ++neighborCount;
-                }
-            }
-            if (hollowBinaryMatrix.inBounds(headPoint.y - 1, headPoint.x + 1))
-            {
-                if (hollowBinaryMatrix.get(headPoint.y - 1, headPoint.x + 1) == 1)
-                {
-                    ++neighborCount;
-                }
-            }
-            if (hollowBinaryMatrix.inBounds(headPoint.y - 1, headPoint.x))
-            {
-                if (hollowBinaryMatrix.get(headPoint.y - 1, headPoint.x) == 1)
-                {
-                    ++neighborCount;
-                }
-            }
-            if (hollowBinaryMatrix.inBounds(headPoint.y - 1, headPoint.x - 1))
-            {
-                if (hollowBinaryMatrix.get(headPoint.y - 1, headPoint.x - 1) == 1)
-                {
-                    ++neighborCount;
-                }
-            }
-
-            return neighborCount;
-        };
-
-        Point2D<int> moveVector(0, 0);
-        Point2D<int> prevMoveVector(0, 0);
-        bool finishedPath = false;
-
-        Point2D<int> startPoint(-1, -1);
-
-        while (!finishedPath)
-        {
-            //
-            // 1 [-] 5
-            // 2  3  4
-
-            bool thingsHappened = false;
-
-            if (hollowBinaryMatrix.inBounds(headPoint.y, headPoint.x - 1))
-            {
-                if (hollowBinaryMatrix.get(headPoint.y, headPoint.x - 1) == 1)
-                {
-                    bool initial = false;
-                    if (startPoint.x == -1 && startPoint.y == -1)
-                    {
-                        startPoint = headPoint;
-                        points.push_back(startPoint);
-
-                        if (countNeighbors() <= 1)
-                        {
-                            hollowBinaryMatrix.set(headPoint.y, headPoint.x, 0);
-                        }
-
-                        initial = true;
-                    }
-
-                    headPoint.x += -1;
-                    headPoint.y += 0;
-
-                    moveVector.x = -1;
-                    moveVector.y = 0;
-
-                    if (!initial && (moveVector.x != prevMoveVector.x || moveVector.y != prevMoveVector.y))
-                    {
-                        points.push_back(headPoint);
-                    }
-
-                    hollowBinaryMatrix.set(headPoint.y, headPoint.x, 0);
-
-                    thingsHappened = true;
-                }
-            }
-            if (hollowBinaryMatrix.inBounds(headPoint.y + 1, headPoint.x - 1))
-            {
-                if (hollowBinaryMatrix.get(headPoint.y + 1, headPoint.x - 1) == 1)
-                {
-                    bool initial = false;
-                    if (startPoint.x == -1 && startPoint.y == -1)
-                    {
-                        startPoint = headPoint;
-                        points.push_back(startPoint);
-
-                        if (countNeighbors() <= 1)
-                        {
-                            hollowBinaryMatrix.set(headPoint.y, headPoint.x, 0);
-                        }
-
-                        initial = true;
-                    }
-
-                    headPoint.x += -1;
-                    headPoint.y += 1;
-
-                    moveVector.x = -1;
-                    moveVector.y = 1;
-
-                    if (!initial && (moveVector.x != prevMoveVector.x || moveVector.y != prevMoveVector.y))
-                    {
-                        points.push_back(headPoint);
-                    }
-
-                    hollowBinaryMatrix.set(headPoint.y, headPoint.x, 0);
-
-                    thingsHappened = true;
-                }
-            }
-            if (hollowBinaryMatrix.inBounds(headPoint.y + 1, headPoint.x))
-            {
-                if (hollowBinaryMatrix.get(headPoint.y + 1, headPoint.x) == 1)
-                {
-                    bool initial = false;
-                    if (startPoint.x == -1 && startPoint.y == -1)
-                    {
-                        startPoint = headPoint;
-                        points.push_back(startPoint);
-
-                        if (countNeighbors() <= 1)
-                        {
-                            hollowBinaryMatrix.set(headPoint.y, headPoint.x, 0);
-                        }
-
-                        initial = true;
-                    }
-
-                    headPoint.x += 0;
-                    headPoint.y += 1;
-
-                    moveVector.x = 0;
-                    moveVector.y = 1;
-
-                    if (!initial && (moveVector.x != prevMoveVector.x || moveVector.y != prevMoveVector.y))
-                    {
-                        points.push_back(headPoint);
-                    }
-
-                    hollowBinaryMatrix.set(headPoint.y, headPoint.x, 0);
-
-                    thingsHappened = true;
-                }
-            }
-            if (hollowBinaryMatrix.inBounds(headPoint.y + 1, headPoint.x + 1))
-            {
-                if (hollowBinaryMatrix.get(headPoint.y + 1, headPoint.x + 1) == 1)
-                {
-                    bool initial = false;
-                    if (startPoint.x == -1 && startPoint.y == -1)
-                    {
-                        startPoint = headPoint;
-                        points.push_back(startPoint);
-
-                        if (countNeighbors() <= 1)
-                        {
-                            hollowBinaryMatrix.set(headPoint.y, headPoint.x, 0);
-                        }
-
-                        initial = true;
-                    }
-
-                    headPoint.x += 1;
-                    headPoint.y += 1;
-
-                    moveVector.x = 1;
-                    moveVector.y = 1;
-
-                    if (!initial && (moveVector.x != prevMoveVector.x || moveVector.y != prevMoveVector.y))
-                    {
-                        points.push_back(headPoint);
-                    }
-
-                    hollowBinaryMatrix.set(headPoint.y, headPoint.x, 0);
-
-                    thingsHappened = true;
-                }
-            }
-            if (hollowBinaryMatrix.inBounds(headPoint.y, headPoint.x + 1))
-            {
-                if (hollowBinaryMatrix.get(headPoint.y, headPoint.x + 1) == 1)
-                {
-                    bool initial = false;
-                    if (startPoint.x == -1 && startPoint.y == -1)
-                    {
-                        startPoint = headPoint;
-                        points.push_back(startPoint);
-
-                        if (countNeighbors() <= 1)
-                        {
-                            hollowBinaryMatrix.set(headPoint.y, headPoint.x, 0);
-                        }
-
-                        initial = true;
-                    }
-
-                    headPoint.x += 1;
-                    headPoint.y += 0;
-
-                    moveVector.x = 1;
-                    moveVector.y = 0;
-
-                    if (!initial && (moveVector.x != prevMoveVector.x || moveVector.y != prevMoveVector.y))
-                    {
-                        points.push_back(headPoint);
-                    }
-
-                    hollowBinaryMatrix.set(headPoint.y, headPoint.x, 0);
-
-                    thingsHappened = true;
-                }
-            }
-
-            prevMoveVector = moveVector;
-
-            if (!thingsHappened)
-            {
-                points.push_back(headPoint);
-                finishedPath = true;
-            }
+            appendLookupSegment(collisionMesh, lookupIndex, x, y, scale);
         }
     }
+}
 
-    // remove garbage segments (segments that point1 == point2)
-    // segments.erase(std::remove_if(segments.begin(),
-    //                               segments.end(),
-    //                               [](Segment<int> segment)
-    //                               {
-    //                                   return segment.p1.x == segment.p2.x && segment.p1.y == segment.p2.y;
-    //                               }),
-    //                segments.end());
+int getLookupIndex(int a, int b, int c, int d)
+{
+    // 8   4
+    //  [-]
+    // 1   2
+    return a * 1 + b * 2 + c * 4 + d * 8;
+}
 
-    return points;
+void appendLookupSegment(std::vector<Segment<int>> &segments, int index, int x, int y, int scale)
+{
+    int half_scale = scale / 2;
+    Point2D<int> left(
+        (x + 0  ) * scale + half_scale,
+        (y + 0.5) * scale + half_scale);
+    Point2D<int> bottom(
+        (x + 0.5) * scale + half_scale,
+        (y + 1  ) * scale + half_scale);
+    Point2D<int> right(
+        (x + 1  ) * scale + half_scale,
+        (y + 0.5) * scale + half_scale);
+    Point2D<int> top(
+        (x + 0.5) * scale + half_scale,
+        (y + 0  ) * scale + half_scale);
+
+    switch (index)
+    {
+    case 0:
+        break;
+    case 1:
+        segments.push_back(Segment<int>(left, bottom));
+        break;
+    case 2:
+        segments.push_back(Segment<int>(bottom, right));
+        break;
+    case 3:
+        segments.push_back(Segment<int>(left, right));
+        break;
+    case 4:
+        segments.push_back(Segment<int>(top, right));
+        break;
+    case 5:
+        segments.push_back(Segment<int>(left, top));
+        segments.push_back(Segment<int>(bottom, right));
+        break;
+    case 6:
+        segments.push_back(Segment<int>(top, bottom));
+        break;
+    case 7:
+        segments.push_back(Segment<int>(left, top));
+        break;
+    case 8:
+        segments.push_back(Segment<int>(left, top));
+        break;
+    case 9:
+        segments.push_back(Segment<int>(top, bottom));
+        break;
+    case 10:
+        segments.push_back(Segment<int>(left, bottom));
+        segments.push_back(Segment<int>(top, right));
+        break;
+    case 11:
+        segments.push_back(Segment<int>(top, right));
+        break;
+    case 12:
+        segments.push_back(Segment<int>(left, right));
+        break;
+    case 13:
+        segments.push_back(Segment<int>(bottom, right));
+        break;
+    case 14:
+        segments.push_back(Segment<int>(left, bottom));
+        break;
+    case 15:
+        break;
+    }
 }

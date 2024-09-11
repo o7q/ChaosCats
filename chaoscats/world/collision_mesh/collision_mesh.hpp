@@ -2,7 +2,12 @@
 
 #include <vector>
 
+#include "../particle.hpp"
+
 #include "../../math/geometry/geometry_common.hpp"
 #include "../../math/matrix/matrix.hpp"
 
-std::vector<Point2D<int>> generateCollisionMesh(Mat2D<int> &hollowBinaryMatrix, int scale);
+void updateCollisionMesh(std::vector<Segment<int>> &collisionMesh, Mat2D<Particle> &particleWorld, PlayerCollisionType collisionType, int scale);
+
+int getLookupIndex(int a, int b, int c, int d);
+void appendLookupSegment(std::vector<Segment<int>> &segments, int index, int x, int y, int scale);
