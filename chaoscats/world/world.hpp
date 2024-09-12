@@ -6,6 +6,7 @@
 #include "../math/geometry/geometry_common.hpp"
 #include "../math/matrix/matrix.hpp"
 #include "../rendering/draw.hpp"
+#include "../math/random/random.hpp"
 
 #include "collision_mesh/collision_mesh.hpp"
 
@@ -45,11 +46,11 @@ public:
 
         if (!shader.loadFromFile("assets\\shaders\\particle\\shader.vert", "assets\\shaders\\particle\\shader.frag"))
         {
+            std::cerr << "Failed to load shader" << std::endl;
         }
 
         shader.setUniform("tex", worldTexture);
         shader.setUniform("texSize", sf::Vector2f(width, height));
-        shader.setUniform("resolution", renderWindow.getView().getSize());
 
         quad.resize(4);
         quad.setPrimitiveType(sf::Quads);
@@ -61,6 +62,14 @@ public:
         quad[1].texCoords = sf::Vector2f(1, 1);
         quad[2].texCoords = sf::Vector2f(1, 0);
         quad[3].texCoords = sf::Vector2f(0, 0);
+
+        for (int y = 0; y < height; ++y)
+        {
+            for (int x = 0; x < width; ++x)
+            {
+                removeParticle(x, y);
+            }
+        }
     }
     ~World()
     {
@@ -69,16 +78,33 @@ public:
 
     void update()
     {
-        particles_update();
+        update_particles();
         updateCollisionMesh(collisionMesh, particles, PlayerCollisionType::Solid, pixelSize);
     }
 
     void render()
     {
-        renderWindow.draw(quad, &shader);
+        // worldTexture.update(worldPixels);
+        // shader.setUniform("translation", sf::Vector2f(0, 0));
+        // shader.setUniform("zoom", 1.0f);
+        // shader.setUniform("resolution", renderWindow.getView().getSize());
+        // renderWindow.draw(quad, &shader);
+
+        // for (int y = 0; y < height; ++y)
+        // {
+        //     for (int x = 0; x < width; ++x)
+        //     {
+        //         Particle particle = particles.get(y, x);
+        //         Rect<int> rect(Point2D<int>(x * pixelSize, y * pixelSize), Size2D<int>(pixelSize, pixelSize));
+        //         drawRect(renderWindow, rect, sf::Color(particle.color));
+        //     }
+        // }
         for (Segment<int> segment : collisionMesh)
         {
-            drawSegment(renderWindow, segment, sf::Color(0, 0, 255, 255));
+            int r = Random::genFloat(0, 255);
+            int g = Random::genFloat(0, 255);
+            int b = Random::genFloat(0, 255);
+            drawSegment(renderWindow, segment, sf::Color(0, g, b, 255));
         }
     }
 
@@ -86,7 +112,7 @@ public:
     {
         particles.set(y, x, particle);
 
-        int index = y * width + x;
+        int index = (y * width + x) * 4;
 
         worldPixels[index + 0] = particle.color.r;
         worldPixels[index + 1] = particle.color.g;
@@ -96,7 +122,7 @@ public:
 
     void removeParticle(int x, int y)
     {
-        particles.set(y, x, Particle());
+        setParticle(x, y, Particle());
     }
 
     void drawParticles(int loc_x, int loc_y, Particle particle, int radius = 5, DrawShape drawShape = DrawShape::Circle)
@@ -135,21 +161,20 @@ public:
 
 private:
     sf::RenderWindow &renderWindow;
+
     Mat2D<Particle> particles;
-
-    sf::Uint8 *worldPixels;
-    sf::Texture worldTexture;
-
-    sf::Shader shader;
-    sf::VertexArray quad;
 
     std::vector<Segment<int>> collisionMesh;
 
-    int width;
-    int height;
+    sf::Shader shader;
+    sf::VertexArray quad;
+    sf::Uint8 *worldPixels;
+    sf::Texture worldTexture;
+
+    int width, height;
     int pixelSize;
 
-    void particles_update();
+    void update_particles();
     void p_sand(Particle, int, int, BoundRules);
     void p_water(Particle, int, int, BoundRules);
 };

@@ -1,0 +1,10 @@
+- Optimize collision generator
+- Finish collision
+- Implement player movement
+- Draw basic playermodel
+- Draw basic map
+- Implement map loader (load maps from images)
+- Implement first weapon
+- Get basic multiplayer to work with above additions
+- Move rendering pipeline to the GPU/GLSL
+- Rename geometry structs, remove '2D' from their names

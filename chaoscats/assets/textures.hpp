@@ -4,9 +4,8 @@
 
 #include <SFML/Graphics.hpp>
 
-class TextureStorage
+struct TextureStorage
 {
-public:
     sf::Texture TEST_PLAYER_TEXTURE;
 
     TextureStorage()
@@ -14,6 +13,7 @@ public:
         loadTexture(TEST_PLAYER_TEXTURE, "assets/test_player.png");
     };
 
+private:
     void loadTexture(sf::Texture &texture, const std::string &path)
     {
         if (!texture.loadFromFile(path))

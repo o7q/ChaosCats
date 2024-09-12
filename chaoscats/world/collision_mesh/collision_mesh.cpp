@@ -13,6 +13,8 @@ void updateCollisionMesh(std::vector<Segment<int>> &collisionMesh, Mat2D<Particl
 
     collisionMesh.clear();
 
+    std::vector<Segment<int>> temp;
+
     for (int y = 0; y < rowSize - 1; ++y)
     {
         for (int x = 0; x < colSize - 1; ++x)
@@ -20,16 +22,35 @@ void updateCollisionMesh(std::vector<Segment<int>> &collisionMesh, Mat2D<Particl
             // [d][c]
             // [a][b]
 
-            int a = particleWorld.get(y + 1, x    ).playerCollisionType == collisionType ? 1 : 0;
+            int a = particleWorld.get(y + 1, x).playerCollisionType == collisionType ? 1 : 0;
             int b = particleWorld.get(y + 1, x + 1).playerCollisionType == collisionType ? 1 : 0;
-            int c = particleWorld.get(y,     x + 1).playerCollisionType == collisionType ? 1 : 0;
-            int d = particleWorld.get(y,     x    ).playerCollisionType == collisionType ? 1 : 0;
+            int c = particleWorld.get(y, x + 1).playerCollisionType == collisionType ? 1 : 0;
+            int d = particleWorld.get(y, x).playerCollisionType == collisionType ? 1 : 0;
 
             int lookupIndex = getLookupIndex(a, b, c, d);
 
-            appendLookupSegment(collisionMesh, lookupIndex, x, y, scale);
+            appendLookupSegment(temp, lookupIndex, x, y, scale);
         }
     }
+
+    bool set = false;
+    Point2D<int> p1;
+    Point2D<int> p2;
+
+    for (int i = 0; i < temp.size(); ++i)
+    {
+        if (!set)
+        {
+            p1 = temp[i].p1;
+            set = true;
+        }
+
+    }
+}
+
+float slope(int x, int y)
+{
+    return y / static_cast<float>(x);
 }
 
 int getLookupIndex(int a, int b, int c, int d)
@@ -44,17 +65,17 @@ void appendLookupSegment(std::vector<Segment<int>> &segments, int index, int x, 
 {
     int half_scale = scale / 2;
     Point2D<int> left(
-        (x + 0  ) * scale + half_scale,
+        (x + 0) * scale + half_scale,
         (y + 0.5) * scale + half_scale);
     Point2D<int> bottom(
         (x + 0.5) * scale + half_scale,
-        (y + 1  ) * scale + half_scale);
+        (y + 1) * scale + half_scale);
     Point2D<int> right(
-        (x + 1  ) * scale + half_scale,
+        (x + 1) * scale + half_scale,
         (y + 0.5) * scale + half_scale);
     Point2D<int> top(
         (x + 0.5) * scale + half_scale,
-        (y + 0  ) * scale + half_scale);
+        (y + 0) * scale + half_scale);
 
     switch (index)
     {

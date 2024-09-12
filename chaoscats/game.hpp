@@ -21,9 +21,8 @@ public:
 private:
     void update();
 
-    int FRAMERATE = 0;
-
     sf::RenderWindow renderWindow;
+    sf::View view;
     WindowInfo windowInfo;
 
     AssetStorage gameAssets;

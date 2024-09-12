@@ -4,9 +4,8 @@
 
 #include <SFML/Graphics.hpp>
 
-class FontStorage
+struct FontStorage
 {
-public:
     sf::Font ALAGARD_FONT;
 
     FontStorage()
@@ -14,6 +13,7 @@ public:
         loadFont(ALAGARD_FONT, "assets/alagard.ttf");
     };
 
+private:
     void loadFont(sf::Font &font, const std::string &path)
     {
         if (!font.loadFromFile(path))

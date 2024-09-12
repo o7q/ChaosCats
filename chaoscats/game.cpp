@@ -20,6 +20,7 @@ GameWindow::GameWindow(const std::string &name, int width, int height)
         sf::Event event;
         while (renderWindow.pollEvent(event))
         {
+            sf::FloatRect visibleArea;
             switch (event.type)
             {
             case sf::Event::Closed:
@@ -30,6 +31,10 @@ GameWindow::GameWindow(const std::string &name, int width, int height)
                 break;
             case sf::Event::LostFocus:
                 windowInfo.IS_FOCUSED = false;
+                break;
+            case sf::Event::Resized:
+                visibleArea = sf::FloatRect(0.f, 0.f, event.size.width, event.size.height);
+                renderWindow.setView(sf::View(visibleArea));
                 break;
             default:
                 break;

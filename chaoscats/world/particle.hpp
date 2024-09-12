@@ -34,14 +34,14 @@ struct Particle
 
     sf::Color color = sf::Color(0, 0, 0, 0);
 
-    bool passable()
+    bool isPassable()
     {
         return matterType == MatterType::Gas ||
                matterType == MatterType::Liquid ||
                matterType == MatterType::None;
     }
 
-    bool air()
+    bool isAir()
     {
         return matterType == MatterType::Gas ||
                matterType == MatterType::None;

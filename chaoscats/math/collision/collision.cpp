@@ -11,7 +11,7 @@ float distancePointToSegment(Point2D<float> point, Point2D<float> segPoint1, Poi
     float y2 = segPoint2.y;
 
     float n = std::abs((y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1);
-    float d = std::sqrt(std::pow(y2 - y1, 2) + (x2 - x1, 2));
+    float d = std::sqrt(std::pow(y2 - y1, 2) + std::pow(x2 - x1, 2));
 
     return n / d;
 }

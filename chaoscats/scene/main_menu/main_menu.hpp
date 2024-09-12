@@ -16,10 +16,9 @@ public:
 
     CurrentScene run() override;
 
-
 private:
     float rot = 0;
-    
+
     Player *player = nullptr;
     World *world = nullptr;
 };

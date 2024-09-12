@@ -1,8 +1,7 @@
 #include "world.hpp"
-
 #include "../math/random/random.hpp"
 
-void World::particles_update()
+void World::update_particles()
 {
     auto updateParticle = [this](int x, int y)
     {
@@ -16,6 +15,8 @@ void World::particles_update()
             break;
         case PhysicsType::Water:
             p_water(particle, x, y, boundRules);
+            break;
+        case PhysicsType::None:
             break;
         }
     };
