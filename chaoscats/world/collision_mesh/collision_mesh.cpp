@@ -13,8 +13,6 @@ void updateCollisionMesh(std::vector<Segment<int>> &collisionMesh, Mat2D<Particl
 
     collisionMesh.clear();
 
-    std::vector<Segment<int>> temp;
-
     for (int y = 0; y < rowSize - 1; ++y)
     {
         for (int x = 0; x < colSize - 1; ++x)
@@ -29,22 +27,8 @@ void updateCollisionMesh(std::vector<Segment<int>> &collisionMesh, Mat2D<Particl
 
             int lookupIndex = getLookupIndex(a, b, c, d);
 
-            appendLookupSegment(temp, lookupIndex, x, y, scale);
+            appendLookupSegment(collisionMesh, lookupIndex, x, y, scale);
         }
-    }
-
-    bool set = false;
-    Point2D<int> p1;
-    Point2D<int> p2;
-
-    for (int i = 0; i < temp.size(); ++i)
-    {
-        if (!set)
-        {
-            p1 = temp[i].p1;
-            set = true;
-        }
-
     }
 }
 

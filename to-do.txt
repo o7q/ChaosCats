@@ -1,3 +1,5 @@
+- watch this video https://www.youtube.com/watch?v=ZQ8qtAizis4
+
 - Optimize collision generator
 - Finish collision
 - Implement player movement

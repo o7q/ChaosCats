@@ -8,6 +8,7 @@
 
 #include "../../player/player.hpp"
 #include "../../world/world.hpp"
+#include "../../world/camera.hpp"
 
 class Scene_MainMenu : public Scene
 {
@@ -20,5 +21,6 @@ private:
     float rot = 0;
 
     Player *player = nullptr;
+    WorldCamera* worldCamera = nullptr;
     World *world = nullptr;
 };

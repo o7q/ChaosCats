@@ -10,4 +10,4 @@
 void updateCollisionMesh(std::vector<Segment<int>> &collisionMesh, Mat2D<Particle> &particleWorld, PlayerCollisionType collisionType, int scale);
 
 int getLookupIndex(int a, int b, int c, int d);
-void appendLookupSegment(std::vector<Segment<int>> &segments, int index, int x, int y, int scale);
+void appendLookupSegment(std::vector<Segment<int>> &collisionMesh, int index, int x, int y, int scale);

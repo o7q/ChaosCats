@@ -17,6 +17,8 @@ struct Rect
     }
 
     Point2D<T> points[4];
+    Segment<T> segments[4];
+    Point2D<T> center;
 
     Point2D<T> position;
 
@@ -38,9 +40,16 @@ private:
         //  [-]
         // 4   3
 
+        center = Point2D<T>(position.x + half_size.w, position.y + half_size.h);
+
         points[0] = topLeft;
         points[1] = Point2D<T>(topLeft.x + size.w, topLeft.y);
         points[2] = Point2D<T>(topLeft.x + size.w, topLeft.y + size.h);
         points[3] = Point2D<T>(topLeft.x, topLeft.y + size.h);
+
+        segments[0] = Segment<T>(points[3], points[0]);
+        segments[1] = Segment<T>(points[0], points[1]);
+        segments[2] = Segment<T>(points[1], points[2]);
+        segments[3] = Segment<T>(points[2], points[3]);
     }
 };

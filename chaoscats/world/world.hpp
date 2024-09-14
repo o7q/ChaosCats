@@ -10,6 +10,8 @@
 
 #include "collision_mesh/collision_mesh.hpp"
 
+#include "camera.hpp"
+
 struct BoundRules
 {
     BoundRules(int x, int y, int mx, int my)
@@ -82,7 +84,7 @@ public:
         updateCollisionMesh(collisionMesh, particles, PlayerCollisionType::Solid, pixelSize);
     }
 
-    void render()
+    void render(WorldCamera *camera)
     {
         // worldTexture.update(worldPixels);
         // shader.setUniform("translation", sf::Vector2f(0, 0));
@@ -101,10 +103,12 @@ public:
         // }
         for (Segment<int> segment : collisionMesh)
         {
-            int r = Random::genFloat(0, 255);
-            int g = Random::genFloat(0, 255);
-            int b = Random::genFloat(0, 255);
-            drawSegment(renderWindow, segment, sf::Color(0, g, b, 255));
+            // int r = Random::genFloat(0, 255);
+            // int g = Random::genFloat(0, 255);
+            // int b = Random::genFloat(0, 255);
+            camera->worldToScreen(segment.p1.x, segment.p1.y, segment.p1.x, segment.p1.y);
+            camera->worldToScreen(segment.p2.x, segment.p2.y, segment.p2.x, segment.p2.y);
+            drawSegment(renderWindow, segment, sf::Color(0, 255, 255, 255));
         }
     }
 
