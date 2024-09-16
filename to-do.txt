@@ -1,5 +1,3 @@
-- watch this video https://www.youtube.com/watch?v=ZQ8qtAizis4
-
 - Optimize collision generator
 - Finish collision
 - Implement player movement
@@ -9,4 +7,3 @@
 - Implement first weapon
 - Get basic multiplayer to work with above additions
 - Move rendering pipeline to the GPU/GLSL
-- Rename geometry structs, remove '2D' from their names

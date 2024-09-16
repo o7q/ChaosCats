@@ -97,7 +97,7 @@ public:
         //     for (int x = 0; x < width; ++x)
         //     {
         //         Particle particle = particles.get(y, x);
-        //         Rect<int> rect(Point2D<int>(x * pixelSize, y * pixelSize), Size2D<int>(pixelSize, pixelSize));
+        //         Rect<int> rect(Point<int>(x * pixelSize, y * pixelSize), Size<int>(pixelSize, pixelSize));
         //         drawRect(renderWindow, rect, sf::Color(particle.color));
         //     }
         // }
@@ -166,7 +166,7 @@ public:
 private:
     sf::RenderWindow &renderWindow;
 
-    Mat2D<Particle> particles;
+    Matrix<Particle> particles;
 
     std::vector<Segment<int>> collisionMesh;
 

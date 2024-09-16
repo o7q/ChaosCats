@@ -58,11 +58,8 @@ void simulationStep(Rect<float> rect, std::vector<Segment<float>> &segments, flo
     int collisions = 0;
     for (Segment<float> segment : segments)
     {
-        Rect<float> rect_future;
-        rect_future.position.x = (rect.position.x + rect.half_size.w) + vx * ttc;
-        rect_future.position.y = (rect.position.y + rect.half_size.h) + vy * ttc;
-        rect_future.size.w = rect.size.w;
-        rect_future.size.h = rect.size.h;
+        Rect<float> rect_future = rect;
+        rect_future.setPosition(rect.getPosition().x + vx * ttc, rect.getPosition().y + vy * ttc);
 
         int collide_r1 = pointRect(segment.p1, rect_future);
         int collide_r2 = pointRect(segment.p2, rect_future);
@@ -71,23 +68,23 @@ void simulationStep(Rect<float> rect, std::vector<Segment<float>> &segments, flo
 
         if (collision)
         {
+            std::cout << "collision" << std::endl;
             if (++collisions > 1)
             {
                 return;
             }
 
-            float dir = vx * segment.p1.x + vy * segment.p1.y;
-            Segment<float> test;
-            test.p1 = Point2D<float>(0, 0);
-            test.p2 = Point2D<float>(segment.p2.x - segment.p1.x, segment.p2.y - segment.p1.y);
-            float vx2 = test.p2.x * dir;
-            float vy2 = test.p2.y * dir;
+            Point<float> lineVec;
+            lineVec = Point<float>(segment.p2.x - segment.p1.x, segment.p2.y - segment.p1.y);
+            float dir = vx * lineVec.x + vy * lineVec.y;
+            float vx2 = lineVec.x * dir;
+            float vy2 = lineVec.y * dir;
 
             if (collide_r1 || collide_r2)
             {
                 int side = (collide_r1 || collide_r2) - 1;
-                Point2D<int> dirs[] = {Point2D<int>(1, 0), Point2D<int>(1, 0), Point2D<int>(0, 1), Point2D<int>(0, 1), Point2D<int>(0, 0)};
-                Point2D<int> dir = dirs[side];
+                Point<int> dirs[] = {Point<int>(1, 0), Point<int>(1, 0), Point<int>(0, 1), Point<int>(0, 1), Point<int>(0, 0)};
+                Point<int> dir = dirs[side];
 
                 vx *= dir.x;
                 vy *= dir.y;
@@ -99,16 +96,15 @@ void simulationStep(Rect<float> rect, std::vector<Segment<float>> &segments, flo
         }
 
         Rect<float> temp = rect;
-        rect.position.x += vx * dt;
-        rect.position.y += vy * dt;
+        temp.incrementPosition(vx * dt, vy * dt);
 
         if (isRectColliding(temp, segments))
         {
             return;
         }
 
-        x += vx *= dt;
-        y += vy *= dt;
+        x += vx * dt;
+        y += vy * dt;
     }
 }
 

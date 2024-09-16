@@ -29,22 +29,22 @@ bool segmentSegment(Segment<float> a, Segment<float> b)
 // from: https://www.jeffreythompson.org/collision-detection/line-rect.php
 bool segmentRect(Segment<float> segment, Rect<float> rectangle)
 {
-    bool left = segmentSegment(segment, rectangle.segments[0]);
-    bool top = segmentSegment(segment, rectangle.segments[1]);
-    bool right = segmentSegment(segment, rectangle.segments[2]);
-    bool bottom = segmentSegment(segment, rectangle.segments[3]);
-    bool inPoint = pointRect(segment.p1, rectangle);
+    bool top = segmentSegment(segment, rectangle.segments[0]);
+    bool right = segmentSegment(segment, rectangle.segments[1]);
+    bool bottom = segmentSegment(segment, rectangle.segments[2]);
+    bool left = segmentSegment(segment, rectangle.segments[3]);
+    bool inPoint = pointRect2(segment.p1, rectangle);
 
-    return left || top || right || bottom || inPoint;
+    return top || right || bottom || left || inPoint;
 }
 
 // point/rectangle intersection
-int pointRect(Point2D<float> point, Rect<float> rect)
+int pointRect(Point<float> point, Rect<float> rect)
 {
     const float half_width = rect.half_size.w;
     const float half_height = rect.half_size.h;
-    const float dx = (point.x - (rect.position.x + rect.half_size.w));
-    const float dy = (point.y - (rect.position.y + rect.half_size.h));
+    const float dx = (point.x - (rect.getPosition().x));
+    const float dy = (point.y - (rect.getPosition().y));
     const float abs_dx = std::fabs(dx);
     const float abs_dy = std::fabs(dy);
 
@@ -59,7 +59,7 @@ int pointRect(Point2D<float> point, Rect<float> rect)
     return abs_dx * rect.size.h > abs_dy * rect.size.w ? tx : ty;
 }
 
-bool pointRect2(Point2D<float> endpoint, Rect<float> rect)
+bool pointRect2(Point<float> endpoint, Rect<float> rect)
 {
     // 0   1
     //  [-]

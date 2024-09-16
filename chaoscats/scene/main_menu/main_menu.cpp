@@ -79,16 +79,18 @@ CurrentScene Scene_MainMenu::run()
         // world->update();
         // world->render(worldCamera);
 
-        std::vector<Point2D<float>> points;
+        std::vector<Point<float>> points;
 
-        points.push_back(Point2D<float>(50, 600));
-        points.push_back(Point2D<float>(500, 700));
-        points.push_back(Point2D<float>(600, 600));
-        points.push_back(Point2D<float>(800, 400));
-        points.push_back(Point2D<float>(1000, 500));
-        points.push_back(Point2D<float>(1000, 100));
-        points.push_back(Point2D<float>(600, 100));
-        points.push_back(Point2D<float>(200, 0));
+        points.push_back(Point<float>(50, 600));
+        points.push_back(Point<float>(500, 700));
+        points.push_back(Point<float>(600, 600));
+        points.push_back(Point<float>(800, 400));
+        points.push_back(Point<float>(1000, 500));
+        points.push_back(Point<float>(1000, 100));
+        points.push_back(Point<float>(600, 100));
+        points.push_back(Point<float>(200, 0));
+        points.push_back(Point<float>(400, 100));
+        points.push_back(Point<float>(200, 50));
 
         std::vector<Segment<float>> segments = segmentPathFromPoints(points);
 

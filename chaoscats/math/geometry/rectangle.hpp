@@ -7,49 +7,56 @@ template <typename T>
 struct Rect
 {
     Rect() = default;
-    Rect(Point2D<T> topLeft, Size2D<T> size)
+    Rect(T x, T y, T w, T h)
     {
-        init(topLeft, {topLeft.x + size.w, topLeft.y + size.h});
-    }
-    Rect(Point2D<T> topLeft, Point2D<T> bottomRight)
-    {
-        init(topLeft, bottomRight);
+        this->position = Point<T>(x, y);
+        this->size = Size<T>(w, h);
+        half_size = Size<T>(size.w / 2.0f, size.h / 2.0f);
+
+        updatePoints();
     }
 
-    Point2D<T> points[4];
+    void setPosition(T x, T y)
+    {
+        this->position = Point<T>(x, y);
+        updatePoints();
+    }
+
+    void incrementPosition(T x, T y)
+    {
+        this->position.x += x;
+        this->position.y += y;
+        updatePoints();
+    }
+
+    Point<T> getPosition()
+    {
+        return position;
+    }
+
+    Point<T> points[4];
     Segment<T> segments[4];
-    Point2D<T> center;
 
-    Point2D<T> position;
-
-    Size2D<T> size;
-    Size2D<T> half_size;
+    Size<T> size;
+    Size<T> half_size;
 
 private:
-    void init(Point2D<T> topLeft, Point2D<T> bottomRight)
+    Point<T> position;
+
+    void updatePoints()
     {
-        size.w = bottomRight.x - topLeft.x;
-        size.h = bottomRight.y - topLeft.y;
-
-        half_size.w = size.w / 2.0f;
-        half_size.h = size.h / 2.0f;
-
-        position = topLeft;
-
-        // 1   2
+        // 0   1
         //  [-]
-        // 4   3
+        // 3   2
 
-        center = Point2D<T>(position.x + half_size.w, position.y + half_size.h);
+        points[0] = Point<T>(position.x - half_size.w, position.y - half_size.h);
+        points[1] = Point<T>(position.x + half_size.w, position.y - half_size.h);
+        points[2] = Point<T>(position.x + half_size.w, position.y + half_size.h);
+        points[3] = Point<T>(position.x - half_size.w, position.y + half_size.h);
 
-        points[0] = topLeft;
-        points[1] = Point2D<T>(topLeft.x + size.w, topLeft.y);
-        points[2] = Point2D<T>(topLeft.x + size.w, topLeft.y + size.h);
-        points[3] = Point2D<T>(topLeft.x, topLeft.y + size.h);
-
-        segments[0] = Segment<T>(points[3], points[0]);
-        segments[1] = Segment<T>(points[0], points[1]);
-        segments[2] = Segment<T>(points[1], points[2]);
-        segments[3] = Segment<T>(points[2], points[3]);
+        segments[0] = Segment<T>(points[0], points[1]);
+        segments[1] = Segment<T>(points[1], points[2]);
+        segments[2] = Segment<T>(points[2], points[3]);
+        segments[3] = Segment<T>(points[3], points[0]);
     }
 };

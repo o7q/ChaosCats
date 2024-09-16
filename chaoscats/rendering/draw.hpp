@@ -22,7 +22,7 @@ void drawRect(
 {
     sf::RectangleShape rect;
 
-    rect.setPosition(sf::Vector2f(rectangle.position.x + rectangle.size.w / 2, rectangle.position.y + rectangle.size.h / 2));
+    rect.setPosition(sf::Vector2f(rectangle.getPosition().x, rectangle.getPosition().y));
     rect.setSize(sf::Vector2f(rectangle.size.w, rectangle.size.h));
     rect.setRotation(rotation);
     switch (drawMode)

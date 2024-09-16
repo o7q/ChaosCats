@@ -11,7 +11,7 @@ void drawTexture(sf::RenderWindow &renderWindow, sf::Texture texture, sf::Vector
     sf::Vector2f newSize = imageAspect(texture, size);
 
     textureSprite.setOrigin(textureSize.x / 2, textureSize.y / 2);
-    textureSprite.setPosition(position.x + newSize.x / 2, position.y + newSize.y / 2);
+    textureSprite.setPosition(position.x, position.y);
     textureSprite.setScale(newSize.x / textureSize.x, newSize.y / textureSize.y);
 
     renderWindow.draw(textureSprite);

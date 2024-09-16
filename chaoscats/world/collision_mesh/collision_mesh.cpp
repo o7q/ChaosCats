@@ -6,7 +6,7 @@
 
 // collision mesh generator/updater
 // implements: https://en.wikipedia.org/wiki/Marching_squares
-void updateCollisionMesh(std::vector<Segment<int>> &collisionMesh, Mat2D<Particle> &particleWorld, PlayerCollisionType collisionType, int scale)
+void updateCollisionMesh(std::vector<Segment<int>> &collisionMesh, Matrix<Particle> &particleWorld, PlayerCollisionType collisionType, int scale)
 {
     int rowSize = particleWorld.getRowSize();
     int colSize = particleWorld.getColSize();
@@ -48,16 +48,16 @@ int getLookupIndex(int a, int b, int c, int d)
 void appendLookupSegment(std::vector<Segment<int>> &segments, int index, int x, int y, int scale)
 {
     int half_scale = scale / 2;
-    Point2D<int> left(
+    Point<int> left(
         (x + 0) * scale + half_scale,
         (y + 0.5) * scale + half_scale);
-    Point2D<int> bottom(
+    Point<int> bottom(
         (x + 0.5) * scale + half_scale,
         (y + 1) * scale + half_scale);
-    Point2D<int> right(
+    Point<int> right(
         (x + 1) * scale + half_scale,
         (y + 0.5) * scale + half_scale);
-    Point2D<int> top(
+    Point<int> top(
         (x + 0.5) * scale + half_scale,
         (y + 0) * scale + half_scale);
 
