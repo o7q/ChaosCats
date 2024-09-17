@@ -47,15 +47,12 @@ public:
             vel.x += speed;
         }
 
-        for (int i = 0; i < 3; ++i)
-        {
-            simulationStep(collisionBox, segments, dt / 3, vel.x, vel.y, position.x, position.y);
-        }
+        // THESE GO TOGETHER
+        simulationStep(collisionBox, segments, dt, vel.x, vel.y, position.x, position.y);
+        collisionBox.setPosition(position.x, position.y);
 
         // position.x += vel.x;
         // position.y += vel.y;
-
-        collisionBox.setPosition(position.x, position.y);
 
         bool collide = false;
         for (Segment<float> segment : segments)
