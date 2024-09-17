@@ -21,14 +21,16 @@ float getTimeToCollision(Rect<float> rect, std::vector<Segment<float>> &segments
         return -1.0f;
     }
 
-    const int maxIterations = 10000;
+    const int maxIterations = 500;
     int iterations = 0;
     while (true)
     {
         bool collided = isRectColliding(rect_future, segments);
 
         if (collided && step < minDt)
+        {
             return dt;
+        }
 
         step /= 2.0f;
 
@@ -45,7 +47,6 @@ float getTimeToCollision(Rect<float> rect, std::vector<Segment<float>> &segments
 
         if (++iterations > maxIterations)
         {
-            std::cout << "[physics.cpp] Max iterations reached!" << std::endl;
             break;
         }
     }

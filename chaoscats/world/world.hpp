@@ -97,7 +97,7 @@ public:
         //     for (int x = 0; x < width; ++x)
         //     {
         //         Particle particle = particles.get(y, x);
-        //         Rect<int> rect(Point<int>(x * pixelSize, y * pixelSize), Size<int>(pixelSize, pixelSize));
+        //         Rect<int> rect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
         //         drawRect(renderWindow, rect, sf::Color(particle.color));
         //     }
         // }
@@ -122,6 +122,16 @@ public:
         worldPixels[index + 1] = particle.color.g;
         worldPixels[index + 2] = particle.color.b;
         worldPixels[index + 3] = particle.color.a;
+    }
+
+    Particle getParticle(int x, int y)
+    {
+        return particles.get(y, x);
+    }
+
+    Particle getParticleFromWorldCoords(int worldX, int worldY)
+    {
+        return particles.get(worldY / pixelSize, worldX / pixelSize);
     }
 
     void removeParticle(int x, int y)
@@ -163,7 +173,7 @@ public:
         }
     }
 
-    std::vector<Segment<float>>& getCollisionMesh()
+    std::vector<Segment<float>> &getCollisionMesh()
     {
         return collisionMesh;
     }

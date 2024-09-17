@@ -22,34 +22,57 @@ public:
 
     void update(float dt)
     {
-        float speed = 1.0f;
-
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
         {
-            speed = 3.0f;
+            playerSpeed = 12.0f;
+        }
+        else
+        {
+            playerSpeed = 6.0f;
         }
 
         sf::Vector2f vel(0, 0);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-        {
-            vel.y -= speed;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-        {
-            vel.y += speed;
-        }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
         {
-            vel.x -= speed;
+            vel.x = -playerSpeed;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
         {
-            vel.x += speed;
+            vel.x = playerSpeed;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+        {
+            if (jumpTimer < playerJumpVelocity * 6)
+            {
+                vel.y = playerJumpVelocity;
+                jumpTimer += playerJumpVelocity;
+            }
         }
 
-        // THESE GO TOGETHER
-        simulationStep(collisionBox, world->getCollisionMesh(), dt, vel.x, vel.y, position.x, position.y);
-        collisionBox.setPosition(position.x, position.y);
+        if (vel.y < playerGravity)
+        {
+            vel.y += playerGravityPullSpeed;
+        }
+
+        std::vector<Segment<float>> collisionMesh = world->getCollisionMesh();
+        bool intersected = false;
+        for (Segment<float> segment : collisionMesh)
+        {
+            if (segmentRect(segment, collisionBox))
+            {
+                intersected = true;
+                break;
+            }
+        }
+        if (intersected)
+        {
+        }
+        else
+        {
+            // THESE GO TOGETHER
+            simulationStep(collisionBox, collisionMesh, dt, vel.x, vel.y, position.x, position.y);
+            collisionBox.setPosition(position.x, position.y);
+        }
 
         // position.x += vel.x;
         // position.y += vel.y;
@@ -80,4 +103,12 @@ protected:
     Rect<float> collisionBox;
 
     sf::Vector2f position;
+
+    bool onGround = true;
+    float playerSpeed = 6.0f;
+    float playerGravity = 20.0f;
+    float playerGravityPullSpeed = 10.0f;
+    float playerJumpVelocity = -40.0f;
+    float jumpTimer = 0.0f;
+    sf::Vector2f playerVelocity = sf::Vector2f(0, 0);
 };
