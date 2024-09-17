@@ -8,7 +8,8 @@ GameWindow::GameWindow(const std::string &name, int width, int height)
 
     scene_mainMenu = new Scene_MainMenu(renderWindow, windowInfo, gameAssets);
 
-    renderWindow.setFramerateLimit(144);
+    int maxFps = 10;
+    renderWindow.setFramerateLimit(maxFps);
 
     std::string fpsCountString = "";
     float fpsCountTimer = 0.0f;
@@ -56,8 +57,8 @@ GameWindow::GameWindow(const std::string &name, int width, int height)
         renderWindow.display();
 
         clock_t end = clock();
-        windowInfo.DELTA_TIME = static_cast<float>(end - start) / CLOCKS_PER_SEC;
-        windowInfo.FRAMERATE = std::round(1 / windowInfo.DELTA_TIME);
+        windowInfo.FRAMERATE = std::round(1 / (static_cast<float>(end - start) / CLOCKS_PER_SEC));
+        windowInfo.DELTA_TIME = 60.0f / windowInfo.FRAMERATE;
 
         fpsCountTimer += windowInfo.DELTA_TIME;
     }

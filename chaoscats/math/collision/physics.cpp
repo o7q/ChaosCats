@@ -33,7 +33,7 @@ float getTimeToCollision(Rect<float> rect, std::vector<Segment<float>> &segments
             }
         }
 
-        if (!collided && std::fabs(step - maxDt) < 0.0001)
+        if (!collided && std::fabs(step - maxDt) < 0.01)
         {
             return -1;
         }
@@ -59,7 +59,7 @@ void simulationStep(Rect<float> rect, std::vector<Segment<float>> &segments, flo
     for (Segment<float> segment : segments)
     {
         Rect<float> rect_future = rect;
-        rect_future.setPosition(rect.getPosition().x + vx * ttc, rect.getPosition().y + vy * ttc);
+        rect_future.incrementPosition(vx * ttc, vy * ttc);
 
         int collide_r1 = pointRect(segment.p1, rect_future);
         int collide_r2 = pointRect(segment.p2, rect_future);
@@ -68,7 +68,6 @@ void simulationStep(Rect<float> rect, std::vector<Segment<float>> &segments, flo
 
         if (collision)
         {
-            std::cout << "collision" << std::endl;
             if (++collisions > 1)
             {
                 return;
@@ -76,6 +75,13 @@ void simulationStep(Rect<float> rect, std::vector<Segment<float>> &segments, flo
 
             Point<float> lineVec;
             lineVec = Point<float>(segment.p2.x - segment.p1.x, segment.p2.y - segment.p1.y);
+            float magnitude = std::sqrt(lineVec.x * lineVec.x + lineVec.y * lineVec.y);
+
+            if (magnitude != 0)
+            {
+                lineVec.x /= magnitude;
+                lineVec.y /= magnitude;
+            }
             float dir = vx * lineVec.x + vy * lineVec.y;
             float vx2 = lineVec.x * dir;
             float vy2 = lineVec.y * dir;
@@ -94,18 +100,18 @@ void simulationStep(Rect<float> rect, std::vector<Segment<float>> &segments, flo
             vx = vx2;
             vy = vy2;
         }
-
-        Rect<float> temp = rect;
-        temp.incrementPosition(vx * dt, vy * dt);
-
-        if (isRectColliding(temp, segments))
-        {
-            return;
-        }
-
-        x += vx * dt;
-        y += vy * dt;
     }
+
+    Rect<float> temp = rect;
+    temp.incrementPosition(vx * dt, vy * dt);
+
+    if (isRectColliding(temp, segments))
+    {
+        return;
+    }
+
+    x += vx * dt;
+    y += vy * dt;
 }
 
 bool isRectColliding(Rect<float> rect, std::vector<Segment<float>> segments)
