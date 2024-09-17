@@ -17,26 +17,26 @@ CurrentScene Scene_MainMenu::run()
 
     if (update())
     {
-        // Particle drawParticle;
-        // drawParticle.color = sf::Color(255, 255, 0, 255);
-        // drawParticle.matterType = MatterType::Solid;
-        // drawParticle.physicsType = PhysicsType::Sand;
-        // drawParticle.playerCollisionType = PlayerCollisionType::Solid;
-        // if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-        // {
-        //     drawParticle.color = sf::Color(0, 0, 0, 0);
-        //     drawParticle.matterType = MatterType::None;
-        //     drawParticle.physicsType = PhysicsType::None;
-        //     drawParticle.playerCollisionType = PlayerCollisionType::None;
-        // }
+        Particle drawParticle;
+        drawParticle.color = sf::Color(255, 255, 0, 255);
+        drawParticle.matterType = MatterType::Solid;
+        drawParticle.physicsType = PhysicsType::Sand;
+        drawParticle.playerCollisionType = PlayerCollisionType::Solid;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+        {
+            drawParticle.color = sf::Color(0, 0, 0, 0);
+            drawParticle.matterType = MatterType::None;
+            drawParticle.physicsType = PhysicsType::None;
+            drawParticle.playerCollisionType = PlayerCollisionType::None;
+        }
 
-        // if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
-        // {
-        //     drawParticle.color = sf::Color(0, 0, 255, 255);
-        //     drawParticle.matterType = MatterType::Liquid;
-        //     drawParticle.physicsType = PhysicsType::Water;
-        //     drawParticle.playerCollisionType = PlayerCollisionType::Solid;
-        // }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+        {
+            drawParticle.color = sf::Color(0, 0, 255, 255);
+            drawParticle.matterType = MatterType::Liquid;
+            drawParticle.physicsType = PhysicsType::Water;
+            drawParticle.playerCollisionType = PlayerCollisionType::Solid;
+        }
 
         // if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         // {
@@ -68,38 +68,38 @@ CurrentScene Scene_MainMenu::run()
         //     worldCamera->zoom(0.999, 0.999);
         // }
 
-        // if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-        // {
-        //     sf::Vector2i localMouse = sf::Mouse::getPosition(renderWindow);
-        //     sf::Vector2f mouseLoc;
-        //     worldCamera->screenToWorld(localMouse.x, localMouse.y, mouseLoc.x, mouseLoc.y);
-        //     world->drawParticles(mouseLoc.x / 5, mouseLoc.y / 5, drawParticle, 8);
-        // }
-
-        // world->update();
-        // world->render(worldCamera);
-
-        std::vector<Point<float>> points;
-
-        points.push_back(Point<float>(50, 600));
-        points.push_back(Point<float>(500, 700));
-        points.push_back(Point<float>(600, 600));
-        points.push_back(Point<float>(800, 400));
-        points.push_back(Point<float>(1000, 500));
-        points.push_back(Point<float>(1000, 100));
-        points.push_back(Point<float>(600, 100));
-        points.push_back(Point<float>(200, 0));
-        points.push_back(Point<float>(400, 100));
-        points.push_back(Point<float>(200, 50));
-
-        std::vector<Segment<float>> segments = segmentPathFromPoints(points);
-
-        for (Segment<float> segment : segments)
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
-            drawSegment(renderWindow, segment);
+            sf::Vector2i localMouse = sf::Mouse::getPosition(renderWindow);
+            sf::Vector2f mouseLoc;
+            worldCamera->screenToWorld(localMouse.x, localMouse.y, mouseLoc.x, mouseLoc.y);
+            world->drawParticles(mouseLoc.x / 5, mouseLoc.y / 5, drawParticle, 8);
         }
 
-        player->update(windowInfo.DELTA_TIME, segments);
+        world->update();
+        world->render(worldCamera);
+
+        // std::vector<Point<float>> points;
+
+        // points.push_back(Point<float>(50, 600));
+        // points.push_back(Point<float>(500, 700));
+        // points.push_back(Point<float>(600, 600));
+        // points.push_back(Point<float>(800, 400));
+        // points.push_back(Point<float>(1000, 500));
+        // points.push_back(Point<float>(1000, 100));
+        // points.push_back(Point<float>(600, 100));
+        // points.push_back(Point<float>(200, 0));
+        // points.push_back(Point<float>(400, 100));
+        // points.push_back(Point<float>(200, 50));
+
+        // std::vector<Segment<float>> segments = segmentPathFromPoints(points);
+
+        // for (Segment<float> segment : segments)
+        // {
+        //     drawSegment(renderWindow, segment);
+        // }
+
+        player->update(windowInfo.DELTA_TIME);
         player->render(worldCamera);
 
         std::string positionInfo = "PX: " +

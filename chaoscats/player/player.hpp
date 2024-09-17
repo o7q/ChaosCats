@@ -20,7 +20,7 @@ public:
         collisionBox = Rect<float>(0, 0, playerSize.x, playerSize.y);
     }
 
-    void update(float dt, std::vector<Segment<float>> segments)
+    void update(float dt)
     {
         float speed = 1.0f;
 
@@ -48,21 +48,13 @@ public:
         }
 
         // THESE GO TOGETHER
-        simulationStep(collisionBox, segments, dt, vel.x, vel.y, position.x, position.y);
+        simulationStep(collisionBox, world->getCollisionMesh(), dt, vel.x, vel.y, position.x, position.y);
         collisionBox.setPosition(position.x, position.y);
 
         // position.x += vel.x;
         // position.y += vel.y;
 
         bool collide = false;
-        for (Segment<float> segment : segments)
-        {
-            if (segmentRect(segment, collisionBox))
-            {
-                collide = true;
-                break;
-            }
-        }
         drawSegment(renderWindow, collisionBox.segments[0], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
         drawSegment(renderWindow, collisionBox.segments[1], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
         drawSegment(renderWindow, collisionBox.segments[2], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));

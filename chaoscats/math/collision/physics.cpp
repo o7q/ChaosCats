@@ -11,8 +11,15 @@ float getTimeToCollision(Rect<float> rect, std::vector<Segment<float>> &segments
     rect_future.incrementPosition(vx * maxDt, vy * maxDt);
 
     // Check for initial collision
-    if (isRectColliding(rect, segments)) return -2.0;
-    if (!isRectColliding(rect_future, segments)) return -1.0;
+    if (isRectColliding(rect, segments))
+    {
+        return -2.0f;
+    }
+
+    if (!isRectColliding(rect_future, segments))
+    {
+        return -1.0f;
+    }
 
     const int maxIterations = 10000;
     int iterations = 0;
@@ -20,19 +27,24 @@ float getTimeToCollision(Rect<float> rect, std::vector<Segment<float>> &segments
     {
         bool collided = isRectColliding(rect_future, segments);
 
-        if (collided && step < minDt) return dt;
+        if (collided && step < minDt)
+            return dt;
 
         step /= 2.0f;
 
-        if (collided) {
+        if (collided)
+        {
             rect_future.incrementPosition(vx * -step, vy * -step);
             dt -= step;
-        } else {
+        }
+        else
+        {
             rect_future.incrementPosition(vx * step, vy * step);
-            dt += step; 
+            dt += step;
         }
 
-        if (++iterations > maxIterations) {
+        if (++iterations > maxIterations)
+        {
             std::cout << "[physics.cpp] Max iterations reached!" << std::endl;
             break;
         }
@@ -45,8 +57,6 @@ void simulationStep(Rect<float> rect, std::vector<Segment<float>> &segments, flo
 {
     float time = getTimeToCollision(rect, segments, dt, 0.001, vx, vy);
     float timeToCollision = time > 0 ? time : dt;
-
-    std::cout << time << std::endl;
 
     int collisions = 0;
     for (Segment<float> segment : segments)
@@ -82,6 +92,7 @@ void simulationStep(Rect<float> rect, std::vector<Segment<float>> &segments, flo
             if (collide_r1 || collide_r2)
             {
                 int side = (collide_r1 || collide_r2) - 1;
+
                 Point<int> dirs[] = {Point<int>(1, 0), Point<int>(1, 0), Point<int>(0, 1), Point<int>(0, 1), Point<int>(0, 0)};
                 Point<int> dir = dirs[side];
 
@@ -95,9 +106,9 @@ void simulationStep(Rect<float> rect, std::vector<Segment<float>> &segments, flo
         }
     }
 
-    const float epsilon = 0.1f;
+    // const float epsilon = 0.1f;
     Rect<float> temp = rect;
-    temp.incrementPosition(vx * (dt + epsilon), vy * (dt + epsilon));
+    temp.incrementPosition(vx * dt, vy * dt);
 
     if (isRectColliding(temp, segments))
     {

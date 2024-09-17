@@ -101,13 +101,13 @@ public:
         //         drawRect(renderWindow, rect, sf::Color(particle.color));
         //     }
         // }
-        for (Segment<int> segment : collisionMesh)
+        for (Segment<float> segment : collisionMesh)
         {
             // int r = Random::genFloat(0, 255);
             // int g = Random::genFloat(0, 255);
             // int b = Random::genFloat(0, 255);
-            camera->worldToScreen(segment.p1.x, segment.p1.y, segment.p1.x, segment.p1.y);
-            camera->worldToScreen(segment.p2.x, segment.p2.y, segment.p2.x, segment.p2.y);
+            // camera->worldToScreen(segment.p1.x, segment.p1.y, segment.p1.x, segment.p1.y);
+            // camera->worldToScreen(segment.p2.x, segment.p2.y, segment.p2.x, segment.p2.y);
             drawSegment(renderWindow, segment, sf::Color(0, 255, 255, 255));
         }
     }
@@ -163,12 +163,17 @@ public:
         }
     }
 
+    std::vector<Segment<float>>& getCollisionMesh()
+    {
+        return collisionMesh;
+    }
+
 private:
     sf::RenderWindow &renderWindow;
 
     Matrix<Particle> particles;
 
-    std::vector<Segment<int>> collisionMesh;
+    std::vector<Segment<float>> collisionMesh;
 
     sf::Shader shader;
     sf::VertexArray quad;

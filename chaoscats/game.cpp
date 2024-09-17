@@ -8,7 +8,7 @@ GameWindow::GameWindow(const std::string &name, int width, int height)
 
     scene_mainMenu = new Scene_MainMenu(renderWindow, windowInfo, gameAssets);
 
-    int maxFps = 10;
+    int maxFps = 60;
     renderWindow.setFramerateLimit(maxFps);
 
     std::string fpsCountString = "";
