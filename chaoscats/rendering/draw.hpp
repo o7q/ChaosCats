@@ -54,6 +54,18 @@ void drawSegment(sf::RenderWindow &renderWindow, Segment<T> segment, sf::Color c
     renderWindow.draw(line, 2, sf::Lines);
 }
 
+template <typename T>
+void drawPoint(sf::RenderWindow &renderWindow, Point<T> point, sf::Color color = sf::Color(255, 255, 255, 255))
+{
+    float size = 2.0f;
+    sf::CircleShape circle(size);
+    circle.setPosition(sf::Vector2f(point.x, point.y));
+    circle.setOrigin(sf::Vector2f(size / 2.0f, size / 2.0f));
+    circle.setFillColor(color);
+
+    renderWindow.draw(circle);
+}
+
 void drawTexture(sf::RenderWindow &renderWindow, sf::Texture texture, sf::Vector2f position, sf::Vector2f size, float rotation = 0.0f);
 void drawText(sf::RenderWindow &renderWindow, const std::string &textString, sf::Font &font, sf::Vector2f position, int characterSize = 24, sf::Color color = sf::Color(255, 255, 255, 255));
-sf::Vector2f imageAspect(sf::Texture& texture, sf::Vector2f size);
+sf::Vector2f imageAspect(sf::Texture &texture, sf::Vector2f size);

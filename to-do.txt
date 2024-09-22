@@ -1,9 +1,9 @@
-- Optimize collision generator
-- Finish collision
+- Re-work collision system
 - Implement player movement
 - Draw basic playermodel
 - Draw basic map
 - Implement map loader (load maps from images)
 - Implement first weapon
 - Get basic multiplayer to work with above additions
+- Finish camera system
 - Move rendering pipeline to the GPU/GLSL

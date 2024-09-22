@@ -32,6 +32,14 @@ public:
         }
 
         sf::Vector2f vel(0, 0);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+        {
+            vel.y = -playerSpeed;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+        {
+            vel.y = playerSpeed;
+        }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
         {
             vel.x = -playerSpeed;
@@ -40,49 +48,15 @@ public:
         {
             vel.x = playerSpeed;
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-        {
-            if (jumpTimer < playerJumpVelocity * 6)
-            {
-                vel.y = playerJumpVelocity;
-                jumpTimer += playerJumpVelocity;
-            }
-        }
-
-        if (vel.y < playerGravity)
-        {
-            vel.y += playerGravityPullSpeed;
-        }
 
         std::vector<Segment<float>> collisionMesh = world->getCollisionMesh();
-        bool intersected = false;
         for (Segment<float> segment : collisionMesh)
         {
-            if (segmentRect(segment, collisionBox))
-            {
-                intersected = true;
-                break;
-            }
-        }
-        if (intersected)
-        {
-        }
-        else
-        {
-            // THESE GO TOGETHER
-            simulationStep(collisionBox, collisionMesh, dt, vel.x, vel.y, position.x, position.y);
-            collisionBox.setPosition(position.x, position.y);
         }
 
-        // position.x += vel.x;
-        // position.y += vel.y;
-
-        bool collide = false;
-        drawSegment(renderWindow, collisionBox.segments[0], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
-        drawSegment(renderWindow, collisionBox.segments[1], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
-        drawSegment(renderWindow, collisionBox.segments[2], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
-        drawSegment(renderWindow, collisionBox.segments[3], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
-        // drawRect(renderWindow, collisionBox, sf::Color(255, 255, 255, 255), DrawMode::Outline);
+        collisionBox.incrementPosition(vel.x, vel.y);
+        bottomCollisionPoint.x = collisionBox.getPosition().x;
+        bottomCollisionPoint.y = collisionBox.getPosition().y + collisionBox.half_size.h;
     }
 
     void render(WorldCamera *camera)
@@ -92,6 +66,24 @@ public:
         // int x, y;
         // camera->worldToScreen(position.x, position.y, x, y);
         // drawTexture(renderWindow, playerTexture, sf::Vector2f(x, y), playerSize);
+
+        int worldX = 0;
+        int worldY = 0;
+
+        int pixelSize = world->getPixelSize();
+
+        worldX = std::floor((bottomCollisionPoint.x + pixelSize / 2) / static_cast<float>(pixelSize));
+        worldY = std::floor((bottomCollisionPoint.y+ pixelSize / 2)  / static_cast<float>(pixelSize));
+
+        Rect<int> rect(worldX * pixelSize, worldY * pixelSize, pixelSize, pixelSize);
+        drawRect(renderWindow, rect, sf::Color(50, 200, 255, 100));
+
+        bool collide = false;
+        drawSegment(renderWindow, collisionBox.segments[0], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
+        drawSegment(renderWindow, collisionBox.segments[1], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
+        drawSegment(renderWindow, collisionBox.segments[2], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
+        drawSegment(renderWindow, collisionBox.segments[3], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
+        drawPoint(renderWindow, bottomCollisionPoint, sf::Color(255, 0, 0, 255));
     }
 
 protected:
@@ -101,14 +93,9 @@ protected:
     sf::Vector2f playerSize;
 
     Rect<float> collisionBox;
+    Point<float> bottomCollisionPoint;
 
     sf::Vector2f position;
 
-    bool onGround = true;
     float playerSpeed = 6.0f;
-    float playerGravity = 20.0f;
-    float playerGravityPullSpeed = 10.0f;
-    float playerJumpVelocity = -40.0f;
-    float jumpTimer = 0.0f;
-    sf::Vector2f playerVelocity = sf::Vector2f(0, 0);
 };

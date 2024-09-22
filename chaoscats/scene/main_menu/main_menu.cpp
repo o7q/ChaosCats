@@ -11,7 +11,7 @@ CurrentScene Scene_MainMenu::run()
         std::cout << "Main menu init" << std::endl;
 
         worldCamera = new WorldCamera();
-        world = new World(renderWindow, 256, 128, 5);
+        world = new World(renderWindow, 25, 14, 50);
         player = new Player(renderWindow, world, gameAssets.TEXTURES.TEST_PLAYER_TEXTURE, sf::Vector2f(100, -1));
     }
 
@@ -38,66 +38,16 @@ CurrentScene Scene_MainMenu::run()
             drawParticle.playerCollisionType = PlayerCollisionType::Solid;
         }
 
-        // if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-        // {
-        //     worldCamera->translate(-1, 0);
-        // }
-
-        // if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-        // {
-        //     worldCamera->translate(1, 0);
-        // }
-
-        // if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-        // {
-        //     worldCamera->translate(0, -1);
-        // }
-
-        // if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-        // {
-        //     worldCamera->translate(0, 1);
-        // }
-
-        // if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
-        // {
-        //     worldCamera->zoom(1.001, 1.001);
-        // }
-
-        // if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
-        // {
-        //     worldCamera->zoom(0.999, 0.999);
-        // }
-
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
             sf::Vector2i localMouse = sf::Mouse::getPosition(renderWindow);
             sf::Vector2f mouseLoc;
             worldCamera->screenToWorld(localMouse.x, localMouse.y, mouseLoc.x, mouseLoc.y);
-            world->drawParticles(mouseLoc.x / 5, mouseLoc.y / 5, drawParticle, 8);
+            world->drawParticles(mouseLoc.x / 50, mouseLoc.y / 50, drawParticle, 1);
         }
 
         world->update();
         world->render(worldCamera);
-
-        // std::vector<Point<float>> points;
-
-        // points.push_back(Point<float>(50, 600));
-        // points.push_back(Point<float>(500, 700));
-        // points.push_back(Point<float>(600, 600));
-        // points.push_back(Point<float>(800, 400));
-        // points.push_back(Point<float>(1000, 500));
-        // points.push_back(Point<float>(1000, 100));
-        // points.push_back(Point<float>(600, 100));
-        // points.push_back(Point<float>(200, 0));
-        // points.push_back(Point<float>(400, 100));
-        // points.push_back(Point<float>(200, 50));
-
-        // std::vector<Segment<float>> segments = segmentPathFromPoints(points);
-
-        // for (Segment<float> segment : segments)
-        // {
-        //     drawSegment(renderWindow, segment);
-        // }
 
         player->update(windowInfo.DELTA_TIME);
         player->render(worldCamera);
