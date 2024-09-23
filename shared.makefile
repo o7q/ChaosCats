@@ -3,7 +3,7 @@ CXXFLAGS = -std=c++17 -Wall -O0
 
 SOURCES = $(wildcard *.cpp */*.cpp */*/*.cpp */*/*/*.cpp)
 
-SFML_ROOT = C:\CppLibs\SFML\SFML-2.6.1
+SFML_ROOT = C:\CppLibs\SFML\SFML-2.6.1_shared
 SFML_INCLUDE = -I "$(SFML_ROOT)/include"
 SFML_LIBRARY = -L "$(SFML_ROOT)/lib"
 
@@ -13,13 +13,10 @@ ASIO_INCLUDE = -I "$(ASIO_ROOT)/include"
 INCLUDES = $(SFML_INCLUDE) $(ASIO_INCLUDE) -include "chaoscats/net/common.hpp"
 LIBRARIES = $(SFML_LIBRARY)
 
-WINDOWS_STD_LINK = -static-libstdc++ \
-				   -static-libgcc
-WINDOWS_SFML_LINK = -DSFML_STATIC \
-					-lsfml-window-s \
-					-lsfml-graphics-s \
-					-lsfml-audio-s \
-					-lsfml-system-s \
+WINDOWS_SFML_LINK = -lsfml-window \
+					-lsfml-graphics \
+					-lsfml-audio \
+					-lsfml-system \
 					-lopengl32 \
 					-lwinmm \
 					-lgdi32 \
@@ -38,15 +35,11 @@ EXECUTABLE = ChaosCats
 # Windows-specific settings
 compile-windows:
 	$(CXX) $(CXXFLAGS) $(SOURCES) $(INCLUDES) $(LIBRARIES) -o $(EXECUTABLE) \
-	-static \
-	$(WINDOWS_STD_LINK) \
 	$(WINDOWS_SFML_LINK) \
 	$(WINDOWS_NET_LINK)
 
 compile-windows-debug:
 	$(CXX) -g $(CXXFLAGS) $(SOURCES) $(INCLUDES) $(LIBRARIES) -o $(EXECUTABLE) \
-	-static \
-	$(WINDOWS_STD_LINK) \
 	$(WINDOWS_SFML_LINK) \
 	$(WINDOWS_NET_LINK)
 

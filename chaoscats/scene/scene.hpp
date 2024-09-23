@@ -7,8 +7,8 @@
 
 enum class CurrentScene
 {
-    DEFAULT,
-    SCENE_MAIN_MENU
+    Default,
+    Arena
 };
 
 class Scene

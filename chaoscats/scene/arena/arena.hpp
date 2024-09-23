@@ -8,10 +8,10 @@
 #include "../../world/world.hpp"
 #include "../../world/camera.hpp"
 
-class Scene_MainMenu : public Scene
+class Scene_Arena : public Scene
 {
 public:
-    Scene_MainMenu(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, AssetStorage &gameAssets) : Scene(renderWindow, windowInfo, gameAssets) {}
+    Scene_Arena(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, AssetStorage &gameAssets) : Scene(renderWindow, windowInfo, gameAssets) {}
 
     CurrentScene run() override;
 

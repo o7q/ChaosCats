@@ -27,7 +27,7 @@ private:
 
     AssetStorage gameAssets;
 
-    CurrentScene currentScene = CurrentScene::SCENE_MAIN_MENU;
+    CurrentScene currentScene = CurrentScene::Arena;
 
-    Scene_MainMenu *scene_mainMenu;
+    Scene_Arena *scene_arena;
 };

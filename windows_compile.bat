@@ -1,3 +1,3 @@
 @echo off
-mingw32-make compile-windows
+mingw32-make compile-windows -f static.makefile
 pause

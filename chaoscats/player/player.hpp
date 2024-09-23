@@ -1,16 +1,15 @@
 #pragma once
 
 #include <iostream>
-#include <cmath>
-#include <map>
 
 #include <SFML/Graphics.hpp>
 
-#include "../math/geometry/geometry_common.hpp"
-#include "../rendering/draw.hpp"
+#include "../world/world.hpp"
 #include "../world/collision/collision.hpp"
 
-#include "../world/world.hpp"
+#include "../math/geometry/geometry_common.hpp"
+#include "../rendering/draw.hpp"
+
 
 class Player
 {
@@ -47,9 +46,9 @@ public:
         switch (groundParticle.playerCollisionType)
         {
         case PlayerCollisionType::None:
-            if (velocity.y < 6.0f)
+            if (velocity.y < 10.0f)
             {
-                velocity.y += 0.5f;
+                velocity.y += 1.0f;
             }
             break;
         case PlayerCollisionType::Solid:
@@ -73,7 +72,7 @@ public:
         {
             if (onGround && !jumped)
             {
-                velocity.y = -10.0f;
+                velocity.y = -15.0f;
                 jumped = true;
             }
         }
@@ -86,7 +85,7 @@ public:
         bool collisionHappened = false;
         for (EdgeData edge : collisionMesh)
         {
-            bool bottomCollision = handleBottomCollision(collisionBox, velocity, edge, bottomCollisionPoint, dt);
+            bool bottomCollision = handleBottomCollision(position, velocity, collisionBox, edge, bottomCollisionPoint, dt);
             // bool topCollision = handleTopCollision(collisionBox, vel, edge, bottomCollisionPoint, dt);
 
             if (bottomCollision)
@@ -97,8 +96,11 @@ public:
 
         if (!collisionHappened)
         {
-            collisionBox.incrementPosition(velocity.x * dt, velocity.y * dt);
+            position.x += velocity.x * dt;
+            position.y += velocity.y * dt;
         }
+
+        collisionBox.setPosition(position.x, position.y);
 
         bottomCollisionPoint.x = collisionBox.getPosition().x;
         bottomCollisionPoint.y = collisionBox.getPosition().y + collisionBox.half_size.h;

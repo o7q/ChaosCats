@@ -4,8 +4,8 @@ void GameWindow::update()
 {
     switch (currentScene)
     {
-    case CurrentScene::SCENE_MAIN_MENU:
-        currentScene = scene_mainMenu->run();
+    case CurrentScene::Arena:
+        currentScene = scene_arena->run();
         break;
     default:
         break;

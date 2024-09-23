@@ -1,10 +1,10 @@
-#include "main_menu.hpp"
+#include "arena.hpp"
 
 #include "../../math/matrix/matrix.hpp"
 
 #include <vector>
 
-CurrentScene Scene_MainMenu::run()
+CurrentScene Scene_Arena::run()
 {
     if (init())
     {
@@ -60,5 +60,5 @@ CurrentScene Scene_MainMenu::run()
         drawText(renderWindow, positionInfo, gameAssets.FONTS.ALAGARD_FONT, sf::Vector2f(0, 720 - 30), 15);
     }
 
-    return CurrentScene::SCENE_MAIN_MENU;
+    return CurrentScene::Arena;
 }

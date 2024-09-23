@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cmath>
 
-bool handleBottomCollision(Rect<float> &rect, Point<float> velocity, EdgeData edge, Point<float> bottom, float dt)
+bool handleBottomCollision(Point<float> &position, Point<float> velocity, Rect<float> collisionBox, EdgeData edge, Point<float> bottom, float dt)
 {
     Point<float> playerFuturePos;
     playerFuturePos.x = bottom.x + velocity.x * dt;
@@ -24,7 +24,8 @@ bool handleBottomCollision(Rect<float> &rect, Point<float> velocity, EdgeData ed
     // handle floors
     if (edge.slopeType == SlopeType::Horizontal)
     {
-        rect.setPosition(intersectPoint.x, intersectPoint.y - rect.half_size.h);
+        position.x = intersectPoint.x;
+        position.y = intersectPoint.y - collisionBox.half_size.h;
 
         return true;
     }
@@ -32,46 +33,19 @@ bool handleBottomCollision(Rect<float> &rect, Point<float> velocity, EdgeData ed
     // handle slopes
     if (edge.slopeType == SlopeType::UpHill || edge.slopeType == SlopeType::DownHill)
     {
-        rect.setPosition(intersectPoint.x, intersectPoint.y - rect.half_size.h - std::fabs(velocity.x * dt));
+        position.x = intersectPoint.x;
+        position.y = intersectPoint.y - collisionBox.half_size.h - std::fabs(velocity.x * dt);
 
         return true;
     }
 
     // handle walls, NOT FULLY WORKING YET!!
-    // if (edge.slope >= 1.1f || edge.slope <= -1.1f)
-    // {
-    //     int sign = velocity.x >= 0 ? 1 : -1;
-
-    //     rect.setPosition(intersectPoint.x - sign * 10, intersectPoint.y - rect.half_size.h);
-
-    //     return;
-    // }
-
-    return false;
-}
-
-bool handleTopCollision(Rect<float> &rect, Point<float> velocity, EdgeData edge, Point<float> top, float dt)
-{
-    Point<float> playerFuturePos;
-    playerFuturePos.x = top.x + velocity.x * dt;
-    playerFuturePos.y = top.y + velocity.y * dt;
-
-    Segment<float> futureVelocity = Segment<float>(top, playerFuturePos);
-
-    SS_IntersectData idata = segmentSegment(futureVelocity, edge.segment);
-
-    Point<float> intersectPoint = Point<float>(idata.x, idata.y);
-
-    // check if the edge intersected
-    if (!idata.intersected)
+    if (edge.slopeType == SlopeType::Vertical)
     {
-        return false;
-    }
+        int sign = velocity.x >= 0 ? 1 : -1;
 
-    // handle ceilings
-    if (edge.slope <= 1.1f && edge.slope >= -1.1f)
-    {
-        rect.setPosition(intersectPoint.x, intersectPoint.y + rect.half_size.h);
+        position.x = intersectPoint.x - sign;
+        position.y = intersectPoint.y - collisionBox.half_size.h;
 
         return true;
     }

@@ -6,7 +6,7 @@ GameWindow::GameWindow(const std::string &name, int width, int height)
 {
     renderWindow.create(sf::VideoMode(width, height), name);
 
-    scene_mainMenu = new Scene_MainMenu(renderWindow, windowInfo, gameAssets);
+    scene_arena = new Scene_Arena(renderWindow, windowInfo, gameAssets);
 
     int maxFps = 60;
     renderWindow.setFramerateLimit(maxFps);
