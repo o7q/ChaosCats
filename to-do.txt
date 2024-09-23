@@ -1,5 +1,5 @@
-- Re-work collision system
-- Implement player movement
+- Add ceiling and wall collision
+- Finish player movement
 - Draw basic playermodel
 - Draw basic map
 - Implement map loader (load maps from images)

@@ -4,8 +4,6 @@
 #include "../../rendering/draw.hpp"
 #include "../../math/geometry/geometry_common.hpp"
 
-#include "../../math/collision/collision.hpp"
-
 #include "../../player/player.hpp"
 #include "../../world/world.hpp"
 #include "../../world/camera.hpp"
@@ -18,8 +16,6 @@ public:
     CurrentScene run() override;
 
 private:
-    float rot = 0;
-
     Player *player = nullptr;
     WorldCamera* worldCamera = nullptr;
     World *world = nullptr;

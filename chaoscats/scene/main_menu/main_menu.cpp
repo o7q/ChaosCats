@@ -11,7 +11,7 @@ CurrentScene Scene_MainMenu::run()
         std::cout << "Main menu init" << std::endl;
 
         worldCamera = new WorldCamera();
-        world = new World(renderWindow, 25, 14, 50);
+        world = new World(renderWindow, 128, 72, 10);
         player = new Player(renderWindow, world, gameAssets.TEXTURES.TEST_PLAYER_TEXTURE, sf::Vector2f(100, -1));
     }
 
@@ -43,7 +43,7 @@ CurrentScene Scene_MainMenu::run()
             sf::Vector2i localMouse = sf::Mouse::getPosition(renderWindow);
             sf::Vector2f mouseLoc;
             worldCamera->screenToWorld(localMouse.x, localMouse.y, mouseLoc.x, mouseLoc.y);
-            world->drawParticles(mouseLoc.x / 50, mouseLoc.y / 50, drawParticle, 1);
+            world->drawParticles(mouseLoc.x / 10, mouseLoc.y / 10, drawParticle, 5);
         }
 
         world->update();
@@ -59,8 +59,6 @@ CurrentScene Scene_MainMenu::run()
                                    "   ZY: " + std::to_string(worldCamera->getZoomY());
         drawText(renderWindow, positionInfo, gameAssets.FONTS.ALAGARD_FONT, sf::Vector2f(0, 720 - 30), 15);
     }
-
-    rot++;
 
     return CurrentScene::SCENE_MAIN_MENU;
 }

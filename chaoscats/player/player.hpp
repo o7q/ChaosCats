@@ -2,11 +2,13 @@
 
 #include <iostream>
 #include <cmath>
+#include <map>
 
 #include <SFML/Graphics.hpp>
 
 #include "../math/geometry/geometry_common.hpp"
 #include "../rendering/draw.hpp"
+#include "../world/collision/collision.hpp"
 
 #include "../world/world.hpp"
 
@@ -24,66 +26,97 @@ public:
     {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
         {
-            playerSpeed = 12.0f;
+            playerSpeed = 16.0f;
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+        {
+            playerSpeed = 0.1f;
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt))
+        {
+            playerSpeed = 40.0f;
         }
         else
         {
             playerSpeed = 6.0f;
         }
 
-        sf::Vector2f vel(0, 0);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+        Particle groundParticle = world->getParticleFromWorldCoords(bottomCollisionPoint.x, bottomCollisionPoint.y + 5);
+        Particle subGroundParticle = world->getParticleFromWorldCoords(bottomCollisionPoint.x, bottomCollisionPoint.y + 20);
+
+        switch (groundParticle.playerCollisionType)
         {
-            vel.y = -playerSpeed;
+        case PlayerCollisionType::None:
+            if (velocity.y < 6.0f)
+            {
+                velocity.y += 0.5f;
+            }
+            break;
+        case PlayerCollisionType::Solid:
+            velocity.y = 0.0f;
+            break;
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-        {
-            vel.y = playerSpeed;
-        }
+
+        bool onGround = subGroundParticle.playerCollisionType == PlayerCollisionType::Solid;
+
+        velocity.x = 0;
+
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
         {
-            vel.x = -playerSpeed;
+            velocity.x = -playerSpeed;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
         {
-            vel.x = playerSpeed;
+            velocity.x = playerSpeed;
         }
-
-        std::vector<Segment<float>> collisionMesh = world->getCollisionMesh();
-        for (Segment<float> segment : collisionMesh)
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
         {
+            if (onGround && !jumped)
+            {
+                velocity.y = -10.0f;
+                jumped = true;
+            }
+        }
+        else
+        {
+            jumped = false;
         }
 
-        collisionBox.incrementPosition(vel.x, vel.y);
+        std::vector<EdgeData> collisionMesh = world->getCollisionMesh();
+        bool collisionHappened = false;
+        for (EdgeData edge : collisionMesh)
+        {
+            bool bottomCollision = handleBottomCollision(collisionBox, velocity, edge, bottomCollisionPoint, dt);
+            // bool topCollision = handleTopCollision(collisionBox, vel, edge, bottomCollisionPoint, dt);
+
+            if (bottomCollision)
+            {
+                collisionHappened = true;
+            }
+        }
+
+        if (!collisionHappened)
+        {
+            collisionBox.incrementPosition(velocity.x * dt, velocity.y * dt);
+        }
+
         bottomCollisionPoint.x = collisionBox.getPosition().x;
         bottomCollisionPoint.y = collisionBox.getPosition().y + collisionBox.half_size.h;
+
+        topCollisionPoint.x = collisionBox.getPosition().x;
+        topCollisionPoint.y = collisionBox.getPosition().y - collisionBox.half_size.h;
     }
 
     void render(WorldCamera *camera)
     {
-        // bool collide =
-        //     drawRect(renderWindow, collisionBox, sf::Color(255, 0, 255, 255), DrawMode::Outline);
-        // int x, y;
-        // camera->worldToScreen(position.x, position.y, x, y);
-        // drawTexture(renderWindow, playerTexture, sf::Vector2f(x, y), playerSize);
-
-        int worldX = 0;
-        int worldY = 0;
-
-        int pixelSize = world->getPixelSize();
-
-        worldX = std::floor((bottomCollisionPoint.x + pixelSize / 2) / static_cast<float>(pixelSize));
-        worldY = std::floor((bottomCollisionPoint.y+ pixelSize / 2)  / static_cast<float>(pixelSize));
-
-        Rect<int> rect(worldX * pixelSize, worldY * pixelSize, pixelSize, pixelSize);
-        drawRect(renderWindow, rect, sf::Color(50, 200, 255, 100));
-
         bool collide = false;
         drawSegment(renderWindow, collisionBox.segments[0], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
         drawSegment(renderWindow, collisionBox.segments[1], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
         drawSegment(renderWindow, collisionBox.segments[2], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
         drawSegment(renderWindow, collisionBox.segments[3], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
+        // drawTexture(renderWindow, playerTexture, sf::Vector2f(position.x, position.y), sf::Vector)
         drawPoint(renderWindow, bottomCollisionPoint, sf::Color(255, 0, 0, 255));
+        drawPoint(renderWindow, topCollisionPoint, sf::Color(255, 0, 0, 255));
     }
 
 protected:
@@ -94,8 +127,11 @@ protected:
 
     Rect<float> collisionBox;
     Point<float> bottomCollisionPoint;
+    Point<float> topCollisionPoint;
 
-    sf::Vector2f position;
+    Point<float> position;
+    Point<float> velocity;
 
     float playerSpeed = 6.0f;
+    bool jumped = false;
 };

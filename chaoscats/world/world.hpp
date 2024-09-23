@@ -8,7 +8,7 @@
 #include "../rendering/draw.hpp"
 #include "../math/random/random.hpp"
 
-#include "collision_mesh/collision_mesh.hpp"
+#include "collision/collision_mesh.hpp"
 
 #include "camera.hpp"
 
@@ -86,17 +86,17 @@ public:
 
     void render(WorldCamera *camera)
     {
-        for (int y = 0; y < height; ++y)
+        // for (int y = 0; y < height; ++y)
+        // {
+        //     for (int x = 0; x < width; ++x)
+        //     {
+        //         Rect<int> rect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+        //         drawRect(renderWindow, rect, sf::Color(0, 0, 255, 150), DrawMode::Outline);
+        //     }
+        // }
+        for (EdgeData edge : collisionMesh)
         {
-            for (int x = 0; x < width; ++x)
-            {
-                Rect<int> rect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
-                drawRect(renderWindow, rect, sf::Color(0, 0, 255, 150), DrawMode::Outline);
-            }
-        }
-        for (Segment<float> segment : collisionMesh)
-        {
-            drawSegment(renderWindow, segment, sf::Color(0, 255, 255, 255));
+            drawSegment(renderWindow, edge.segment, sf::Color(0, 255, 255, 255));
         }
     }
 
@@ -114,12 +114,24 @@ public:
 
     Particle getParticle(int x, int y)
     {
-        return particles.get(y, x);
+        if (particles.inBounds(y, x))
+        {
+            return particles.get(y, x);
+        }
+
+        return Particle();
     }
 
     Particle getParticleFromWorldCoords(int worldX, int worldY)
     {
-        return particles.get(worldY / pixelSize, worldX / pixelSize);
+        int y = worldY / pixelSize;
+        int x = worldX / pixelSize;
+        if (particles.inBounds(y, x))
+        {
+            return particles.get(y, x);
+        }
+
+        return Particle();
     }
 
     void removeParticle(int x, int y)
@@ -166,7 +178,7 @@ public:
         }
     }
 
-    std::vector<Segment<float>> &getCollisionMesh()
+    std::vector<EdgeData> &getCollisionMesh()
     {
         return collisionMesh;
     }
@@ -176,7 +188,7 @@ private:
 
     Matrix<Particle> particles;
 
-    std::vector<Segment<float>> collisionMesh;
+    std::vector<EdgeData> collisionMesh;
 
     sf::Shader shader;
     sf::VertexArray quad;
