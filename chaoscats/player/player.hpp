@@ -10,7 +10,6 @@
 #include "../math/geometry/geometry_common.hpp"
 #include "../rendering/draw.hpp"
 
-
 class Player
 {
 public:
@@ -41,7 +40,7 @@ public:
         }
 
         Particle groundParticle = world->getParticleFromWorldCoords(bottomCollisionPoint.x, bottomCollisionPoint.y + 5);
-        Particle subGroundParticle = world->getParticleFromWorldCoords(bottomCollisionPoint.x, bottomCollisionPoint.y + 20);
+        Particle subGroundParticle = world->getParticleFromWorldCoords(bottomCollisionPoint.x, bottomCollisionPoint.y + 10);
 
         switch (groundParticle.playerCollisionType)
         {
@@ -52,7 +51,10 @@ public:
             }
             break;
         case PlayerCollisionType::Solid:
-            velocity.y = 0.0f;
+            if (!jumped)
+            {
+                velocity.y = 0.0f;
+            }
             break;
         }
 
@@ -86,9 +88,9 @@ public:
         for (EdgeData edge : collisionMesh)
         {
             bool bottomCollision = handleBottomCollision(position, velocity, collisionBox, edge, bottomCollisionPoint, dt);
-            // bool topCollision = handleTopCollision(collisionBox, vel, edge, bottomCollisionPoint, dt);
+            bool topCollision = handleTopCollision(position, velocity, collisionBox, edge, topCollisionPoint, dt);
 
-            if (bottomCollision)
+            if (bottomCollision || topCollision)
             {
                 collisionHappened = true;
             }
@@ -96,8 +98,8 @@ public:
 
         if (!collisionHappened)
         {
-            position.x += velocity.x * dt;
             position.y += velocity.y * dt;
+            position.x += velocity.x * dt;
         }
 
         collisionBox.setPosition(position.x, position.y);
