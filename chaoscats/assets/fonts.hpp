@@ -10,7 +10,7 @@ struct FontStorage
 
     FontStorage()
     {
-        loadFont(ALAGARD_FONT, "assets/alagard.ttf");
+        loadFont(ALAGARD_FONT, "assets/fonts/alagard.ttf");
     };
 
 private:

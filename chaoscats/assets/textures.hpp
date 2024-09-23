@@ -7,10 +7,12 @@
 struct TextureStorage
 {
     sf::Texture TEST_PLAYER_TEXTURE;
+    sf::Texture WEAPON_SHOTGUN_TEXTURE;
 
     TextureStorage()
     {
-        loadTexture(TEST_PLAYER_TEXTURE, "assets/test_player.png");
+        loadTexture(TEST_PLAYER_TEXTURE, "assets/textures/player/test_player.png");
+        loadTexture(WEAPON_SHOTGUN_TEXTURE, "assets/textures/weapons/shotgun/shotgun.png");
     };
 
 private:

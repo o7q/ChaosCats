@@ -1,6 +1,6 @@
 #include "draw.hpp"
 
-void drawTexture(sf::RenderWindow &renderWindow, sf::Texture texture, sf::Vector2f position, sf::Vector2f size, float rotation)
+void drawTexture(sf::RenderWindow &renderWindow, sf::Texture texture, sf::Vector2f position, sf::Vector2f size, float rotation, bool flip)
 {
     sf::Sprite textureSprite;
     textureSprite.setTexture(texture);
@@ -12,7 +12,7 @@ void drawTexture(sf::RenderWindow &renderWindow, sf::Texture texture, sf::Vector
 
     textureSprite.setOrigin(textureSize.x / 2, textureSize.y / 2);
     textureSprite.setPosition(position.x, position.y);
-    textureSprite.setScale(newSize.x / textureSize.x, newSize.y / textureSize.y);
+    textureSprite.setScale(newSize.x / textureSize.x * (flip ? -1 : 1), newSize.y / textureSize.y);
 
     renderWindow.draw(textureSprite);
 }

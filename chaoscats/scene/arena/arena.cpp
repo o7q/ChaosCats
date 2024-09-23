@@ -1,18 +1,18 @@
-#include "arena.hpp"
-
-#include "../../math/matrix/matrix.hpp"
-
 #include <vector>
+
+#include "arena.hpp"
 
 CurrentScene Scene_Arena::run()
 {
     if (init())
     {
-        std::cout << "Main menu init" << std::endl;
+        std::cout << "Arena init" << std::endl;
 
         worldCamera = new WorldCamera();
-        world = new World(renderWindow, 128, 72, 10);
+        world = new World(renderWindow, 256, 144, 5);
         player = new Player(renderWindow, world, gameAssets.TEXTURES.TEST_PLAYER_TEXTURE, sf::Vector2f(100, -1));
+
+        player->pickupWeapon(gameAssets.TEXTURES.WEAPON_SHOTGUN_TEXTURE);
     }
 
     if (update())
@@ -43,7 +43,7 @@ CurrentScene Scene_Arena::run()
             sf::Vector2i localMouse = sf::Mouse::getPosition(renderWindow);
             sf::Vector2f mouseLoc;
             worldCamera->screenToWorld(localMouse.x, localMouse.y, mouseLoc.x, mouseLoc.y);
-            world->drawParticles(mouseLoc.x / 10, mouseLoc.y / 10, drawParticle, 5);
+            world->drawParticles(mouseLoc.x / 5, mouseLoc.y / 5, drawParticle, 10);
         }
 
         world->update();

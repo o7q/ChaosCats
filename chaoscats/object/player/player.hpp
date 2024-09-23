@@ -4,13 +4,17 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "../world/world.hpp"
-#include "../world/collision/collision.hpp"
+#include "../object.hpp"
+#include "../weapon.hpp"
+#include "../weapons/shotgun.hpp"
 
-#include "../math/geometry/geometry_common.hpp"
-#include "../rendering/draw.hpp"
+#include "../../world/world.hpp"
+#include "../../world/collision/collision.hpp"
 
-class Player
+#include "../../math/geometry/geometry_common.hpp"
+#include "../../rendering/draw.hpp"
+
+class Player : public Object
 {
 public:
     Player(sf::RenderWindow &renderWindow, World *world, sf::Texture &playerTexture, sf::Vector2f size) : renderWindow(renderWindow), playerTexture(playerTexture)
@@ -18,6 +22,15 @@ public:
         this->world = world;
         playerSize = imageAspect(playerTexture, size);
         collisionBox = Rect<float>(0, 0, playerSize.x, playerSize.y);
+    }
+    virtual ~Player()
+    {
+        delete weapon;
+    }
+
+    void pickupWeapon(sf::Texture &texture)
+    {
+        weapon = new Shotgun(texture, renderWindow);
     }
 
     void update(float dt)
@@ -47,7 +60,7 @@ public:
         case PlayerCollisionType::None:
             if (velocity.y < 10.0f)
             {
-                velocity.y += 1.0f;
+                velocity.y += 1.0f * dt;
             }
             break;
         case PlayerCollisionType::Solid:
@@ -109,6 +122,9 @@ public:
 
         topCollisionPoint.x = collisionBox.getPosition().x;
         topCollisionPoint.y = collisionBox.getPosition().y - collisionBox.half_size.h;
+
+        sf::Vector2i mouseLoc = sf::Mouse::getPosition(renderWindow);
+        weapon->aim(position.x, position.y, mouseLoc.x, mouseLoc.y);
     }
 
     void render(WorldCamera *camera)
@@ -121,6 +137,8 @@ public:
         // drawTexture(renderWindow, playerTexture, sf::Vector2f(position.x, position.y), sf::Vector)
         drawPoint(renderWindow, bottomCollisionPoint, sf::Color(255, 0, 0, 255));
         drawPoint(renderWindow, topCollisionPoint, sf::Color(255, 0, 0, 255));
+
+        weapon->render(position.x, position.y);
     }
 
 protected:
@@ -133,9 +151,10 @@ protected:
     Point<float> bottomCollisionPoint;
     Point<float> topCollisionPoint;
 
-    Point<float> position;
     Point<float> velocity;
 
     float playerSpeed = 6.0f;
     bool jumped = false;
+
+    Weapon *weapon = nullptr;
 };
