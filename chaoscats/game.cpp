@@ -2,11 +2,11 @@
 
 #include "math/matrix/matrix.hpp"
 
-GameWindow::GameWindow(const std::string &name, int width, int height)
+GameWindow::GameWindow(const std::string &name, int width, int height, const std::vector<std::string> &netArgs) : netArgs(netArgs)
 {
     renderWindow.create(sf::VideoMode(width, height), name);
 
-    scene_arena = new Scene_Arena(renderWindow, windowInfo, gameAssets);
+    currentScene = CurrentScene::Arena;
 
     int maxFps = 144;
     renderWindow.setFramerateLimit(maxFps);

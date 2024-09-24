@@ -1,2 +1,2 @@
 # Precompiled headers
-common.hpp.gch
+*.gch

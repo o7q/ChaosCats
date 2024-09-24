@@ -5,6 +5,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "../../rendering/draw.hpp"
 #include "../weapon.hpp"
 #include "../player/player.hpp"
 
@@ -33,7 +34,6 @@ public:
         float radians = std::atan2(dy, dx);
         float degrees = (180.0f / PI) * radians;
         float degrees360 = std::fmod(degrees + 360.0f, 360.0f);
-        std::cout << degrees360 << std::endl;
 
         rotation = degrees360;
     }

@@ -7,7 +7,8 @@
 
 enum class CurrentScene
 {
-    Default,
+    NULL_SCENE,
+    MainMenu,
     Arena
 };
 
@@ -15,6 +16,9 @@ class Scene
 {
 public:
     Scene(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, AssetStorage &gameAssets) : renderWindow(renderWindow), windowInfo(windowInfo), gameAssets(gameAssets) {}
+    virtual ~Scene()
+    {
+    }
 
     virtual CurrentScene run() = 0;
 

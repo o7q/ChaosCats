@@ -2,10 +2,9 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "object.hpp"
 #include "player/player.hpp"
 
-class Weapon : public Object
+class Weapon
 {
 public:
     Weapon(sf::Texture &weaponTexture, sf::RenderWindow &renderWindow) : weaponTexture(weaponTexture), renderWindow(renderWindow)

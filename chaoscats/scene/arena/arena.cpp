@@ -1,6 +1,16 @@
 #include <vector>
 
+#include <thread>
+
 #include "arena.hpp"
+
+void Scene_Arena::runServer()
+{
+    while (keepServer)
+    {
+        gameServer->update(-1, true);
+    }
+}
 
 CurrentScene Scene_Arena::run()
 {
@@ -11,6 +21,40 @@ CurrentScene Scene_Arena::run()
         worldCamera = new WorldCamera();
         world = new World(renderWindow, 256, 144, 5);
         player = new Player(renderWindow, world, gameAssets.TEXTURES.TEST_PLAYER_TEXTURE, sf::Vector2f(100, -1));
+
+        uint16_t port;
+        std::string address;
+
+        // establish client
+        gameClient = new GameClient();
+
+        // if a server, host the server, then join on the localhost
+        if (netArgs[0] == "host")
+        {
+            std::cout << "mode: serverhost" << std::endl;
+
+            address = "";
+            port = std::stoi(netArgs[1]);
+
+            gameServer = new GameServer(port);
+            gameServer->start();
+
+            keepServer = true;
+
+            serverThread = new std::thread(&Scene_Arena::runServer, this);
+
+            gameClient->connect("127.0.0.1", port);
+        }
+        // if a client, join the server using the address and port specified
+        else if (netArgs[0] == "join")
+        {
+            std::cout << "mode: clientjoin" << std::endl;
+
+            address = netArgs[1];
+            port = std::stoi(netArgs[2]);
+
+            gameClient->connect(address, port);
+        }
 
         player->pickupWeapon(gameAssets.TEXTURES.WEAPON_SHOTGUN_TEXTURE);
     }
@@ -58,6 +102,11 @@ CurrentScene Scene_Arena::run()
                                    "   /   ZX: " + std::to_string(worldCamera->getZoomX()) +
                                    "   ZY: " + std::to_string(worldCamera->getZoomY());
         drawText(renderWindow, positionInfo, gameAssets.FONTS.ALAGARD_FONT, sf::Vector2f(0, 720 - 30), 15);
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::G))
+    {
+        return CurrentScene::MainMenu;
     }
 
     return CurrentScene::Arena;

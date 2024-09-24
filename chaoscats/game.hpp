@@ -16,7 +16,7 @@
 class GameWindow
 {
 public:
-    GameWindow(const std::string &title, int width, int height);
+    GameWindow(const std::string &title, int width, int height, const std::vector<std::string> &netArgs);
 
 private:
     void update();
@@ -27,7 +27,9 @@ private:
 
     AssetStorage gameAssets;
 
-    CurrentScene currentScene = CurrentScene::Arena;
+    CurrentScene currentScene = CurrentScene::NULL_SCENE;
+    CurrentScene previousScene = CurrentScene::NULL_SCENE;
+    Scene *scene = nullptr;
 
-    Scene_Arena *scene_arena;
+    const std::vector<std::string> &netArgs;
 };

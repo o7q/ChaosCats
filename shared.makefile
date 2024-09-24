@@ -10,7 +10,7 @@ SFML_LIBRARY = -L "$(SFML_ROOT)/lib"
 ASIO_ROOT = C:\CppLibs\Asio\asio-1.30.2
 ASIO_INCLUDE = -I "$(ASIO_ROOT)/include"
 
-INCLUDES = $(SFML_INCLUDE) $(ASIO_INCLUDE) -include "chaoscats/net/common.hpp"
+INCLUDES = $(SFML_INCLUDE) $(ASIO_INCLUDE) -include "chaoscats/net/framework/net.hpp"
 LIBRARIES = $(SFML_LIBRARY)
 
 WINDOWS_SFML_LINK = -lsfml-window \
@@ -45,4 +45,4 @@ compile-windows-debug:
 
 # Precompile net headers
 precompile-net-windows:
-	$(CXX) $(CXXFLAGS) -H -x c++-header -o "chaoscats/net/common.hpp.gch" "chaoscats/net/common.hpp" $(ASIO_INCLUDE)
+	$(CXX) $(CXXFLAGS) -H -x c++-header -o "chaoscats/net/framework/net.hpp.gch" "chaoscats/net/framework/net.hpp" $(ASIO_INCLUDE)

@@ -4,7 +4,6 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "../object.hpp"
 #include "../weapon.hpp"
 #include "../weapons/shotgun.hpp"
 
@@ -14,7 +13,9 @@
 #include "../../math/geometry/geometry_common.hpp"
 #include "../../rendering/draw.hpp"
 
-class Player : public Object
+#include "player_framework.hpp"
+
+class Player
 {
 public:
     Player(sf::RenderWindow &renderWindow, World *world, sf::Texture &playerTexture, sf::Vector2f size) : renderWindow(renderWindow), playerTexture(playerTexture)
@@ -100,8 +101,8 @@ public:
         bool collisionHappened = false;
         for (EdgeData edge : collisionMesh)
         {
-            bool bottomCollision = handleBottomCollision(position, velocity, collisionBox, edge, bottomCollisionPoint, dt);
-            bool topCollision = handleTopCollision(position, velocity, collisionBox, edge, topCollisionPoint, dt);
+            bool bottomCollision = handleBottomCollision(pf.position, velocity, collisionBox, edge, bottomCollisionPoint, dt);
+            bool topCollision = handleTopCollision(pf.position, velocity, collisionBox, edge, topCollisionPoint, dt);
 
             if (bottomCollision || topCollision)
             {
@@ -111,11 +112,11 @@ public:
 
         if (!collisionHappened)
         {
-            position.y += velocity.y * dt;
-            position.x += velocity.x * dt;
+            pf.position.y += velocity.y * dt;
+            pf.position.x += velocity.x * dt;
         }
 
-        collisionBox.setPosition(position.x, position.y);
+        collisionBox.setPosition(pf.position.x, pf.position.y);
 
         bottomCollisionPoint.x = collisionBox.getPosition().x;
         bottomCollisionPoint.y = collisionBox.getPosition().y + collisionBox.half_size.h;
@@ -138,7 +139,7 @@ public:
         drawPoint(renderWindow, bottomCollisionPoint, sf::Color(255, 0, 0, 255));
         drawPoint(renderWindow, topCollisionPoint, sf::Color(255, 0, 0, 255));
 
-        weapon->render(position.x, position.y);
+        weapon->render(pf.position.x, pf.position.y);
     }
 
 protected:
@@ -152,6 +153,8 @@ protected:
     Point<float> topCollisionPoint;
 
     Point<float> velocity;
+
+    PlayerFramework pf;
 
     float playerSpeed = 6.0f;
     bool jumped = false;
