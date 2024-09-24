@@ -20,13 +20,11 @@ CurrentScene Scene_Arena::run()
 
         worldCamera = new WorldCamera();
         world = new World(renderWindow, 256, 144, 5);
-        player = new Player(renderWindow, world, gameAssets.TEXTURES.TEST_PLAYER_TEXTURE, sf::Vector2f(100, -1));
 
-        uint16_t port;
+        // player = new Player(renderWindow, world, gameAssets.TEXTURES.TEST_PLAYER_TEXTURE, sf::Vector2f(100, -1));
+
         std::string address;
-
-        // establish client
-        gameClient = new GameClient();
+        uint16_t port;
 
         // if a server, host the server, then join on the localhost
         if (netArgs[0] == "host")
@@ -41,9 +39,9 @@ CurrentScene Scene_Arena::run()
 
             keepServer = true;
 
-            serverThread = new std::thread(&Scene_Arena::runServer, this);
+            serverThread = std::thread(&Scene_Arena::runServer, this);
 
-            gameClient->connect("127.0.0.1", port);
+            gameClient.connect("127.0.0.1", port);
         }
         // if a client, join the server using the address and port specified
         else if (netArgs[0] == "join")
@@ -53,14 +51,70 @@ CurrentScene Scene_Arena::run()
             address = netArgs[1];
             port = std::stoi(netArgs[2]);
 
-            gameClient->connect(address, port);
+            gameClient.connect(address, port);
         }
 
-        player->pickupWeapon(gameAssets.TEXTURES.WEAPON_SHOTGUN_TEXTURE);
+        // player->pickupWeapon(gameAssets.TEXTURES.WEAPON_SHOTGUN_TEXTURE);
     }
 
     if (update())
     {
+        if (gameClient.isConnectedToServer())
+        {
+            while (!gameClient.incoming().empty())
+            {
+                auto message = gameClient.incoming().pop_front().message;
+
+                switch (message.header.id)
+                {
+                case GamePackets::Server2C_Validated:
+                {
+                    PlayerFramework new_pf;
+                    jnet::Message<GamePackets> joinPacket;
+                    joinPacket.header.id = GamePackets::Client2S_Register;
+                    joinPacket << new_pf;
+                    gameClient.sendMessageToServer(joinPacket);
+                }
+                break;
+                case GamePackets::Server2C_AssignID:
+                {
+                    message >> localId;
+                    std::cout << "Recieved new id from server: " << localId << std::endl;
+                }
+                break;
+                case GamePackets::Server2C_AddPlayer:
+                {
+                    // PlayerFramework pf;
+                    // message >> pf;
+
+                    // Player *player = new Player(renderWindow, world, gameAssets.TEXTURES.TEST_PLAYER_TEXTURE, sf::Vector2f(100, -1));
+
+                    // player->pf.id = pf.id;
+                    // player->pf.position = pf.position;
+
+                    // players.insert_or_assign(pf.id, player);
+
+                    // std::cout << pf.id << std::endl;
+
+                    // if (player->pf.id == localId)
+                    // {
+                    //     validated = true;
+                    // }
+
+                    // std::cout << "Player joined server: " << player->pf.id << std::endl;
+                }
+                break;
+                case GamePackets::Server2C_MovePlayer:
+                {
+                    PlayerFramework pf;
+                    message >> pf;
+
+                    players[pf.id]->pf.position = pf.position;
+                }
+                break;
+                }
+            }
+        }
         Particle drawParticle;
         drawParticle.color = sf::Color(255, 255, 0, 255);
         drawParticle.matterType = MatterType::Solid;
@@ -93,8 +147,22 @@ CurrentScene Scene_Arena::run()
         world->update();
         world->render(worldCamera);
 
-        player->update(windowInfo.DELTA_TIME);
-        player->render(worldCamera);
+        if (validated)
+        {
+            players[localId]->update(windowInfo.DELTA_TIME);
+            jnet::Message<GamePackets> movePacket;
+            movePacket.header.id = GamePackets::Client2S_Move;
+            movePacket << players[localId]->pf;
+            gameClient.sendMessageToServer(movePacket);
+        }
+
+        if (!players.empty())
+        {
+            for (const auto &player : players)
+            {
+                player.second->render(worldCamera);
+            }
+        }
 
         std::string positionInfo = "PX: " +
                                    std::to_string(worldCamera->getTranslateX()) +

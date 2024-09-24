@@ -72,42 +72,42 @@ void appendLookupSegment(std::vector<EdgeData> &segments, int index, int x, int 
         segments.push_back(EdgeData{Segment<float>(left  , bottom), x, y, SlopeType::DownHill  ,  1.0f     ,  half_scale});
         break;
     case 2:
-        segments.push_back(EdgeData{Segment<float>(bottom, right) , x, y, SlopeType::UpHill    , -1.0f     ,  half_scale});
+        segments.push_back(EdgeData{Segment<float>(bottom, right ), x, y, SlopeType::UpHill    , -1.0f     ,  half_scale});
         break;
     case 3:
-        segments.push_back(EdgeData{Segment<float>(left  , right) , x, y, SlopeType::Horizontal,  0        ,  0         });
+        segments.push_back(EdgeData{Segment<float>(left  , right ), x, y, SlopeType::Horizontal,  0        ,  0         });
         break;
     case 4:
-        segments.push_back(EdgeData{Segment<float>(top   , right) , x, y, SlopeType::DownHill  ,  1.0f     , -half_scale});
+        segments.push_back(EdgeData{Segment<float>(top   , right ), x, y, SlopeType::DownHill  ,  1.0f     , -half_scale});
         break;
     case 5:
-        segments.push_back(EdgeData{Segment<float>(left  , top)   , x, y, SlopeType::UpHill    , -1.0f     , -half_scale});
-        segments.push_back(EdgeData{Segment<float>(bottom, right) , x, y, SlopeType::UpHill    , -1.0f     ,  half_scale});
+        segments.push_back(EdgeData{Segment<float>(left  , top   ), x, y, SlopeType::UpHill    , -1.0f     , -half_scale});
+        segments.push_back(EdgeData{Segment<float>(bottom, right ), x, y, SlopeType::UpHill    , -1.0f     ,  half_scale});
         break;
     case 6:
         segments.push_back(EdgeData{Segment<float>(top   , bottom), x, y, SlopeType::Vertical  ,  FLOAT_MAX,  0         });
         break;
     case 7:
-        segments.push_back(EdgeData{Segment<float>(left  , top)   , x, y, SlopeType::UpHill    , -1.0f     , -half_scale});
+        segments.push_back(EdgeData{Segment<float>(left  , top   ), x, y, SlopeType::UpHill    , -1.0f     , -half_scale});
         break;
     case 8:
-        segments.push_back(EdgeData{Segment<float>(left  , top)   , x, y, SlopeType::UpHill    , -1.0f     , -half_scale});
+        segments.push_back(EdgeData{Segment<float>(left  , top   ), x, y, SlopeType::UpHill    , -1.0f     , -half_scale});
         break;
     case 9:
         segments.push_back(EdgeData{Segment<float>(top   , bottom), x, y, SlopeType::Vertical  ,  FLOAT_MAX,  0         });
         break;
     case 10:
         segments.push_back(EdgeData{Segment<float>(left  , bottom), x, y, SlopeType::DownHill  ,  1.0f     ,  half_scale});
-        segments.push_back(EdgeData{Segment<float>(top   , right) , x, y, SlopeType::DownHill  ,  1.0f     , -half_scale});
+        segments.push_back(EdgeData{Segment<float>(top   , right ), x, y, SlopeType::DownHill  ,  1.0f     , -half_scale});
         break;
     case 11:
-        segments.push_back(EdgeData{Segment<float>(top   , right) , x, y, SlopeType::DownHill  ,  1.0f     , -half_scale});
+        segments.push_back(EdgeData{Segment<float>(top   , right ), x, y, SlopeType::DownHill  ,  1.0f     , -half_scale});
         break;
     case 12:
-        segments.push_back(EdgeData{Segment<float>(left  , right) , x, y, SlopeType::Horizontal,  0        ,  0         });
+        segments.push_back(EdgeData{Segment<float>(left  , right ), x, y, SlopeType::Horizontal,  0        ,  0         });
         break;
     case 13:
-        segments.push_back(EdgeData{Segment<float>(bottom, right) , x, y, SlopeType::UpHill    , -1.0f     ,  half_scale});
+        segments.push_back(EdgeData{Segment<float>(bottom, right ), x, y, SlopeType::UpHill    , -1.0f     ,  half_scale});
         break;
     case 14:
         segments.push_back(EdgeData{Segment<float>(left  , bottom), x, y, SlopeType::DownHill  ,  1.0f     ,  half_scale});

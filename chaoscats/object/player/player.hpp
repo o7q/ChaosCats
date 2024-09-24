@@ -13,7 +13,7 @@
 #include "../../math/geometry/geometry_common.hpp"
 #include "../../rendering/draw.hpp"
 
-#include "player_framework.hpp"
+#include "../../net/objects/player_framework.hpp"
 
 class Player
 {
@@ -124,8 +124,8 @@ public:
         topCollisionPoint.x = collisionBox.getPosition().x;
         topCollisionPoint.y = collisionBox.getPosition().y - collisionBox.half_size.h;
 
-        sf::Vector2i mouseLoc = sf::Mouse::getPosition(renderWindow);
-        weapon->aim(position.x, position.y, mouseLoc.x, mouseLoc.y);
+        // sf::Vector2i mouseLoc = sf::Mouse::getPosition(renderWindow);
+        // weapon->aim(pf.position.x, pf.position.y, mouseLoc.x, mouseLoc.y);
     }
 
     void render(WorldCamera *camera)
@@ -139,8 +139,10 @@ public:
         drawPoint(renderWindow, bottomCollisionPoint, sf::Color(255, 0, 0, 255));
         drawPoint(renderWindow, topCollisionPoint, sf::Color(255, 0, 0, 255));
 
-        weapon->render(pf.position.x, pf.position.y);
+        // weapon->render(pf.position.x, pf.position.y);
     }
+
+    PlayerFramework pf;
 
 protected:
     sf::RenderWindow &renderWindow;
@@ -153,8 +155,6 @@ protected:
     Point<float> topCollisionPoint;
 
     Point<float> velocity;
-
-    PlayerFramework pf;
 
     float playerSpeed = 6.0f;
     bool jumped = false;

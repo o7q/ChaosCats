@@ -1,10 +1,10 @@
 #include "game_server.hpp"
 
-#include "../object/player/player_framework.hpp"
+#include "../objects/player_framework.hpp"
 
-void GameServer::handleConnect(std::shared_ptr<jnet::Connection<GamePackets>> &client, jnet::Message<GamePackets> &message)
+void GameServer::handlePlayerRegister(std::shared_ptr<jnet::Connection<GamePackets>> &client, jnet::Message<GamePackets> &message)
 {
-    std::cout << "New client connected, assigning ID: " << client->getID() << std::endl;
+    std::cout << "Client requesting register, assigning ID: " << client->getID() << std::endl;
 
     // read playerdata from connect packet
     PlayerFramework pf;
@@ -31,6 +31,20 @@ void GameServer::handleConnect(std::shared_ptr<jnet::Connection<GamePackets>> &c
     {
         jnet::Message<GamePackets> allPlayersPacket;
         allPlayersPacket.header.id = GamePackets::Server2C_AddPlayer;
+        allPlayersPacket << player.second;
         sendMessageToClient(client, allPlayersPacket);
     }
+}
+
+void GameServer::handlePlayerMove(std::shared_ptr<jnet::Connection<GamePackets>> &client, jnet::Message<GamePackets> &message)
+{
+    PlayerFramework pf;
+    message >> pf;
+
+    serverPlayers[pf.id] = pf;
+
+    jnet::Message<GamePackets> movePacket;
+    movePacket.header.id = GamePackets::Server2C_MovePlayer;
+    movePacket << pf;
+    sendMessageToAllClients(movePacket, client);
 }

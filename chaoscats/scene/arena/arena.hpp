@@ -12,8 +12,8 @@
 #include "../../world/world.hpp"
 #include "../../world/camera.hpp"
 
-#include "../../net/game_client.hpp"
-#include "../../net/game_server.hpp"
+#include "../../net/game_client/game_client.hpp"
+#include "../../net/game_server/game_server.hpp"
 
 class Scene_Arena : public Scene
 {
@@ -23,17 +23,16 @@ public:
     {
         std::cout << "delete arena" << std::endl;
 
-        delete player;
+        // delete player;
         delete worldCamera;
         delete world;
 
         // close server thread
         keepServer = false;
-        if (serverThread != nullptr && serverThread->joinable())
+        if (serverThread.joinable())
         {
-            serverThread->join();
-            delete serverThread;
-
+            std::cout << "terminate server thread" << std::endl;
+            serverThread.join();
             gameServer->stop();
         }
     }
@@ -43,17 +42,19 @@ public:
     void runServer();
 
 private:
-    Player *player = nullptr;
     WorldCamera *worldCamera = nullptr;
     World *world = nullptr;
 
     const std::vector<std::string> &netArgs;
 
-    GameClient *gameClient = nullptr;
+    GameClient gameClient;
     GameServer *gameServer = nullptr;
 
     bool keepServer = false;
-    std::thread *serverThread = nullptr;
+    std::thread serverThread;
 
-    std::unordered_map<int, Player> players;
+    std::unordered_map<int, Player*> players;
+
+    int localId = 0;
+    bool validated = false;
 };
