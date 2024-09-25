@@ -6,8 +6,9 @@
 
 void Scene_Arena::runServer()
 {
-    while (keepServer)
+    while (keepServer.load())
     {
+        std::cout << "server tick" << std::endl;
         gameServer->update(-1, true);
     }
 }
@@ -37,13 +38,14 @@ CurrentScene Scene_Arena::run()
             gameServer = new GameServer(port);
             gameServer->start();
 
-            keepServer = true;
+            keepServer.store(true);
 
-            serverThread = std::thread(&Scene_Arena::runServer, this);
+            std::thread serverThread = std::thread(&Scene_Arena::runServer, this);
+            serverThread.detach();
 
             gameClient.connect("127.0.0.1", port);
         }
-        
+
         // if a client, join the server using the address and port specified
         else if (netArgs[0] == "join")
         {
@@ -174,8 +176,9 @@ CurrentScene Scene_Arena::run()
         drawText(renderWindow, positionInfo, gameAssets.FONTS.ALAGARD_FONT, sf::Vector2f(0, 720 - 30), 15);
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::G))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::G) && windowInfo.IS_FOCUSED)
     {
+        closeConnection();
         return CurrentScene::MainMenu;
     }
 

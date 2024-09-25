@@ -15,6 +15,11 @@ public:
     GameServer(uint16_t nPort) : jnet::ServerInterface<GamePackets>(nPort)
     {
     }
+    ~GameServer()
+    {
+        m_dequeConnections.clear(); // <--- THIS LITTLE LINE, CAUSED ME SO MUCH TROUBLE. know this...
+        std::cout << "deconstruct!" << std::endl;
+    }
 
     bool onClientConnect(std::shared_ptr<jnet::Connection<GamePackets>> client) override
     {
