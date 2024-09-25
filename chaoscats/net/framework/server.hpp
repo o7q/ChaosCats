@@ -43,11 +43,11 @@ namespace jnet
             catch (std::exception &e)
             {
                 // Something prohibited the server from listening
-                std::cerr << "[SERVER] Exception: " << e.what() << "\n";
+                std::cerr << "[SERVER] Exception: " << e.what() << std::endl;
                 return false;
             }
 
-            std::cout << "[SERVER] Started!\n";
+            std::cout << "[SERVER] Started!" << std::endl;
             return true;
         }
 
@@ -62,7 +62,7 @@ namespace jnet
                 m_threadContext.join();
 
             // Inform someone, anybody, if they care...
-            std::cout << "[SERVER] Stopped!\n";
+            std::cout << "[SERVER] Stopped!" << std::endl;
         }
 
         // ASYNC - Instruct asio to wait for connection
@@ -78,7 +78,7 @@ namespace jnet
                     if (!ec)
                     {
                         // Display some useful(?) information
-                        std::cout << "[SERVER] New Connection: " << socket.remote_endpoint() << "\n";
+                        std::cout << "[SERVER] New Connection: " << socket.remote_endpoint() << std::endl;
 
                         // Create a new connection to handle this client
                         std::shared_ptr<Connection<T>> newConnection =
@@ -95,11 +95,11 @@ namespace jnet
                             // asio context to sit and wait for bytes to arrive!
                             m_dequeConnections.back()->connectToClient(this, IDCounter++);
 
-                            std::cout << "[" << m_dequeConnections.back()->getID() << "] Connection Approved\n";
+                            std::cout << "[SERVER] (" << m_dequeConnections.back()->getID() << ") Connection Approved" << std::endl;
                         }
                         else
                         {
-                            std::cout << "[-----] Connection Denied\n";
+                            std::cout << "[SERVER] (-----) Connection Denied" << std::endl;
 
                             // Connection will go out of scope with no pending tasks, so will
                             // get destroyed automagically due to the wonder of smart pointers
@@ -108,7 +108,7 @@ namespace jnet
                     else
                     {
                         // Error has occurred during acceptance
-                        std::cout << "[SERVER] New Connection Error: " << ec.message() << "\n";
+                        std::cout << "[SERVER] New Connection Error: " << ec.message() << std::endl;
                     }
 
                     // Prime the asio context with more work - again simply wait for
@@ -124,7 +124,7 @@ namespace jnet
             if (clientConnection && clientConnection->isConnected())
             {
                 // ...and post the message via the connection
-                clientConnection->sendMessage(message);  // ORIGINALLY: clientConnection->sendMessageToServer(message)
+                clientConnection->sendMessage(message); // ORIGINALLY: clientConnection->sendMessageToServer(message)
             }
             else
             {

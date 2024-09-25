@@ -34,7 +34,7 @@ public:
         weapon = new Shotgun(texture, renderWindow);
     }
 
-    void update(float dt)
+    void update(float dt, WindowInfo &windowInfo)
     {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
         {
@@ -76,15 +76,15 @@ public:
 
         velocity.x = 0;
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && windowInfo.IS_FOCUSED)
         {
             velocity.x = -playerSpeed;
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && windowInfo.IS_FOCUSED)
         {
             velocity.x = playerSpeed;
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && windowInfo.IS_FOCUSED)
         {
             if (onGround && !jumped)
             {
@@ -116,6 +116,17 @@ public:
             pf.position.x += velocity.x * dt;
         }
 
+        setPosition(pf.position.x, pf.position.y);
+
+        // sf::Vector2i mouseLoc = sf::Mouse::getPosition(renderWindow);
+        // weapon->aim(position.x, position.y, mouseLoc.x, mouseLoc.y);
+    }
+
+    void setPosition(float x, float y)
+    {
+        pf.position.x = x;
+        pf.position.y = y;
+
         collisionBox.setPosition(pf.position.x, pf.position.y);
 
         bottomCollisionPoint.x = collisionBox.getPosition().x;
@@ -123,9 +134,16 @@ public:
 
         topCollisionPoint.x = collisionBox.getPosition().x;
         topCollisionPoint.y = collisionBox.getPosition().y - collisionBox.half_size.h;
+    }
 
-        // sf::Vector2i mouseLoc = sf::Mouse::getPosition(renderWindow);
-        // weapon->aim(pf.position.x, pf.position.y, mouseLoc.x, mouseLoc.y);
+    void setID(int id)
+    {
+        pf.id = id;
+    }
+
+    PlayerFramework getPlayerFramework()
+    {
+        return pf;
     }
 
     void render(WorldCamera *camera)
@@ -139,10 +157,8 @@ public:
         drawPoint(renderWindow, bottomCollisionPoint, sf::Color(255, 0, 0, 255));
         drawPoint(renderWindow, topCollisionPoint, sf::Color(255, 0, 0, 255));
 
-        // weapon->render(pf.position.x, pf.position.y);
+        // weapon->render(position.x, position.y);
     }
-
-    PlayerFramework pf;
 
 protected:
     sf::RenderWindow &renderWindow;
@@ -154,6 +170,7 @@ protected:
     Point<float> bottomCollisionPoint;
     Point<float> topCollisionPoint;
 
+    PlayerFramework pf;
     Point<float> velocity;
 
     float playerSpeed = 6.0f;

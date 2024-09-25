@@ -37,11 +37,11 @@ namespace jnet
 
                 // Start Context Thread
                 threadContext = std::thread([this]()
-                                         { m_context.run(); });
+                                            { m_context.run(); });
             }
             catch (std::exception &e)
             {
-                std::cerr << "Client Exception: " << e.what() << "\n";
+                std::cerr << "[CLIENT] Exception: " << e.what() << "\n";
                 return false;
             }
             return true;

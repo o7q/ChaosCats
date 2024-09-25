@@ -184,7 +184,7 @@ namespace jnet
                                       // for now simply assume the connection has died by closing the
                                       // socket. When a future attempt to write to this client fails due
                                       // to the closed socket, it will be tidied up.
-                                      std::cout << "[" << id << "] Write Header Fail.\n";
+                                      std::cout << "[CONNECTION] (" << id << ") Write Header Fail" << std::endl;
                                       m_socket.close();
                                   }
                               });
@@ -215,7 +215,7 @@ namespace jnet
                                   else
                                   {
                                       // Sending failed, see WriteHeader() equivalent for description :P
-                                      std::cout << "[" << id << "] Write Body Fail.\n";
+                                      std::cout << "[CONNECTION] (" << id << ") Write Body Fail" << std::endl;
                                       m_socket.close();
                                   }
                               });
@@ -254,7 +254,7 @@ namespace jnet
                                  {
                                      // Reading form the client went wrong, most likely a disconnect
                                      // has occurred. Close the socket and let the system tidy it up later.
-                                     std::cout << "[" << id << "] Read Header Fail.\n";
+                                     std::cout << "[CONNECTION] (" << id << ") Read Header Fail" << std::endl;
                                      m_socket.close();
                                  }
                              });
@@ -278,7 +278,7 @@ namespace jnet
                                  else
                                  {
                                      // As above!
-                                     std::cout << "[" << id << "] Read Body Fail.\n";
+                                     std::cout << "[CONNECTION] (" << id << ") Read Body Fail" << std::endl;
                                      m_socket.close();
                                  }
                              });
@@ -329,7 +329,7 @@ namespace jnet
                                          if (m_handshakeIn == m_handshakeCheck)
                                          {
                                              // Client has provided valid solution, so allow it to connect properly
-                                             std::cout << "Client Validated" << std::endl;
+                                             std::cout << "[CONNECTION] Client Validated" << std::endl;
                                              server->onClientValidated(this->shared_from_this());
 
                                              // Sit waiting to receive data now
@@ -338,7 +338,7 @@ namespace jnet
                                          else
                                          {
                                              // Client gave incorrect data, so disconnect
-                                             std::cout << "Client Disconnected (Fail Validation)" << std::endl;
+                                             std::cout << "[CONNECTION] Client Disconnected (Fail Validation)" << std::endl;
                                              m_socket.close();
                                          }
                                      }
@@ -354,7 +354,7 @@ namespace jnet
                                  else
                                  {
                                      // Some biggerfailure occured
-                                     std::cout << "Client Disconnected (ReadValidation)" << std::endl;
+                                     std::cout << "[CONNECTION] Client Disconnected (ReadValidation)" << std::endl;
                                      m_socket.close();
                                  }
                              });

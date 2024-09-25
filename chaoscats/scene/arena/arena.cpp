@@ -43,6 +43,7 @@ CurrentScene Scene_Arena::run()
 
             gameClient.connect("127.0.0.1", port);
         }
+        
         // if a client, join the server using the address and port specified
         else if (netArgs[0] == "join")
         {
@@ -53,8 +54,6 @@ CurrentScene Scene_Arena::run()
 
             gameClient.connect(address, port);
         }
-
-        // player->pickupWeapon(gameAssets.TEXTURES.WEAPON_SHOTGUN_TEXTURE);
     }
 
     if (update())
@@ -84,24 +83,24 @@ CurrentScene Scene_Arena::run()
                 break;
                 case GamePackets::Server2C_AddPlayer:
                 {
-                    // PlayerFramework pf;
-                    // message >> pf;
+                    PlayerFramework pf;
+                    message >> pf;
 
-                    // Player *player = new Player(renderWindow, world, gameAssets.TEXTURES.TEST_PLAYER_TEXTURE, sf::Vector2f(100, -1));
+                    Player *player = new Player(renderWindow, world, gameAssets.TEXTURES.TEST_PLAYER_TEXTURE, sf::Vector2f(100, -1));
 
-                    // player->pf.id = pf.id;
-                    // player->pf.position = pf.position;
+                    player->setID(pf.id);
+                    player->setPosition(pf.position.x, pf.position.y);
 
-                    // players.insert_or_assign(pf.id, player);
+                    players.insert_or_assign(pf.id, player);
 
-                    // std::cout << pf.id << std::endl;
+                    std::cout << pf.id << std::endl;
 
-                    // if (player->pf.id == localId)
-                    // {
-                    //     validated = true;
-                    // }
+                    if (player->getPlayerFramework().id == localId)
+                    {
+                        validated = true;
+                    }
 
-                    // std::cout << "Player joined server: " << player->pf.id << std::endl;
+                    std::cout << "Player joined server: " << player->getPlayerFramework().id << std::endl;
                 }
                 break;
                 case GamePackets::Server2C_MovePlayer:
@@ -109,7 +108,10 @@ CurrentScene Scene_Arena::run()
                     PlayerFramework pf;
                     message >> pf;
 
-                    players[pf.id]->pf.position = pf.position;
+                    if (players.find(pf.id) != players.end())
+                    {
+                        players[pf.id]->setPosition(pf.position.x, pf.position.y);
+                    }
                 }
                 break;
                 }
@@ -149,10 +151,10 @@ CurrentScene Scene_Arena::run()
 
         if (validated)
         {
-            players[localId]->update(windowInfo.DELTA_TIME);
+            players[localId]->update(windowInfo.DELTA_TIME, windowInfo);
             jnet::Message<GamePackets> movePacket;
             movePacket.header.id = GamePackets::Client2S_Move;
-            movePacket << players[localId]->pf;
+            movePacket << players[localId]->getPlayerFramework();
             gameClient.sendMessageToServer(movePacket);
         }
 
