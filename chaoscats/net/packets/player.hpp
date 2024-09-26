@@ -2,7 +2,7 @@
 
 #include "../../math/geometry/geometry_common.hpp"
 
-struct PlayerFramework
+struct PlayerData
 {
     int id = 0;
 

@@ -11,12 +11,12 @@ CurrentScene Scene_MainMenu::run()
 
     if (update())
     {
-        drawText(renderWindow, "hello", gameAssets.FONTS.ALAGARD_FONT, sf::Vector2f(100, 100), 40);
+        drawText(renderWindow, "hello", ASSETS.FONTS.ALAGARD_FONT, sf::Vector2f(100, 100), 40);
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::H))
     {
-        return CurrentScene::Arena;
+        return CurrentScene::Lobby;
     }
 
     return CurrentScene::MainMenu;

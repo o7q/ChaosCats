@@ -25,10 +25,10 @@ private:
     sf::View view;
     WindowInfo windowInfo;
 
-    AssetStorage gameAssets;
+    AssetStorage ASSETS;
 
-    CurrentScene currentScene = CurrentScene::NULL_SCENE;
-    CurrentScene previousScene = CurrentScene::NULL_SCENE;
+    CurrentScene currentScene = CurrentScene::None;
+    CurrentScene previousScene = CurrentScene::None;
     Scene *scene = nullptr;
 
     const std::vector<std::string> &netArgs;

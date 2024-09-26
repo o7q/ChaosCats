@@ -17,20 +17,20 @@
 #include "../../net/game_client/game_client.hpp"
 #include "../../net/game_server/game_server.hpp"
 
-class Scene_Arena : public Scene
+class Scene_Lobby : public Scene
 {
 public:
-    Scene_Arena(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, AssetStorage &gameAssets, const std::vector<std::string> &netArgs) : Scene(renderWindow, windowInfo, gameAssets), netArgs(netArgs)
+    Scene_Lobby(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, AssetStorage &ASSETS, const std::vector<std::string> &netArgs) : Scene(renderWindow, windowInfo, ASSETS), netArgs(netArgs)
     {
         keepServer.store(false);
     }
-    ~Scene_Arena()
+    ~Scene_Lobby()
     {
         std::cout << "delete arena" << std::endl;
 
         for (auto &pair : players)
         {
-            std::cout << "deleting " << pair.second->getPlayerFramework().id << std::endl;
+            std::cout << "deleting " << pair.second->getPlayerData().id << std::endl;
             delete pair.second;
         }
         players.clear();

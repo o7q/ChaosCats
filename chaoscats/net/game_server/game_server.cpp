@@ -1,50 +1,50 @@
 #include "game_server.hpp"
 
-#include "../objects/player_framework.hpp"
+#include "../packets/player.hpp"
 
-void GameServer::handlePlayerRegister(std::shared_ptr<jnet::Connection<GamePackets>> &client, jnet::Message<GamePackets> &message)
+void GameServer::handlePlayerRegister(std::shared_ptr<jnet::Connection<GameMessages>> &client, jnet::Message<GameMessages> &message)
 {
     Logger::log(Logger::LogType::Info, "gameserver", "Client reqested register, assigning ID: " + std::to_string(client->getID()));
 
     // read playerdata from connect packet
-    PlayerFramework pf;
+    PlayerData pf;
     message >> pf;
     pf.id = client->getID();
     serverPlayers.insert_or_assign(pf.id, pf);
 
     // send new id back to newly connected client
-    jnet::Message<GamePackets> idPacket;
-    idPacket.header.id = GamePackets::Server2C_AssignID;
+    jnet::Message<GameMessages> idPacket;
+    idPacket.header.id = GameMessages::Server2C_AssignID;
     idPacket << pf.id;
     sendMessageToClient(client, idPacket);
 
     // send new player to all clients, including the connected client
     // this is because the client itself does not create players, the server does
     // the client sends a request to the server, and the server will allow the client to display the newly created client
-    jnet::Message<GamePackets> newPlayerPacket;
-    newPlayerPacket.header.id = GamePackets::Server2C_AddPlayer;
+    jnet::Message<GameMessages> newPlayerPacket;
+    newPlayerPacket.header.id = GameMessages::Server2C_AddPlayer;
     newPlayerPacket << pf;
     sendMessageToAllClients(newPlayerPacket);
 
     // display all already connected clients to the newly connected client
     for (const auto &player : serverPlayers)
     {
-        jnet::Message<GamePackets> allPlayersPacket;
-        allPlayersPacket.header.id = GamePackets::Server2C_AddPlayer;
+        jnet::Message<GameMessages> allPlayersPacket;
+        allPlayersPacket.header.id = GameMessages::Server2C_AddPlayer;
         allPlayersPacket << player.second;
         sendMessageToClient(client, allPlayersPacket);
     }
 }
 
-void GameServer::handlePlayerMove(std::shared_ptr<jnet::Connection<GamePackets>> &client, jnet::Message<GamePackets> &message)
+void GameServer::handlePlayerMove(std::shared_ptr<jnet::Connection<GameMessages>> &client, jnet::Message<GameMessages> &message)
 {
-    PlayerFramework pf;
+    PlayerData pf;
     message >> pf;
 
     serverPlayers[pf.id] = pf;
 
-    jnet::Message<GamePackets> movePacket;
-    movePacket.header.id = GamePackets::Server2C_MovePlayer;
+    jnet::Message<GameMessages> movePacket;
+    movePacket.header.id = GameMessages::Server2C_MovePlayer;
     movePacket << pf;
     sendMessageToAllClients(movePacket, client);
 }

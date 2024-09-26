@@ -15,11 +15,11 @@ void GameWindow::update()
         }
         switch (currentScene)
         {
-        case CurrentScene::Arena:
-            scene = new Scene_Arena(renderWindow, windowInfo, gameAssets, netArgs);
+        case CurrentScene::Lobby:
+            scene = new Scene_Lobby(renderWindow, windowInfo, ASSETS, netArgs);
             break;
         case CurrentScene::MainMenu:
-            scene = new Scene_MainMenu(renderWindow, windowInfo, gameAssets);
+            scene = new Scene_MainMenu(renderWindow, windowInfo, ASSETS);
             break;
         default:
             break;

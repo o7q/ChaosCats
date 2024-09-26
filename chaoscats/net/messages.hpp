@@ -1,6 +1,6 @@
 #pragma once
 
-enum class GamePackets
+enum class GameMessages
 {
     Client2S_Register,
 

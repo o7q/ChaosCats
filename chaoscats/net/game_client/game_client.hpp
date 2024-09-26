@@ -1,10 +1,10 @@
 #pragma once
 
 #include "../framework/net.hpp"
-#include "../packets.hpp"
-#include "../objects/player_framework.hpp"
+#include "../messages.hpp"
+#include "../packets/player.hpp"
 
-class GameClient : public jnet::ClientInterface<GamePackets>
+class GameClient : public jnet::ClientInterface<GameMessages>
 {
 
 };

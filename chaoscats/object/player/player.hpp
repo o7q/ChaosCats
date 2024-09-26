@@ -13,7 +13,7 @@
 #include "../../math/geometry/geometry_common.hpp"
 #include "../../rendering/draw.hpp"
 
-#include "../../net/objects/player_framework.hpp"
+#include "../../net/packets/player.hpp"
 
 class Player
 {
@@ -141,7 +141,7 @@ public:
         pf.id = id;
     }
 
-    PlayerFramework getPlayerFramework()
+    PlayerData getPlayerData()
     {
         return pf;
     }
@@ -170,7 +170,7 @@ protected:
     Point<float> bottomCollisionPoint;
     Point<float> topCollisionPoint;
 
-    PlayerFramework pf;
+    PlayerData pf;
     Point<float> velocity;
 
     float playerSpeed = 6.0f;

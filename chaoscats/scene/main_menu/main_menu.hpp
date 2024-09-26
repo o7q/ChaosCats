@@ -11,7 +11,7 @@
 class Scene_MainMenu : public Scene
 {
 public:
-    Scene_MainMenu(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, AssetStorage &gameAssets) : Scene(renderWindow, windowInfo, gameAssets) {}
+    Scene_MainMenu(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, AssetStorage &ASSETS) : Scene(renderWindow, windowInfo, ASSETS) {}
     ~Scene_MainMenu()
     {
         std::cout << "delete arena" << std::endl;

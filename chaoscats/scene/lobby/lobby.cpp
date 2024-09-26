@@ -2,9 +2,9 @@
 
 #include <thread>
 
-#include "arena.hpp"
+#include "lobby.hpp"
 
-void Scene_Arena::runServer()
+void Scene_Lobby::runServer()
 {
     while (keepServer.load())
     {
@@ -12,7 +12,7 @@ void Scene_Arena::runServer()
     }
 }
 
-CurrentScene Scene_Arena::run()
+CurrentScene Scene_Lobby::run()
 {
     if (init())
     {
@@ -37,7 +37,7 @@ CurrentScene Scene_Arena::run()
 
             keepServer.store(true);
 
-            serverThread = std::thread(&Scene_Arena::runServer, this);
+            serverThread = std::thread(&Scene_Lobby::runServer, this);
         }
 
         // if a client, join the server using the address and port specified
@@ -63,44 +63,44 @@ CurrentScene Scene_Arena::run()
 
                 switch (message.header.id)
                 {
-                case GamePackets::Server2C_Validated:
+                case GameMessages::Server2C_Validated:
                 {
-                    PlayerFramework new_pf;
-                    jnet::Message<GamePackets> joinPacket;
-                    joinPacket.header.id = GamePackets::Client2S_Register;
+                    PlayerData new_pf;
+                    jnet::Message<GameMessages> joinPacket;
+                    joinPacket.header.id = GameMessages::Client2S_Register;
                     joinPacket << new_pf;
                     gameClient.sendMessageToServer(joinPacket);
                 }
                 break;
-                case GamePackets::Server2C_AssignID:
+                case GameMessages::Server2C_AssignID:
                 {
                     message >> localId;
                     Logger::log(Logger::LogType::Info, "lobby-net", "Recieved new id from server: " + std::to_string(localId));
                 }
                 break;
-                case GamePackets::Server2C_AddPlayer:
+                case GameMessages::Server2C_AddPlayer:
                 {
-                    PlayerFramework pf;
+                    PlayerData pf;
                     message >> pf;
 
-                    Player *player = new Player(renderWindow, world, gameAssets.TEXTURES.TEST_PLAYER_TEXTURE, sf::Vector2f(100, -1));
+                    Player *player = new Player(renderWindow, world, ASSETS.TEXTURES.TEST_PLAYER_TEXTURE, sf::Vector2f(100, -1));
 
                     player->setID(pf.id);
                     player->setPosition(pf.position.x, pf.position.y);
 
                     players.insert_or_assign(pf.id, player);
 
-                    if (player->getPlayerFramework().id == localId)
+                    if (player->getPlayerData().id == localId)
                     {
                         validated = true;
                     }
 
-                    Logger::log(Logger::LogType::Info, "lobby-net", "Player joined server: " + std::to_string(player->getPlayerFramework().id));
+                    Logger::log(Logger::LogType::Info, "lobby-net", "Player joined server: " + std::to_string(player->getPlayerData().id));
                 }
                 break;
-                case GamePackets::Server2C_MovePlayer:
+                case GameMessages::Server2C_MovePlayer:
                 {
-                    PlayerFramework pf;
+                    PlayerData pf;
                     message >> pf;
 
                     if (players.find(pf.id) != players.end())
@@ -147,9 +147,9 @@ CurrentScene Scene_Arena::run()
         if (validated)
         {
             players[localId]->update(windowInfo.DELTA_TIME, windowInfo);
-            jnet::Message<GamePackets> movePacket;
-            movePacket.header.id = GamePackets::Client2S_Move;
-            movePacket << players[localId]->getPlayerFramework();
+            jnet::Message<GameMessages> movePacket;
+            movePacket.header.id = GameMessages::Client2S_Move;
+            movePacket << players[localId]->getPlayerData();
             gameClient.sendMessageToServer(movePacket);
         }
 
@@ -166,7 +166,7 @@ CurrentScene Scene_Arena::run()
                                    "   PY: " + std::to_string(worldCamera->getTranslateY()) +
                                    "   /   ZX: " + std::to_string(worldCamera->getZoomX()) +
                                    "   ZY: " + std::to_string(worldCamera->getZoomY());
-        drawText(renderWindow, positionInfo, gameAssets.FONTS.ALAGARD_FONT, sf::Vector2f(0, 720 - 30), 15);
+        drawText(renderWindow, positionInfo, ASSETS.FONTS.ALAGARD_FONT, sf::Vector2f(0, 720 - 30), 15);
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::G) && windowInfo.IS_FOCUSED)
@@ -175,5 +175,5 @@ CurrentScene Scene_Arena::run()
         return CurrentScene::MainMenu;
     }
 
-    return CurrentScene::Arena;
+    return CurrentScene::Lobby;
 }

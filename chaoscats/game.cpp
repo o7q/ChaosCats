@@ -1,6 +1,7 @@
 #include "game.hpp"
 #include "logger/logger.hpp"
 
+#include "net/packets/player.hpp"
 
 #include "math/matrix/matrix.hpp"
 
@@ -8,7 +9,7 @@ GameWindow::GameWindow(const std::string &name, int width, int height, const std
 {
     renderWindow.create(sf::VideoMode(width, height), name);
 
-    currentScene = CurrentScene::Arena;
+    currentScene = CurrentScene::Lobby;
 
     int maxFps = 144;
     renderWindow.setFramerateLimit(maxFps);
@@ -48,7 +49,7 @@ GameWindow::GameWindow(const std::string &name, int width, int height, const std
 
         // display on-screen framerate counter
         fpsCountString = "FPS: " + std::to_string(windowInfo.FRAMERATE) + "   DT: " + std::to_string(windowInfo.DELTA_TIME);
-        drawText(renderWindow, fpsCountString, gameAssets.FONTS.ALAGARD_FONT, sf::Vector2f(0, height - 15), 15);
+        drawText(renderWindow, fpsCountString, ASSETS.FONTS.ALAGARD_FONT, sf::Vector2f(0, height - 15), 15);
 
         renderWindow.display();
 

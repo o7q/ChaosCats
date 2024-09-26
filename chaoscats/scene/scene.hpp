@@ -7,15 +7,15 @@
 
 enum class CurrentScene
 {
-    NULL_SCENE,
+    None,
     MainMenu,
-    Arena
+    Lobby
 };
 
 class Scene
 {
 public:
-    Scene(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, AssetStorage &gameAssets) : renderWindow(renderWindow), windowInfo(windowInfo), gameAssets(gameAssets) {}
+    Scene(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, AssetStorage &ASSETS) : renderWindow(renderWindow), windowInfo(windowInfo), ASSETS(ASSETS) {}
     virtual ~Scene()
     {
     }
@@ -37,7 +37,7 @@ protected:
 
     sf::RenderWindow &renderWindow;
     WindowInfo &windowInfo;
-    AssetStorage &gameAssets;
+    AssetStorage &ASSETS;
 
     bool doInit = true;
 };
