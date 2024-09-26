@@ -13,12 +13,12 @@ public:
     }
     virtual ~Weapon()
     {
-        std::cout << "delete weapon" << std::endl;
+
     }
 
     virtual void shoot()
     {
-        std::cout << "fire weapon" << std::endl;
+
     }
 
     virtual void aim(float playerX, float playerY, float aimX, float aimY)

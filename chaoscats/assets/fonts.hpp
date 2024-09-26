@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "../logger/logger.hpp"
+
 #include <SFML/Graphics.hpp>
 
 struct FontStorage
@@ -18,7 +20,7 @@ private:
     {
         if (!font.loadFromFile(path))
         {
-            std::cout << "[assets/fonts.hpp] Failed to load: " << path << std::endl;
+            Logger::log(Logger::LogType::Error, "assets/fonts", "Failed to load: " + path);  
         }
     }
 };

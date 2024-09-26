@@ -43,19 +43,22 @@ public:
 
     void runServer();
 
-    void closeConnection()
+    void terminateConnection()
     {
         // disconnect client
         gameClient.disconnect();
 
+        gameServer->stop();
         if (gameServer != nullptr)
         {
-            gameServer->stop();
-
             // gracefully close server thread
             keepServer.store(false);
 
-            // delete the server
+            if (serverThread.joinable())
+            {
+                serverThread.join();
+            }
+
             delete gameServer;
             gameServer = nullptr;
         }

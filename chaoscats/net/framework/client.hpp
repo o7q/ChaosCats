@@ -61,7 +61,9 @@ namespace jnet
             m_context.stop();
             // ...and its thread
             if (threadContext.joinable())
+            {
                 threadContext.join();
+            }
 
             // Destroy the connection object
             m_connection.release();

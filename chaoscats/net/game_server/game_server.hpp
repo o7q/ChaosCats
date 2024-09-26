@@ -17,8 +17,6 @@ public:
     }
     ~GameServer()
     {
-        m_dequeConnections.clear(); // <--- THIS LITTLE LINE, CAUSED ME SO MUCH TROUBLE. know this...
-        std::cout << "deconstruct!" << std::endl;
     }
 
     bool onClientConnect(std::shared_ptr<jnet::Connection<GamePackets>> client) override
@@ -28,7 +26,7 @@ public:
 
     void onClientValidated(std::shared_ptr<jnet::Connection<GamePackets>> client) override
     {
-        std::cout << "client validated, sending new id" << std::endl;
+        Logger::log(Logger::LogType::Info, "gameserver", "Client validated, sending new ID");
         jnet::Message<GamePackets> validatedMessage;
         validatedMessage.header.id = GamePackets::Server2C_Validated;
         sendMessageToClient(client, validatedMessage);
@@ -36,7 +34,7 @@ public:
 
     void onClientDisconnect(std::shared_ptr<jnet::Connection<GamePackets>> client) override
     {
-        std::cout << "Purging " << client->getID() << std::endl;
+        Logger::log(Logger::LogType::Info, "gameserver", "Client disconnected, purging: " + std::to_string(client->getID()));
     }
 
     void onMessage(std::shared_ptr<jnet::Connection<GamePackets>> client, jnet::Message<GamePackets> &message) override

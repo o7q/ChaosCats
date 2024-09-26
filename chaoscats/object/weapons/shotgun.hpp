@@ -19,12 +19,12 @@ public:
     }
     virtual ~Shotgun()
     {
-        std::cout << "delete shotgun" << std::endl;
+
     }
 
     void shoot() override
     {
-        std::cout << "fire shotgun" << std::endl;
+
     }
 
     void aim(float playerX, float playerY, float aimX, float aimY) override

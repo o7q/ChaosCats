@@ -4,7 +4,7 @@
 
 void GameServer::handlePlayerRegister(std::shared_ptr<jnet::Connection<GamePackets>> &client, jnet::Message<GamePackets> &message)
 {
-    std::cout << "Client requesting register, assigning ID: " << client->getID() << std::endl;
+    Logger::log(Logger::LogType::Info, "gameserver", "Client reqested register, assigning ID: " + std::to_string(client->getID()));
 
     // read playerdata from connect packet
     PlayerFramework pf;

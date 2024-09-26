@@ -47,7 +47,7 @@ namespace jnet
                 return false;
             }
 
-            std::cout << "[SERVER] Started!" << std::endl;
+            Logger::log(Logger::LogType::Info, "server", "Server started!");
             return true;
         }
 
@@ -59,10 +59,16 @@ namespace jnet
 
             // Tidy up the context thread
             if (m_threadContext.joinable())
+            {
                 m_threadContext.join();
+            }
+
+            Logger::log(Logger::LogType::Info, "server", "Clearing deque connections");
+            m_dequeConnections.clear(); // <--- THIS LITTLE LINE, CAUSED ME SO MUCH TROUBLE. know this...
+                                        // if omitted, the server will crash upon deconstruction
 
             // Inform someone, anybody, if they care...
-            std::cout << "[SERVER] Stopped!" << std::endl;
+            Logger::log(Logger::LogType::Info, "server", "Server stopped!");
         }
 
         // ASYNC - Instruct asio to wait for connection
@@ -78,7 +84,7 @@ namespace jnet
                     if (!ec)
                     {
                         // Display some useful(?) information
-                        std::cout << "[SERVER] New Connection: " << socket.remote_endpoint() << std::endl;
+                        Logger::log(Logger::LogType::Info, "server", "New connection: " + socket.remote_endpoint().address().to_string());
 
                         // Create a new connection to handle this client
                         std::shared_ptr<Connection<T>> newConnection =
@@ -95,11 +101,11 @@ namespace jnet
                             // asio context to sit and wait for bytes to arrive!
                             m_dequeConnections.back()->connectToClient(this, IDCounter++);
 
-                            std::cout << "[SERVER] (" << m_dequeConnections.back()->getID() << ") Connection Approved" << std::endl;
+                            Logger::log(Logger::LogType::Info, "server", "Connection approved: " + std::to_string(m_dequeConnections.back()->getID()));
                         }
                         else
                         {
-                            std::cout << "[SERVER] (-----) Connection Denied" << std::endl;
+                            Logger::log(Logger::LogType::Info, "server", "A connection was denied");
 
                             // Connection will go out of scope with no pending tasks, so will
                             // get destroyed automagically due to the wonder of smart pointers
@@ -108,7 +114,7 @@ namespace jnet
                     else
                     {
                         // Error has occurred during acceptance
-                        std::cout << "[SERVER] New Connection Error: " << ec.message() << std::endl;
+                        Logger::log(Logger::LogType::Info, "server", "Connection error: " + ec.message());
                     }
 
                     // Prime the asio context with more work - again simply wait for

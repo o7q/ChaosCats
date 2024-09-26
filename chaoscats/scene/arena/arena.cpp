@@ -8,8 +8,7 @@ void Scene_Arena::runServer()
 {
     while (keepServer.load())
     {
-        std::cout << "server tick" << std::endl;
-        gameServer->update(-1, true);
+        gameServer->update(-1, false);
     }
 }
 
@@ -17,12 +16,10 @@ CurrentScene Scene_Arena::run()
 {
     if (init())
     {
-        std::cout << "Arena init" << std::endl;
+        Logger::log(Logger::LogType::Info, "lobby", "Initializing lobby");
 
         worldCamera = new WorldCamera();
         world = new World(renderWindow, 256, 144, 5);
-
-        // player = new Player(renderWindow, world, gameAssets.TEXTURES.TEST_PLAYER_TEXTURE, sf::Vector2f(100, -1));
 
         std::string address;
         uint16_t port;
@@ -30,9 +27,9 @@ CurrentScene Scene_Arena::run()
         // if a server, host the server, then join on the localhost
         if (netArgs[0] == "host")
         {
-            std::cout << "mode: serverhost" << std::endl;
+            Logger::log(Logger::LogType::Info, "lobby-net", "Mode: hostserver");
 
-            address = "";
+            address = "127.0.0.1";
             port = std::stoi(netArgs[1]);
 
             gameServer = new GameServer(port);
@@ -40,22 +37,20 @@ CurrentScene Scene_Arena::run()
 
             keepServer.store(true);
 
-            std::thread serverThread = std::thread(&Scene_Arena::runServer, this);
-            serverThread.detach();
-
-            gameClient.connect("127.0.0.1", port);
+            serverThread = std::thread(&Scene_Arena::runServer, this);
         }
 
         // if a client, join the server using the address and port specified
         else if (netArgs[0] == "join")
         {
-            std::cout << "mode: clientjoin" << std::endl;
+            Logger::log(Logger::LogType::Info, "lobby-net", "Mode: joinserver");
 
             address = netArgs[1];
             port = std::stoi(netArgs[2]);
-
-            gameClient.connect(address, port);
         }
+
+        Logger::log(Logger::LogType::Info, "lobby-net", "Joining " + address + ":" + std::to_string(port));
+        gameClient.connect(address, port);
     }
 
     if (update())
@@ -80,7 +75,7 @@ CurrentScene Scene_Arena::run()
                 case GamePackets::Server2C_AssignID:
                 {
                     message >> localId;
-                    std::cout << "Recieved new id from server: " << localId << std::endl;
+                    Logger::log(Logger::LogType::Info, "lobby-net", "Recieved new id from server: " + std::to_string(localId));
                 }
                 break;
                 case GamePackets::Server2C_AddPlayer:
@@ -95,14 +90,12 @@ CurrentScene Scene_Arena::run()
 
                     players.insert_or_assign(pf.id, player);
 
-                    std::cout << pf.id << std::endl;
-
                     if (player->getPlayerFramework().id == localId)
                     {
                         validated = true;
                     }
 
-                    std::cout << "Player joined server: " << player->getPlayerFramework().id << std::endl;
+                    Logger::log(Logger::LogType::Info, "lobby-net", "Player joined server: " + std::to_string(player->getPlayerFramework().id));
                 }
                 break;
                 case GamePackets::Server2C_MovePlayer:
@@ -178,7 +171,7 @@ CurrentScene Scene_Arena::run()
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::G) && windowInfo.IS_FOCUSED)
     {
-        closeConnection();
+        terminateConnection();
         return CurrentScene::MainMenu;
     }
 

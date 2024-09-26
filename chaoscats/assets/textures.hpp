@@ -20,7 +20,7 @@ private:
     {
         if (!texture.loadFromFile(path))
         {
-            std::cout << "[assets/textures.hpp] Failed to load: " << path << std::endl;
+            Logger::log(Logger::LogType::Error, "assets/textures", "Failed to load: " + path);
         }
     }
 };
