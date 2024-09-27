@@ -88,11 +88,23 @@ namespace net
 
         void wait()
         {
-            while (empty())
+            while (empty() && !terminateWait)
             {
                 std::unique_lock<std::mutex> ul(muxBlocking);
                 cvBlocking.wait(ul);
             }
+        }
+
+        // purges the queue, used on server shutdown
+        void purge()
+        {
+            Logger::log(Logger::LogType::Info, "tsqueue", "Purging TSQueue");
+
+            clear();
+            terminateWait = true;
+
+            std::unique_lock<std::mutex> ul(muxBlocking);
+            cvBlocking.notify_one();
         }
 
     protected:
@@ -100,5 +112,8 @@ namespace net
         std::deque<T> dequeQueue;
         std::condition_variable cvBlocking;
         std::mutex muxBlocking;
+
+    private:
+        bool terminateWait = false;
     };
 }

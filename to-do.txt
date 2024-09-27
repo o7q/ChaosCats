@@ -1,7 +1,6 @@
 - Add coyote time to player movement
 - Add button class system
 - Finish basic lobby system
-- Fix server crash issue on thread joining
 - Draw basic playermodel
 - Draw basic map
 - Implement map loader (load maps from images)

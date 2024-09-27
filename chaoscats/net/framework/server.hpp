@@ -66,6 +66,8 @@ namespace net
             m_dequeConnections.clear(); // <--- THIS LITTLE LINE, CAUSED ME SO MUCH TROUBLE. know this...
                                         // if omitted, the server will crash upon deconstruction
 
+            m_queueMessagesIn.purge();
+
             // Inform someone, anybody, if they care...
             Logger::log(Logger::LogType::Info, "server", "Server stopped!");
         }
