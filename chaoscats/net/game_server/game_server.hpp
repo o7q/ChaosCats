@@ -41,7 +41,7 @@ public:
 
         if (client != nullptr)
         {
-            if (!mapContains(serverPlayers, id))
+            if (mapContains(serverPlayers, id))
             {
                 serverPlayers.erase(id);
                 husks.push_back(id);

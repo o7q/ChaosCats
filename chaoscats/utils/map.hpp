@@ -6,5 +6,5 @@
 template <typename Map, typename Key>
 inline bool mapContains(const Map &map, const Key &element)
 {
-    return map.find(element) == map.end();
+    return map.find(element) != map.end();
 }

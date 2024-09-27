@@ -40,7 +40,7 @@ void Scene_LobbyArena::player_connect_handleRemove(net::Message<GameMessages> &m
     uint32_t id;
     message >> id;
 
-    if (!mapContains(players, id))
+    if (mapContains(players, id))
     {
         if (players[id] != nullptr)
         {
