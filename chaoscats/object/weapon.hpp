@@ -2,8 +2,6 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "player/player.hpp"
-
 class Weapon
 {
 public:

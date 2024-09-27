@@ -2,13 +2,13 @@
 
 void GameServer::player_action_handleMove(std::shared_ptr<net::Connection<GameMessages>> &client, net::Message<GameMessages> &message)
 {
-    PlayerData pf;
-    message >> pf;
+    PlayerData playerData;
+    message >> playerData;
 
-    serverPlayers[pf.id] = pf;
+    serverPlayers[playerData.id] = playerData;
 
     net::Message<GameMessages> movePacket;
     movePacket.header.id = GameMessages::Server2C_MovePlayer;
-    movePacket << pf;
+    movePacket << playerData;
     sendMessageToAllClients(movePacket, client);
 }

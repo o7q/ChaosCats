@@ -4,16 +4,16 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "../weapon.hpp"
-#include "../weapons/shotgun.hpp"
+#include "../object/weapon.hpp"
+#include "../object/weapons/shotgun.hpp"
 
-#include "../../world/world.hpp"
-#include "../../world/collision/collision.hpp"
+#include "../world/world.hpp"
+#include "../world/collision/collision.hpp"
 
-#include "../../math/geometry/geometry_common.hpp"
-#include "../../rendering/draw.hpp"
+#include "../math/geometry/geometry_common.hpp"
+#include "../rendering/draw.hpp"
 
-#include "../../net/packets/player.hpp"
+#include "../net/data/player.hpp"
 
 class Player
 {

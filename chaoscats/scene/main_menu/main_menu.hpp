@@ -4,7 +4,7 @@
 #include "../../rendering/draw.hpp"
 #include "../../math/geometry/geometry_common.hpp"
 
-#include "../../object/player/player.hpp"
+#include "../../player/player.hpp"
 #include "../../world/world.hpp"
 #include "../../world/camera.hpp"
 

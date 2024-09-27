@@ -4,6 +4,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "../utils/logger.hpp"
+
 struct TextureStorage
 {
     sf::Texture TEST_PLAYER_TEXTURE;

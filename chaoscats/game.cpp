@@ -1,9 +1,6 @@
 #include "game.hpp"
-#include "logger/logger.hpp"
 
-#include "net/packets/player.hpp"
-
-#include "math/matrix/matrix.hpp"
+#include "utils/logger.hpp"
 
 GameWindow::GameWindow(const std::string &name, int width, int height, const std::vector<std::string> &netArgs) : netArgs(netArgs)
 {

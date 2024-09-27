@@ -7,7 +7,6 @@
 
 #include "../../rendering/draw.hpp"
 #include "../weapon.hpp"
-#include "../player/player.hpp"
 
 #define PI 3.1415926535
 

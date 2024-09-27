@@ -2,9 +2,9 @@
 
 #include <iostream>
 
-#include "../logger/logger.hpp"
-
 #include <SFML/Graphics.hpp>
+
+#include "../utils/logger.hpp"
 
 struct FontStorage
 {
@@ -20,7 +20,7 @@ private:
     {
         if (!font.loadFromFile(path))
         {
-            Logger::log(Logger::LogType::Error, "assets/fonts", "Failed to load: " + path);  
+            Logger::log(Logger::LogType::Error, "assets/fonts", "Failed to load: " + path);
         }
     }
 };

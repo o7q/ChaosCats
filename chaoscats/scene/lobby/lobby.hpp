@@ -11,6 +11,8 @@
 
 #include "arena/arena.hpp"
 
+#include "../../utils/logger.hpp"
+
 class Scene_Lobby : public Scene
 {
 public:
@@ -67,6 +69,6 @@ private:
     CurrentScene currentLobbyScene = CurrentScene::None;
     CurrentScene previousLobbyScene = CurrentScene::None;
 
-    int localId = 0;
-    bool validated = false;
+    // uint32_t localId = 0;
+    // bool validated = false;
 };

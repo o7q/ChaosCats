@@ -12,81 +12,8 @@ CurrentScene Scene_LobbyArena::run()
 
     if (update())
     {
-        if (client.isConnectedToServer())
-        {
-            while (!client.incoming().empty())
-            {
-                auto message = client.incoming().pop_front().message;
+        handlePackets();
 
-                switch (message.header.id)
-                {
-                case GameMessages::Server2C_Validated:
-                {
-                    PlayerData new_pf;
-                    net::Message<GameMessages> joinPacket;
-                    joinPacket.header.id = GameMessages::Client2S_Register;
-                    joinPacket << new_pf;
-                    client.sendMessageToServer(joinPacket);
-                }
-                break;
-                case GameMessages::Server2C_AssignID:
-                {
-                    message >> localId;
-                    Logger::log(Logger::LogType::Info, "lobby-net", "Recieved new id from server: " + std::to_string(localId));
-                }
-                break;
-                case GameMessages::Server2C_AddPlayer:
-                {
-                    PlayerData pf;
-                    message >> pf;
-
-                    Player *player = new Player(renderWindow, world, ASSETS.TEXTURES.TEST_PLAYER_TEXTURE, sf::Vector2f(100, -1));
-
-                    player->setID(pf.id);
-                    player->setPosition(pf.position.x, pf.position.y);
-
-                    players.insert_or_assign(pf.id, player);
-
-                    if (player->getPlayerData().id == localId)
-                    {
-                        validated = true;
-                    }
-
-                    Logger::log(Logger::LogType::Info, "lobby-net", "Player joined server: " + std::to_string(player->getPlayerData().id));
-                }
-                break;
-                case GameMessages::Server2C_MovePlayer:
-                {
-                    PlayerData pf;
-                    message >> pf;
-
-                    if (players.find(pf.id) != players.end())
-                    {
-                        players[pf.id]->setPosition(pf.position.x, pf.position.y);
-                    }
-                }
-                break;
-                case GameMessages::Server2C_RemovePlayer:
-                {
-                    uint32_t id;
-                    message >> id;
-
-                    if (players.find(id) != players.end())
-                    {
-                        if (players[id] != nullptr)
-                        {
-                            delete players[id];
-                        }
-
-                        players.erase(id);
-                    }
-                }
-                break;
-                default:
-                    break;
-                }
-            }
-        }
         Particle drawParticle;
         drawParticle.color = sf::Color(255, 255, 0, 255);
         drawParticle.matterType = MatterType::Solid;

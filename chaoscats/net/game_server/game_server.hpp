@@ -5,13 +5,14 @@
 
 #include "../framework/net.hpp"
 #include "../messages.hpp"
-#include "../packets/player.hpp"
+#include "../data/player.hpp"
+#include "../../utils/map.hpp"
 
 class GameServer : public net::ServerInterface<GameMessages>
 {
 public:
     std::unordered_map<uint32_t, PlayerData> serverPlayers;
-    std::vector<uint32_t> garbageIds;
+    std::vector<uint32_t> husks;
 
     GameServer(uint16_t nPort) : net::ServerInterface<GameMessages>(nPort)
     {
@@ -40,10 +41,10 @@ public:
 
         if (client != nullptr)
         {
-            if (serverPlayers.find(id) != serverPlayers.end())
+            if (!mapContains(serverPlayers, id))
             {
                 serverPlayers.erase(id);
-                garbageIds.push_back(id);
+                husks.push_back(id);
             }
         }
     }
