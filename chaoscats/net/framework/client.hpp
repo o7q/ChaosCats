@@ -2,9 +2,8 @@
 
 #include "common.hpp"
 
-namespace jnet
+namespace net
 {
-    // Client
     template <typename T>
     class ClientInterface
     {

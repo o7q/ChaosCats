@@ -2,9 +2,8 @@
 
 #include "common.hpp"
 
-namespace jnet
+namespace net
 {
-    // Queue
     template <typename T>
     class TSQueue
     {

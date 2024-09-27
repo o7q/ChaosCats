@@ -9,7 +9,9 @@ enum class CurrentScene
 {
     None,
     MainMenu,
-    Lobby
+    Lobby,
+
+    LobbyArena
 };
 
 class Scene

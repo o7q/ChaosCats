@@ -27,9 +27,9 @@ private:
 
     AssetStorage ASSETS;
 
+    Scene *scene = nullptr;
     CurrentScene currentScene = CurrentScene::None;
     CurrentScene previousScene = CurrentScene::None;
-    Scene *scene = nullptr;
 
     const std::vector<std::string> &netArgs;
 };

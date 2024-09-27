@@ -4,7 +4,7 @@
 #include "../messages.hpp"
 #include "../packets/player.hpp"
 
-class GameClient : public jnet::ClientInterface<GameMessages>
+class GameClient : public net::ClientInterface<GameMessages>
 {
 
 };

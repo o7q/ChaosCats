@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall -O0
 
-SOURCES = $(wildcard *.cpp */*.cpp */*/*.cpp */*/*/*.cpp)
+SOURCES = $(wildcard *.cpp */*.cpp */*/*.cpp */*/*/*.cpp */*/*/*/*.cpp)
 
 SFML_ROOT = C:\CppLibs\SFML\SFML-2.6.1_shared
 SFML_INCLUDE = -I "$(SFML_ROOT)/include"

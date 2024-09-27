@@ -5,9 +5,8 @@
 #include "message.hpp"
 #include "connection.hpp"
 
-namespace jnet
+namespace net
 {
-    // Server
     template <typename T>
     class ServerInterface
     {

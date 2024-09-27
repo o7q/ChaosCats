@@ -1,42 +1,32 @@
 #pragma once
 
 #include <thread>
-#include <thread>
 #include <atomic>
-
-#include <unordered_map>
 
 #include "../scene.hpp"
 #include "../../rendering/draw.hpp"
-#include "../../math/geometry/geometry_common.hpp"
-
-#include "../../object/player/player.hpp"
-#include "../../world/world.hpp"
-#include "../../world/camera.hpp"
 
 #include "../../net/game_client/game_client.hpp"
 #include "../../net/game_server/game_server.hpp"
 
+#include "arena/arena.hpp"
+
 class Scene_Lobby : public Scene
 {
 public:
-    Scene_Lobby(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, AssetStorage &ASSETS, const std::vector<std::string> &netArgs) : Scene(renderWindow, windowInfo, ASSETS), netArgs(netArgs)
+    Scene_Lobby(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, AssetStorage &ASSETS, const std::vector<std::string> &netArgs) : Scene(renderWindow, windowInfo, ASSETS),
+                                                                                                                                         netArgs(netArgs)
     {
         keepServer.store(false);
     }
     ~Scene_Lobby()
     {
-        std::cout << "delete arena" << std::endl;
+        std::cout << "delete lobby" << std::endl;
 
-        for (auto &pair : players)
+        if (lobbyScene != nullptr)
         {
-            std::cout << "deleting " << pair.second->getPlayerData().id << std::endl;
-            delete pair.second;
+            delete lobbyScene;
         }
-        players.clear();
-
-        delete world;
-        delete worldCamera;
     }
 
     CurrentScene run() override;
@@ -65,9 +55,6 @@ public:
     }
 
 private:
-    WorldCamera *worldCamera = nullptr;
-    World *world = nullptr;
-
     const std::vector<std::string> &netArgs;
 
     GameClient gameClient;
@@ -76,7 +63,9 @@ private:
     std::atomic<bool> keepServer;
     std::thread serverThread;
 
-    std::unordered_map<int, Player *> players;
+    Scene *lobbyScene = nullptr;
+    CurrentScene currentLobbyScene = CurrentScene::None;
+    CurrentScene previousLobbyScene = CurrentScene::None;
 
     int localId = 0;
     bool validated = false;

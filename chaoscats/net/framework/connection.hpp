@@ -4,9 +4,8 @@
 #include "tsqueue.hpp"
 #include "message.hpp"
 
-namespace jnet
+namespace net
 {
-    // Connection
     // Forward declare
     template <typename T>
     class ServerInterface;
@@ -61,7 +60,7 @@ namespace jnet
         }
 
     public:
-        void connectToClient(jnet::ServerInterface<T> *server, uint32_t uid = 0)
+        void connectToClient(net::ServerInterface<T> *server, uint32_t uid = 0)
         {
             if (m_ownerType == Owner::Server)
             {
@@ -314,7 +313,7 @@ namespace jnet
                               });
         }
 
-        void readValidation(jnet::ServerInterface<T> *server = nullptr)
+        void readValidation(net::ServerInterface<T> *server = nullptr)
         {
             asio::async_read(m_socket, asio::buffer(&m_handshakeIn, sizeof(uint64_t)),
                              [this, server](std::error_code ec, std::size_t length)

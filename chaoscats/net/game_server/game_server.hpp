@@ -7,53 +7,80 @@
 #include "../messages.hpp"
 #include "../packets/player.hpp"
 
-class GameServer : public jnet::ServerInterface<GameMessages>
+class GameServer : public net::ServerInterface<GameMessages>
 {
 public:
-    std::unordered_map<int, PlayerData> serverPlayers;
+    std::unordered_map<uint32_t, PlayerData> serverPlayers;
+    std::vector<uint32_t> garbageIds;
 
-    GameServer(uint16_t nPort) : jnet::ServerInterface<GameMessages>(nPort)
+    GameServer(uint16_t nPort) : net::ServerInterface<GameMessages>(nPort)
     {
     }
     ~GameServer()
     {
     }
 
-    bool onClientConnect(std::shared_ptr<jnet::Connection<GameMessages>> client) override
+    bool onClientConnect(std::shared_ptr<net::Connection<GameMessages>> client) override
     {
         return true;
     }
 
-    void onClientValidated(std::shared_ptr<jnet::Connection<GameMessages>> client) override
+    void onClientValidated(std::shared_ptr<net::Connection<GameMessages>> client) override
     {
         Logger::log(Logger::LogType::Info, "gameserver", "Client validated, sending new ID");
-        jnet::Message<GameMessages> validatedMessage;
+        net::Message<GameMessages> validatedMessage;
         validatedMessage.header.id = GameMessages::Server2C_Validated;
         sendMessageToClient(client, validatedMessage);
     }
 
-    void onClientDisconnect(std::shared_ptr<jnet::Connection<GameMessages>> client) override
+    void onClientDisconnect(std::shared_ptr<net::Connection<GameMessages>> client) override
     {
-        Logger::log(Logger::LogType::Info, "gameserver", "Client disconnected, purging: " + std::to_string(client->getID()));
+        uint32_t id = client->getID();
+        Logger::log(Logger::LogType::Info, "gameserver", "Client disconnected, purging: " + std::to_string(id));
+
+        if (client != nullptr)
+        {
+            if (serverPlayers.find(id) != serverPlayers.end())
+            {
+                serverPlayers.erase(id);
+                garbageIds.push_back(id);
+            }
+        }
     }
 
-    void onMessage(std::shared_ptr<jnet::Connection<GameMessages>> client, jnet::Message<GameMessages> &message) override
+    void onMessage(std::shared_ptr<net::Connection<GameMessages>> client, net::Message<GameMessages> &message) override
     {
+        player_connect_purgeHusks();
+
         switch (message.header.id)
         {
         case GameMessages::Client2S_Register:
         {
-            handlePlayerRegister(client, message);
+            player_connect_handleRegister(client, message);
         }
         break;
         case GameMessages::Client2S_Move:
         {
-            handlePlayerMove(client, message);
+            player_action_handleMove(client, message);
         }
         break;
+        default:
+            break;
         }
     }
 
-    void handlePlayerRegister(std::shared_ptr<jnet::Connection<GameMessages>> &client, jnet::Message<GameMessages> &message);
-    void handlePlayerMove(std::shared_ptr<jnet::Connection<GameMessages>> &client, jnet::Message<GameMessages> &message);
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+
+    void player_connect_purgeHusks();
+    void player_connect_handleRegister(std::shared_ptr<net::Connection<GameMessages>> &client, net::Message<GameMessages> &message);
+    void player_action_handleMove(std::shared_ptr<net::Connection<GameMessages>> &client, net::Message<GameMessages> &message);
 };
