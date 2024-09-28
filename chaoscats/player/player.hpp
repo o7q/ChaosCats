@@ -101,8 +101,8 @@ public:
         bool collisionHappened = false;
         for (EdgeData edge : collisionMesh)
         {
-            bool bottomCollision = handleBottomCollision(pf.position, velocity, collisionBox, edge, bottomCollisionPoint, dt);
-            bool topCollision = handleTopCollision(pf.position, velocity, collisionBox, edge, topCollisionPoint, dt);
+            bool bottomCollision = handleBottomCollision(playerData.position, velocity, collisionBox, edge, bottomCollisionPoint, dt);
+            bool topCollision = handleTopCollision(playerData.position, velocity, collisionBox, edge, topCollisionPoint, dt);
 
             if (bottomCollision || topCollision)
             {
@@ -112,22 +112,22 @@ public:
 
         if (!collisionHappened)
         {
-            pf.position.y += velocity.y * dt;
-            pf.position.x += velocity.x * dt;
+            playerData.position.y += velocity.y * dt;
+            playerData.position.x += velocity.x * dt;
         }
 
-        setPosition(pf.position.x, pf.position.y);
+        setPosition(playerData.position.x, playerData.position.y);
 
-        // sf::Vector2i mouseLoc = sf::Mouse::getPosition(renderWindow);
-        // weapon->aim(position.x, position.y, mouseLoc.x, mouseLoc.y);
+        sf::Vector2i mouseLoc = sf::Mouse::getPosition(renderWindow);
+        weapon->aim(playerData.position.x, playerData.position.y, mouseLoc.x, mouseLoc.y);
     }
 
     void setPosition(float x, float y)
     {
-        pf.position.x = x;
-        pf.position.y = y;
+        playerData.position.x = x;
+        playerData.position.y = y;
 
-        collisionBox.setPosition(pf.position.x, pf.position.y);
+        collisionBox.setPosition(playerData.position.x, playerData.position.y);
 
         bottomCollisionPoint.x = collisionBox.getPosition().x;
         bottomCollisionPoint.y = collisionBox.getPosition().y + collisionBox.half_size.h;
@@ -138,12 +138,12 @@ public:
 
     void setID(int id)
     {
-        pf.id = id;
+        playerData.id = id;
     }
 
     PlayerData getPlayerData()
     {
-        return pf;
+        return playerData;
     }
 
     void render(WorldCamera *camera)
@@ -157,7 +157,7 @@ public:
         drawPoint(renderWindow, bottomCollisionPoint, sf::Color(255, 0, 0, 255));
         drawPoint(renderWindow, topCollisionPoint, sf::Color(255, 0, 0, 255));
 
-        // weapon->render(position.x, position.y);
+        weapon->render(playerData.position.x, playerData.position.y);
     }
 
 protected:
@@ -170,7 +170,7 @@ protected:
     Point<float> bottomCollisionPoint;
     Point<float> topCollisionPoint;
 
-    PlayerData pf;
+    PlayerData playerData;
     Point<float> velocity;
 
     float playerSpeed = 6.0f;

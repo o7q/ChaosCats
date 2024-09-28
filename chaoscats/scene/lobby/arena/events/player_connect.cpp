@@ -25,6 +25,8 @@ void Scene_LobbyArena::player_connect_handleAdd(net::Message<GameMessages> &mess
     player->setID(pf.id);
     player->setPosition(pf.position.x, pf.position.y);
 
+    player->pickupWeapon(ASSETS.TEXTURES.WEAPON_SHOTGUN_TEXTURE);
+
     players.insert_or_assign(pf.id, player);
 
     if (player->getPlayerData().id == localId)

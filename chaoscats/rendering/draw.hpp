@@ -66,6 +66,6 @@ void drawPoint(sf::RenderWindow &renderWindow, Point<T> point, sf::Color color =
     renderWindow.draw(circle);
 }
 
-void drawTexture(sf::RenderWindow &renderWindow, sf::Texture texture, sf::Vector2f position, sf::Vector2f size, float rotation = 0.0f, bool flip = false);
+void drawTexture(sf::RenderWindow &renderWindow, sf::Texture texture, sf::Vector2f position, sf::Vector2f size, float rotation = 0.0f, sf::Vector2i flipVector = sf::Vector2i(1, 1));
 void drawText(sf::RenderWindow &renderWindow, const std::string &textString, sf::Font &font, sf::Vector2f position, int characterSize = 24, sf::Color color = sf::Color(255, 255, 255, 255));
 sf::Vector2f imageAspect(sf::Texture &texture, sf::Vector2f size);

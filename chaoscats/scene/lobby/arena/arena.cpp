@@ -7,7 +7,7 @@ CurrentScene Scene_LobbyArena::run()
         Logger::log(Logger::LogType::Info, "lobby-arena", "Initializing lobby arena");
 
         worldCamera = new WorldCamera();
-        world = new World(renderWindow, 256, 144, 5);
+        world = new World(renderWindow, windowInfo, 256, 144, 5);
     }
 
     if (update())

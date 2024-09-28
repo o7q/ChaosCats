@@ -18,12 +18,10 @@ public:
     }
     virtual ~Shotgun()
     {
-
     }
 
     void shoot() override
     {
-
     }
 
     void aim(float playerX, float playerY, float aimX, float aimY) override
@@ -39,6 +37,12 @@ public:
 
     void render(float x, float y) override
     {
-        drawTexture(renderWindow, weaponTexture, sf::Vector2f(x, y), sf::Vector2f(40, -1), rotation, true);
+        sf::Vector2i rotateVector(1, 1);
+        if (rotation > 90 && rotation < 270)
+        {
+            rotateVector = sf::Vector2i(1, -1);
+        }
+
+        drawTexture(renderWindow, weaponTexture, sf::Vector2f(x, y), sf::Vector2f(120, -1), rotation, rotateVector);
     }
 };

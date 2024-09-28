@@ -12,6 +12,8 @@
 
 #include "camera.hpp"
 
+#include "../window/window_info.hpp"
+
 struct BoundRules
 {
     BoundRules(int x, int y, int mx, int my)
@@ -37,7 +39,7 @@ enum class DrawShape
 class World
 {
 public:
-    World(sf::RenderWindow &renderWindow, int width, int height, int pixelSize = 10) : renderWindow(renderWindow), particles(height, width)
+    World(sf::RenderWindow &renderWindow, WindowInfo& windowInfo, int width, int height, int pixelSize = 10) : renderWindow(renderWindow), windowInfo(windowInfo), particles(height, width)
     {
         this->width = width;
         this->height = height;
@@ -53,7 +55,6 @@ public:
 
         shader.setUniform("tex", worldTexture);
         shader.setUniform("texSize", sf::Vector2f(width, height));
-        shader.setUniform("resolution", renderWindow.getView().getSize());
 
         quad.resize(4);
         quad.setPrimitiveType(sf::Quads);
@@ -89,6 +90,7 @@ public:
     {
         worldTexture.update(worldPixels);
 
+        shader.setUniform("resolution", sf::Vector2f(windowInfo.WIDTH, windowInfo.HEIGHT));
         shader.setUniform("translation", sf::Vector2f(0, 0));
         shader.setUniform("zoom", 1.0f);
 
@@ -96,7 +98,7 @@ public:
 
         for (EdgeData edge : collisionMesh)
         {
-            drawSegment(renderWindow, edge.segment, sf::Color(0, 255, 255, 255));
+            drawSegment(renderWindow, Segment<float>(Point<float>(edge.segment.p1.x, edge.segment.p1.y * windowInfo.ASPECT), Point<float>(edge.segment.p2.x, edge.segment.p2.y * windowInfo.ASPECT)), sf::Color(0, 255, 255, 255));
         }
     }
 
@@ -185,6 +187,7 @@ public:
 
 private:
     sf::RenderWindow &renderWindow;
+    WindowInfo& windowInfo;
 
     Matrix<Particle> particles;
 

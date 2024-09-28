@@ -32,10 +32,6 @@ GameWindow::GameWindow(const std::string &name, int width, int height, const std
             case sf::Event::LostFocus:
                 windowInfo.IS_FOCUSED = false;
                 break;
-            case sf::Event::Resized:
-                visibleArea = sf::FloatRect(0.0f, 0.0f, event.size.width, event.size.height);
-                renderWindow.setView(sf::View(visibleArea));
-                break;
             default:
                 break;
             }
@@ -53,5 +49,9 @@ GameWindow::GameWindow(const std::string &name, int width, int height, const std
         clock_t end = clock();
         windowInfo.FRAMERATE = std::round(1 / (static_cast<float>(end - start) / CLOCKS_PER_SEC));
         windowInfo.DELTA_TIME = 60.0f / windowInfo.FRAMERATE;
+        sf::Vector2u windowSize = renderWindow.getSize();
+        windowInfo.WIDTH = windowSize.x;
+        windowInfo.HEIGHT = windowSize.y;
+        windowInfo.ASPECT = windowSize.y / static_cast<float>(windowSize.x);
     }
 }
