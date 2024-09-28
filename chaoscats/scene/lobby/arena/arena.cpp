@@ -12,7 +12,7 @@ CurrentScene Scene_LobbyArena::run()
 
     if (update())
     {
-        handlePackets();
+        handleIncomingPackets();
 
         Particle drawParticle;
         drawParticle.color = sf::Color(255, 255, 0, 255);
@@ -46,13 +46,22 @@ CurrentScene Scene_LobbyArena::run()
         world->update();
         world->render(worldCamera);
 
-        if (validated)
+        // packet limiter, only allows packets to send at 'packetSendRate'
+        if (packetSendCounter > windowInfo.FRAMERATE / packetSendRate)
+        {
+            packetCanSend = true;
+            packetSendCounter = 0;
+        }
+
+        // update local player
+        if (mapContains(players, localId))
         {
             players[localId]->update(windowInfo.DELTA_TIME, windowInfo);
-            net::Message<GameMessages> movePacket;
-            movePacket.header.id = GameMessages::Client2S_Move;
-            movePacket << players[localId]->getPlayerData();
-            client.sendMessageToServer(movePacket);
+
+            if (packetCanSend)
+            {
+                client_player_action_handleMove();
+            }
         }
 
         if (!players.empty())
@@ -69,6 +78,9 @@ CurrentScene Scene_LobbyArena::run()
                                    "   /   ZX: " + std::to_string(worldCamera->getZoomX()) +
                                    "   ZY: " + std::to_string(worldCamera->getZoomY());
         drawText(renderWindow, positionInfo, ASSETS.FONTS.ALAGARD_FONT, sf::Vector2f(0, 720 - 30), 15);
+
+        ++packetSendCounter;
+        packetCanSend = false;
     }
 
     return CurrentScene::LobbyArena;

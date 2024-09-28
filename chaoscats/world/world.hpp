@@ -98,7 +98,7 @@ public:
 
         for (EdgeData edge : collisionMesh)
         {
-            drawSegment(renderWindow, Segment<float>(Point<float>(edge.segment.p1.x, edge.segment.p1.y * windowInfo.ASPECT), Point<float>(edge.segment.p2.x, edge.segment.p2.y * windowInfo.ASPECT)), sf::Color(0, 255, 255, 255));
+            drawSegment(renderWindow, edge.segment), sf::Color(0, 255, 255, 255);
         }
     }
 

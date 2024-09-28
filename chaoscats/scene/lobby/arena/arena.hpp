@@ -52,7 +52,7 @@ private:
     bool validated = false;
 
 protected:
-    void handlePackets()
+    void handleIncomingPackets()
     {
         if (client.isConnectedToServer())
         {
@@ -64,27 +64,27 @@ protected:
                 {
                 case GameMessages::Server2C_Validated:
                 {
-                    player_connect_handleValidate(message);
+                    server_player_connect_handleValidate(message);
                 }
                 break;
                 case GameMessages::Server2C_AssignID:
                 {
-                    player_connect_handleAssignID(message);
+                    server_player_connect_handleAssignID(message);
                 }
                 break;
                 case GameMessages::Server2C_AddPlayer:
                 {
-                    player_connect_handleAdd(message);
+                    server_player_connect_handleAdd(message);
                 }
                 break;
                 case GameMessages::Server2C_RemovePlayer:
                 {
-                    player_connect_handleRemove(message);
+                    server_player_connect_handleRemove(message);
                 }
                 break;
                 case GameMessages::Server2C_MovePlayer:
                 {
-                    player_action_handleMove(message);
+                    server_player_action_handleMove(message);
                 }
                 break;
                 default:
@@ -94,10 +94,17 @@ protected:
         }
     }
 
-    void player_connect_handleValidate(net::Message<GameMessages> &message);
-    void player_connect_handleAssignID(net::Message<GameMessages> &message);
-    void player_connect_handleAdd(net::Message<GameMessages> &message);
-    void player_connect_handleRemove(net::Message<GameMessages> &message);
+    void server_player_connect_handleValidate(net::Message<GameMessages> &message);
+    void server_player_connect_handleAssignID(net::Message<GameMessages> &message);
+    void server_player_connect_handleAdd(net::Message<GameMessages> &message);
+    void server_player_connect_handleRemove(net::Message<GameMessages> &message);
 
-    void player_action_handleMove(net::Message<GameMessages> &message);
+    void server_player_action_handleMove(net::Message<GameMessages> &message);
+
+    void client_player_action_handleMove();
+
+protected:
+    const int packetSendRate = 60;
+    int packetSendCounter = 0;
+    bool packetCanSend = false;
 };
