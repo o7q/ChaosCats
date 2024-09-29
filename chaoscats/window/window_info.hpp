@@ -1,5 +1,10 @@
 #pragma once
 
+struct InputInfo
+{
+    bool MOUSE_CLICKED = false;
+};
+
 struct WindowInfo
 {
     int FRAMERATE = 0;
@@ -10,4 +15,6 @@ struct WindowInfo
     unsigned int HEIGHT = 1;
 
     bool IS_FOCUSED = true;
+
+    InputInfo INPUT_INFO;
 };

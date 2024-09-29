@@ -20,7 +20,7 @@ void Scene_LobbyArena::server_player_connect_handleAdd(net::Message<GameMessages
     PlayerData playerData;
     message >> playerData;
 
-    Player *player = new Player(renderWindow, world, ASSETS.TEXTURES.TEST_PLAYER_TEXTURE, sf::Vector2f(100, -1));
+    Player *player = new Player(renderWindow, windowInfo, world, ASSETS.TEXTURES.TEST_PLAYER_TEXTURE, sf::Vector2f(100, -1));
 
     player->setID(playerData.id);
     player->setPosition(playerData.position.x, playerData.position.y);

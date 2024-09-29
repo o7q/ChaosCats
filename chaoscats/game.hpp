@@ -20,10 +20,11 @@ public:
 
 private:
     void update();
+    void handleInput();
 
     sf::RenderWindow renderWindow;
     sf::View view;
-    WindowInfo windowInfo;
+    WindowInfo WINDOW_INFO;
 
     AssetStorage ASSETS;
 

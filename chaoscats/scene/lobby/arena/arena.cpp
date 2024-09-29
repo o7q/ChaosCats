@@ -61,7 +61,7 @@ CurrentScene Scene_LobbyArena::run()
         // update local player
         if (mapContains(players, localId))
         {
-            players[localId]->update(windowInfo.DELTA_TIME, windowInfo);
+            players[localId]->update();
 
             // packet senders in this conditional will be sent at a constant rate: 'packetSendRate'
             if (packetCanSend)

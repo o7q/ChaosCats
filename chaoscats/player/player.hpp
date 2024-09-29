@@ -4,8 +4,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "../object/weapon.hpp"
-#include "../object/weapons/shotgun.hpp"
+#include "../weapons/weapons/shotgun.hpp"
 
 #include "../world/world.hpp"
 #include "../world/collision/collision.hpp"
@@ -18,7 +17,9 @@
 class Player
 {
 public:
-    Player(sf::RenderWindow &renderWindow, World *world, sf::Texture &playerTexture, sf::Vector2f size) : renderWindow(renderWindow), playerTexture(playerTexture)
+    Player(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, World *world, sf::Texture &playerTexture, sf::Vector2f size) : renderWindow(renderWindow),
+                                                                                                                                  windowInfo(windowInfo),
+                                                                                                                                  playerTexture(playerTexture)
     {
         this->world = world;
         playerSize = imageAspect(playerTexture, size);
@@ -31,10 +32,10 @@ public:
 
     void pickupWeapon(sf::Texture &texture)
     {
-        weapon = new Shotgun(texture, renderWindow);
+        weapon = new Shotgun(renderWindow, windowInfo, world, texture);
     }
 
-    void update(float dt, WindowInfo &windowInfo)
+    void update()
     {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
         {
@@ -61,7 +62,7 @@ public:
         case PlayerCollisionType::None:
             if (velocity.y < 10.0f)
             {
-                velocity.y += 1.0f * dt;
+                velocity.y += 1.0f * windowInfo.DELTA_TIME;
             }
             break;
         case PlayerCollisionType::Solid:
@@ -101,8 +102,8 @@ public:
         bool collisionHappened = false;
         for (EdgeData edge : collisionMesh)
         {
-            bool bottomCollision = handleBottomCollision(playerData.position, velocity, collisionBox, edge, bottomCollisionPoint, dt);
-            bool topCollision = handleTopCollision(playerData.position, velocity, collisionBox, edge, topCollisionPoint, dt);
+            bool bottomCollision = handleBottomCollision(playerData.position, velocity, collisionBox, edge, bottomCollisionPoint, windowInfo.DELTA_TIME);
+            bool topCollision = handleTopCollision(playerData.position, velocity, collisionBox, edge, topCollisionPoint, windowInfo.DELTA_TIME);
 
             if (bottomCollision || topCollision)
             {
@@ -112,14 +113,16 @@ public:
 
         if (!collisionHappened)
         {
-            playerData.position.y += velocity.y * dt;
-            playerData.position.x += velocity.x * dt;
+            playerData.position.y += velocity.y * windowInfo.DELTA_TIME;
+            playerData.position.x += velocity.x * windowInfo.DELTA_TIME;
         }
 
         setPosition(playerData.position.x, playerData.position.y);
 
         sf::Vector2i mouseLoc = sf::Mouse::getPosition(renderWindow);
-        weapon->aim(playerData.position.x, playerData.position.y, mouseLoc.x, mouseLoc.y);
+        weapon->update(playerData.position.x, playerData.position.y, mouseLoc.x, mouseLoc.y);
+
+        weapon->shoot();
     }
 
     void setPosition(float x, float y)
@@ -153,7 +156,6 @@ public:
         drawSegment(renderWindow, collisionBox.segments[1], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
         drawSegment(renderWindow, collisionBox.segments[2], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
         drawSegment(renderWindow, collisionBox.segments[3], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
-        // drawTexture(renderWindow, playerTexture, sf::Vector2f(position.x, position.y), sf::Vector)
         drawPoint(renderWindow, bottomCollisionPoint, sf::Color(255, 0, 0, 255));
         drawPoint(renderWindow, topCollisionPoint, sf::Color(255, 0, 0, 255));
 
@@ -162,6 +164,8 @@ public:
 
 protected:
     sf::RenderWindow &renderWindow;
+    WindowInfo &windowInfo;
+
     World *world = nullptr;
     sf::Texture &playerTexture;
     sf::Vector2f playerSize;
