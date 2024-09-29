@@ -5,6 +5,7 @@ enum class GameMessages
     // client to server messages
     Client2S_Register,
     Client2S_Move,
+    Client2S_ModifyWorld,
 
     //
     //
@@ -22,5 +23,6 @@ enum class GameMessages
     Server2C_AssignID,
     Server2C_AddPlayer,
     Server2C_RemovePlayer,
-    Server2C_MovePlayer
+    Server2C_MovePlayer,
+    Server2C_ModifyWorld
 };

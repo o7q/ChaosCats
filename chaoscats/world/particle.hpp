@@ -31,6 +31,7 @@ struct Particle
     PhysicsType physicsType = PhysicsType::None;
     MatterType matterType = MatterType::None;
     PlayerCollisionType playerCollisionType = PlayerCollisionType::None;
+    bool unbreakable = false;
 
     sf::Color color = sf::Color(0, 0, 0, 0);
 

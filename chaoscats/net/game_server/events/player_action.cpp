@@ -12,3 +12,11 @@ void GameServer::player_action_handleMove(std::shared_ptr<net::Connection<GameMe
     movePacket << playerData;
     sendMessageToAllClients(movePacket, client);
 }
+
+void GameServer::player_action_handleWorldModify(std::shared_ptr<net::Connection<GameMessages>> &client, net::Message<GameMessages> &message)
+{
+    net::Message<GameMessages> worldModifyPacket = message;
+    worldModifyPacket.header.id = GameMessages::Server2C_ModifyWorld;
+
+    sendMessageToAllClients(worldModifyPacket, client);
+}

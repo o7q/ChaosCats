@@ -12,7 +12,7 @@ void Scene_LobbyArena::server_player_connect_handleValidate(net::Message<GameMes
 void Scene_LobbyArena::server_player_connect_handleAssignID(net::Message<GameMessages> &message)
 {
     message >> localId;
-    Logger::log(Logger::LogType::Info, "lobby-net", "Recieved new id from server: " + std::to_string(localId));
+    Logger::log(Logger::LogType::Info, "lobby", "Recieved new id from server: " + std::to_string(localId));
 }
 
 void Scene_LobbyArena::server_player_connect_handleAdd(net::Message<GameMessages> &message)
@@ -34,7 +34,7 @@ void Scene_LobbyArena::server_player_connect_handleAdd(net::Message<GameMessages
         validated = true;
     }
 
-    Logger::log(Logger::LogType::Info, "lobby-net", "Player joined server: " + std::to_string(player->getPlayerData().id));
+    Logger::log(Logger::LogType::Info, "lobby", "Player joined server: " + std::to_string(player->getPlayerData().id));
 }
 
 void Scene_LobbyArena::server_player_connect_handleRemove(net::Message<GameMessages> &message)

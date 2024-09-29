@@ -183,7 +183,7 @@ namespace net
                                       // for now simply assume the connection has died by closing the
                                       // socket. When a future attempt to write to this client fails due
                                       // to the closed socket, it will be tidied up.
-                                      Logger::log(Logger::LogType::Warning, "connection:" + std::to_string(id), "Write header fail");
+                                      Logger::log(Logger::LogType::Warning, "net-connection", "Write header fail: " + std::to_string(id));
                                       m_socket.close();
                                   }
                               });
@@ -214,7 +214,7 @@ namespace net
                                   else
                                   {
                                       // Sending failed, see WriteHeader() equivalent for description :P
-                                      Logger::log(Logger::LogType::Warning, "connection:" + std::to_string(id), "Write body fail");
+                                      Logger::log(Logger::LogType::Warning, "net-connection", "Write body fail: " + std::to_string(id));
                                       m_socket.close();
                                   }
                               });
@@ -253,7 +253,7 @@ namespace net
                                  {
                                      // Reading form the client went wrong, most likely a disconnect
                                      // has occurred. Close the socket and let the system tidy it up later.
-                                     Logger::log(Logger::LogType::Warning, "connection:" + std::to_string(id), "Read header fail");
+                                     Logger::log(Logger::LogType::Warning, "net-connection", "Read header fail: " + std::to_string(id));
                                      m_socket.close();
                                  }
                              });
@@ -277,7 +277,7 @@ namespace net
                                  else
                                  {
                                      // As above!
-                                     Logger::log(Logger::LogType::Warning, "connection:" + std::to_string(id), "Read body fail");
+                                     Logger::log(Logger::LogType::Warning, "net-connection", "Read body fail: " + std::to_string(id));
                                      m_socket.close();
                                  }
                              });
@@ -328,7 +328,7 @@ namespace net
                                          if (m_handshakeIn == m_handshakeCheck)
                                          {
                                              // Client has provided valid solution, so allow it to connect properly
-                                             Logger::log(Logger::LogType::Info, "connection", "Client Validated");
+                                             Logger::log(Logger::LogType::Info, "net-connection", "Client Validated");
                                              server->onClientValidated(this->shared_from_this());
 
                                              // Sit waiting to receive data now
@@ -337,7 +337,7 @@ namespace net
                                          else
                                          {
                                              // Client gave incorrect data, so disconnect
-                                             Logger::log(Logger::LogType::Warning, "connection", "Client Disconnected (FailValidation)");
+                                             Logger::log(Logger::LogType::Warning, "net-connection", "Client Disconnected (FailValidation)");
                                              m_socket.close();
                                          }
                                      }
@@ -353,7 +353,7 @@ namespace net
                                  else
                                  {
                                      // Some biggerfailure occured
-                                     Logger::log(Logger::LogType::Warning, "connection", "Client Disconnected (ReadValidation)");
+                                     Logger::log(Logger::LogType::Warning, "net-connection", "Client Disconnected (ReadValidation)");
                                      m_socket.close();
                                  }
                              });

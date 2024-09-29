@@ -10,3 +10,8 @@ void Scene_LobbyArena::server_player_action_handleMove(net::Message<GameMessages
         players[playerData.id]->setPosition(playerData.position.x, playerData.position.y);
     }
 }
+
+void Scene_LobbyArena::server_player_action_handleModifyWorld(net::Message<GameMessages> &message)
+{
+    world->modify(message);
+}

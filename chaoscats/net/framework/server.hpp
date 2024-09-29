@@ -46,7 +46,7 @@ namespace net
                 return false;
             }
 
-            Logger::log(Logger::LogType::Info, "server", "Server started!");
+            Logger::log(Logger::LogType::Info, "net-server", "Server started!");
             return true;
         }
 
@@ -62,14 +62,14 @@ namespace net
                 m_threadContext.join();
             }
 
-            Logger::log(Logger::LogType::Info, "server", "Clearing deque connections");
+            Logger::log(Logger::LogType::Info, "net-server", "Clearing deque connections");
             m_dequeConnections.clear(); // <--- THIS LITTLE LINE, CAUSED ME SO MUCH TROUBLE. know this...
                                         // if omitted, the server will crash upon deconstruction
 
             m_queueMessagesIn.purge();
 
             // Inform someone, anybody, if they care...
-            Logger::log(Logger::LogType::Info, "server", "Server stopped!");
+            Logger::log(Logger::LogType::Info, "net-server", "Server stopped!");
         }
 
         // ASYNC - Instruct asio to wait for connection
@@ -85,7 +85,7 @@ namespace net
                     if (!ec)
                     {
                         // Display some useful(?) information
-                        Logger::log(Logger::LogType::Info, "server", "New connection: " + socket.remote_endpoint().address().to_string());
+                        Logger::log(Logger::LogType::Info, "net-server", "New connection: " + socket.remote_endpoint().address().to_string());
 
                         // Create a new connection to handle this client
                         std::shared_ptr<Connection<T>> newConnection =
@@ -102,11 +102,11 @@ namespace net
                             // asio context to sit and wait for bytes to arrive!
                             m_dequeConnections.back()->connectToClient(this, IDCounter++);
 
-                            Logger::log(Logger::LogType::Info, "server", "Connection approved: " + std::to_string(m_dequeConnections.back()->getID()));
+                            Logger::log(Logger::LogType::Info, "net-server", "Connection approved: " + std::to_string(m_dequeConnections.back()->getID()));
                         }
                         else
                         {
-                            Logger::log(Logger::LogType::Info, "server", "A connection was denied");
+                            Logger::log(Logger::LogType::Info, "net-server", "A connection was denied");
 
                             // Connection will go out of scope with no pending tasks, so will
                             // get destroyed automagically due to the wonder of smart pointers
@@ -115,7 +115,7 @@ namespace net
                     else
                     {
                         // Error has occurred during acceptance
-                        Logger::log(Logger::LogType::Info, "server", "Connection error: " + ec.message());
+                        Logger::log(Logger::LogType::Info, "net-server", "Connection error: " + ec.message());
                     }
 
                     // Prime the asio context with more work - again simply wait for

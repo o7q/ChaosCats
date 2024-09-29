@@ -87,6 +87,11 @@ protected:
                     server_player_action_handleMove(message);
                 }
                 break;
+                case GameMessages::Server2C_ModifyWorld:
+                {
+                    server_player_action_handleModifyWorld(message);
+                }
+                break;
                 default:
                     break;
                 }
@@ -100,6 +105,7 @@ protected:
     void server_player_connect_handleRemove(net::Message<GameMessages> &message);
 
     void server_player_action_handleMove(net::Message<GameMessages> &message);
+    void server_player_action_handleModifyWorld(net::Message<GameMessages> &message);
 
     void client_player_action_handleMove();
 

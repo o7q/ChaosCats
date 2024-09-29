@@ -6,6 +6,7 @@
 #include "../framework/net.hpp"
 #include "../messages.hpp"
 #include "../data/player.hpp"
+#include "../data/world.hpp"
 #include "../../utils/map.hpp"
 
 class GameServer : public net::ServerInterface<GameMessages>
@@ -65,6 +66,11 @@ public:
             player_action_handleMove(client, message);
         }
         break;
+        case GameMessages::Client2S_ModifyWorld:
+        {
+            player_action_handleWorldModify(client, message);
+        }
+        break;
         default:
             break;
         }
@@ -84,4 +90,5 @@ public:
     void player_connect_purgeHusks();
     void player_connect_handleRegister(std::shared_ptr<net::Connection<GameMessages>> &client, net::Message<GameMessages> &message);
     void player_action_handleMove(std::shared_ptr<net::Connection<GameMessages>> &client, net::Message<GameMessages> &message);
+    void player_action_handleWorldModify(std::shared_ptr<net::Connection<GameMessages>> &client, net::Message<GameMessages> &message);
 };

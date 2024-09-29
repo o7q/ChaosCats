@@ -20,7 +20,7 @@ private:
     {
         if (!font.loadFromFile(path))
         {
-            Logger::log(Logger::LogType::Error, "assets/fonts", "Failed to load: " + path);
+            Logger::log(Logger::LogType::Error, "loadFont", "Failed to load: " + path);
         }
     }
 };

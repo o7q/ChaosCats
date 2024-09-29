@@ -3,6 +3,8 @@
 #include <iostream>
 
 #include "particle.hpp"
+#include "camera.hpp"
+
 #include "../math/geometry/geometry_common.hpp"
 #include "../math/matrix/matrix.hpp"
 #include "../rendering/draw.hpp"
@@ -10,9 +12,13 @@
 
 #include "collision/collision_mesh.hpp"
 
-#include "camera.hpp"
-
 #include "../window/window_info.hpp"
+
+#include "../assets/maps.hpp"
+
+#include "../net/data/world.hpp"
+#include "../net/messages.hpp"
+#include "../net/framework/net.hpp"
 
 struct BoundRules
 {
@@ -39,33 +45,23 @@ enum class DrawShape
 class World
 {
 public:
-    World(sf::RenderWindow &renderWindow, WindowInfo& windowInfo, int width, int height, int pixelSize = 10) : renderWindow(renderWindow), windowInfo(windowInfo), particles(height, width)
+    World(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, Map &map, int pixelSize = 10) : renderWindow(renderWindow), windowInfo(windowInfo), particles(map.height, map.width)
+    {
+        this->width = map.width;
+        this->height = map.height;
+        this->pixelSize = pixelSize;
+
+        initWorldTexture();
+
+        createWorldFromMap(map);
+    }
+    World(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, int width, int height, int pixelSize = 10) : renderWindow(renderWindow), windowInfo(windowInfo), particles(height, width)
     {
         this->width = width;
         this->height = height;
         this->pixelSize = pixelSize;
 
-        worldPixels = new sf::Uint8[width * height * 4];
-        worldTexture.create(width, height);
-
-        if (!shader.loadFromFile("assets\\shaders\\particle\\shader.vert", "assets\\shaders\\particle\\shader.frag"))
-        {
-            std::cerr << "Failed to load shader" << std::endl;
-        }
-
-        shader.setUniform("tex", worldTexture);
-        shader.setUniform("texSize", sf::Vector2f(width, height));
-
-        quad.resize(4);
-        quad.setPrimitiveType(sf::Quads);
-        quad[0].position = sf::Vector2f(-1, -1);
-        quad[1].position = sf::Vector2f(1, -1);
-        quad[2].position = sf::Vector2f(1, 1);
-        quad[3].position = sf::Vector2f(-1, 1);
-        quad[0].texCoords = sf::Vector2f(0, 1);
-        quad[1].texCoords = sf::Vector2f(1, 1);
-        quad[2].texCoords = sf::Vector2f(1, 0);
-        quad[3].texCoords = sf::Vector2f(0, 0);
+        initWorldTexture();
 
         for (int y = 0; y < height; ++y)
         {
@@ -79,6 +75,9 @@ public:
     {
         delete[] worldPixels;
     }
+
+    void createWorldFromMap(Map &map);
+    void initWorldTexture();
 
     void update()
     {
@@ -114,6 +113,13 @@ public:
         worldPixels[index + 3] = particle.color.a;
     }
 
+    void removeParticle(int x, int y)
+    {
+        setParticle(x, y, Particle());
+    }
+
+    net::Message<GameMessages> drawParticles(int loc_x, int loc_y, Particle particle, int radius = 5, DrawShape drawShape = DrawShape::Circle);
+
     Particle getParticle(int x, int y)
     {
         if (particles.inBounds(y, x))
@@ -136,47 +142,21 @@ public:
         return Particle();
     }
 
-    void removeParticle(int x, int y)
-    {
-        setParticle(x, y, Particle());
-    }
-
     int getPixelSize()
     {
         return pixelSize;
     }
 
-    void drawParticles(int loc_x, int loc_y, Particle particle, int radius = 5, DrawShape drawShape = DrawShape::Circle)
+    void modify(net::Message<GameMessages> &message)
     {
-        switch (drawShape)
+        size_t size;
+        message >> size;
+
+        for (size_t i = 0; i < size; ++i)
         {
-        case DrawShape::Square:
-            for (int y = 0; y < radius; ++y)
-            {
-                for (int x = 0; x < radius; ++x)
-                {
-                    int x_clamped = std::clamp(loc_x + x - radius / 2, 0, width - 1);
-                    int y_clamped = std::clamp(loc_y + y - radius / 2, 0, height - 1);
-
-                    setParticle(x_clamped, y_clamped, particle);
-                }
-            }
-            break;
-        case DrawShape::Circle:
-            for (int y = loc_y - radius; y <= loc_y + radius; ++y)
-            {
-                for (int x = loc_x - radius; x <= loc_x + radius; ++x)
-                {
-                    if ((x - loc_x) * (x - loc_x) + (y - loc_y) * (y - loc_y) <= radius * radius)
-                    {
-                        int x_clamped = std::clamp(x, 0, width - 1);
-                        int y_clamped = std::clamp(y, 0, height - 1);
-
-                        setParticle(x_clamped, y_clamped, particle);
-                    }
-                }
-            }
-            break;
+            ParticleData particleData;
+            message >> particleData;
+            setParticle(particleData.worldX, particleData.worldY, particleData.particle);
         }
     }
 
@@ -187,7 +167,7 @@ public:
 
 private:
     sf::RenderWindow &renderWindow;
-    WindowInfo& windowInfo;
+    WindowInfo &windowInfo;
 
     Matrix<Particle> particles;
 

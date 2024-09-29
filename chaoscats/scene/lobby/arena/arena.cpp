@@ -1,13 +1,15 @@
 #include "arena.hpp"
 
+#include "../../../net/data/world.hpp"
+
 CurrentScene Scene_LobbyArena::run()
 {
     if (init())
     {
-        Logger::log(Logger::LogType::Info, "lobby-arena", "Initializing lobby arena");
+        Logger::log(Logger::LogType::Info, "lobby", "Initializing lobby arena");
 
         worldCamera = new WorldCamera();
-        world = new World(renderWindow, windowInfo, 256, 144, 5);
+        world = new World(renderWindow, windowInfo, ASSETS.MAPS.TEST_MAP, 5);
     }
 
     if (update())
@@ -35,12 +37,15 @@ CurrentScene Scene_LobbyArena::run()
             drawParticle.playerCollisionType = PlayerCollisionType::Solid;
         }
 
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && windowInfo.IS_FOCUSED)
         {
             sf::Vector2i localMouse = sf::Mouse::getPosition(renderWindow);
             sf::Vector2f mouseLoc;
             worldCamera->screenToWorld(localMouse.x, localMouse.y, mouseLoc.x, mouseLoc.y);
-            world->drawParticles(mouseLoc.x / 5, mouseLoc.y / 5, drawParticle, 10);
+
+            net::Message<GameMessages> updateWorldMessage = world->drawParticles(mouseLoc.x / 5, mouseLoc.y / 5, drawParticle, 2);
+            updateWorldMessage.header.id = GameMessages::Client2S_ModifyWorld;
+            client.sendMessageToServer(updateWorldMessage);
         }
 
         world->update();

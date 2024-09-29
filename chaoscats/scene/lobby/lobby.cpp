@@ -20,7 +20,7 @@ CurrentScene Scene_Lobby::run()
         // if a server, host the server, then join on the localhost
         if (netArgs[0] == "host")
         {
-            Logger::log(Logger::LogType::Info, "lobby-net", "Mode: hostserver");
+            Logger::log(Logger::LogType::Info, "lobby", "Mode: hostserver");
 
             address = "127.0.0.1";
             port = std::stoi(netArgs[1]);
@@ -36,13 +36,13 @@ CurrentScene Scene_Lobby::run()
         // if a client, join the server using the address and port specified
         else if (netArgs[0] == "join")
         {
-            Logger::log(Logger::LogType::Info, "lobby-net", "Mode: joinserver");
+            Logger::log(Logger::LogType::Info, "lobby", "Mode: joinserver");
 
             address = netArgs[1];
             port = std::stoi(netArgs[2]);
         }
 
-        Logger::log(Logger::LogType::Info, "lobby-net", "Joining " + address + ":" + std::to_string(port));
+        Logger::log(Logger::LogType::Info, "lobby", "Joining " + address + ":" + std::to_string(port));
         gameClient.connect(address, port);
 
         currentLobbyScene = CurrentScene::LobbyArena;

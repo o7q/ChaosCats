@@ -22,7 +22,7 @@ private:
     {
         if (!texture.loadFromFile(path))
         {
-            Logger::log(Logger::LogType::Error, "assets/textures", "Failed to load: " + path);
+            Logger::log(Logger::LogType::Error, "loadTexture", "Failed to load: " + path);
         }
     }
 };

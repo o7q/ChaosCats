@@ -98,7 +98,7 @@ namespace net
         // purges the queue, used on server shutdown
         void purge()
         {
-            Logger::log(Logger::LogType::Info, "tsqueue", "Purging TSQueue");
+            Logger::log(Logger::LogType::Info, "net-tsqueue", "Purging TSQueue");
 
             clear();
             terminateWait = true;
