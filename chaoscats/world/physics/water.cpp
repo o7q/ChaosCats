@@ -1,4 +1,5 @@
 #include "../world.hpp"
+#include "../../math/random/random.hpp"
 
 void World::p_water(Particle particle, int x, int y, BoundRules boundRules)
 {
@@ -48,7 +49,29 @@ void World::p_water(Particle particle, int x, int y, BoundRules boundRules)
                          color1.a / 2 + color2.a / 2);
     };
 
-    if (boundRules.canDown)
+    int randomBleedUp = Random::genInt(0, 40);
+    int randomBleedDown = Random::genInt(0, 20);
+    int randomBleedSide = Random::genInt(0, 30);
+
+    if (boundRules.canUp && randomBleedUp == 0)
+    {
+        if (particles.get(y - 1, x).isLiquid() &&
+            !hasMoved)
+        {
+            Particle tradeParticle = getParticle(x, y - 1);
+
+            sf::Color newColor = mixColor(tradeParticle.color, self.color);
+
+            Particle newParticle = self;
+            newParticle.color = newColor;
+            tradeParticle.color = newColor;
+
+            setParticle(x, y, newParticle);
+            setParticle(x, y - 1, tradeParticle);
+        }
+    }
+
+    if (boundRules.canDown && randomBleedDown == 0)
     {
         if (particles.get(y + 1, x).isLiquid() &&
             !hasMoved)
@@ -66,7 +89,7 @@ void World::p_water(Particle particle, int x, int y, BoundRules boundRules)
         }
     }
 
-    if (boundRules.canLeft)
+    if (boundRules.canLeft && randomBleedSide == 0)
     {
         if (particles.get(y, x - 1).isLiquid() &&
             !hasMoved)
@@ -84,7 +107,7 @@ void World::p_water(Particle particle, int x, int y, BoundRules boundRules)
         }
     }
 
-    if (boundRules.canRight)
+    if (boundRules.canRight && randomBleedSide == 0)
     {
         if (particles.get(y, x + 1).isLiquid() &&
             !hasMoved)

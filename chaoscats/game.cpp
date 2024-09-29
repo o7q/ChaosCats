@@ -1,6 +1,7 @@
 #include "game.hpp"
 
 #include "utils/logger.hpp"
+#include "math/random/random.hpp"
 
 GameWindow::GameWindow(const std::string &name, int width, int height, const std::vector<std::string> &netArgs) : netArgs(netArgs)
 {
@@ -10,6 +11,8 @@ GameWindow::GameWindow(const std::string &name, int width, int height, const std
 
     int maxFps = 144;
     renderWindow.setFramerateLimit(maxFps);
+
+    Random::seed();
 
     std::string fpsCountString = "";
 

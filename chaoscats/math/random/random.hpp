@@ -3,6 +3,8 @@
 #include <random>
 #include <iostream>
 
+#include "../../utils/logger.hpp"
+
 namespace Random
 {
     static std::random_device rd;
@@ -10,6 +12,7 @@ namespace Random
 
     inline void seed()
     {
+        Logger::log(Logger::LogType::Info, "random", "Seeding random");
         gen.seed(rd());
     }
 
