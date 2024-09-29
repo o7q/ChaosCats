@@ -3,7 +3,6 @@
 - Finish basic lobby system
 - Draw basic playermodel
 - Draw basic map
-- Implement map loader (load maps from images)
 - Implement first weapon
 - Get basic multiplayer to work with above additions
 - Finish camera system

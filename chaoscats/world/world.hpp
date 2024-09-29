@@ -97,7 +97,7 @@ public:
 
         for (EdgeData edge : collisionMesh)
         {
-            drawSegment(renderWindow, edge.segment), sf::Color(0, 255, 255, 255);
+            drawSegment(renderWindow, edge.segment, sf::Color(220, 220, 220, 255));
         }
     }
 
