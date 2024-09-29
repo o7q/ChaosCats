@@ -16,37 +16,37 @@ CurrentScene Scene_LobbyArena::run()
     {
         handleIncomingPackets();
 
-        Particle drawParticle;
-        drawParticle.color = sf::Color(255, 255, 0, 255);
-        drawParticle.matterType = MatterType::Solid;
-        drawParticle.physicsType = PhysicsType::Sand;
-        drawParticle.playerCollisionType = PlayerCollisionType::Solid;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-        {
-            drawParticle.color = sf::Color(0, 0, 0, 0);
-            drawParticle.matterType = MatterType::None;
-            drawParticle.physicsType = PhysicsType::None;
-            drawParticle.playerCollisionType = PlayerCollisionType::None;
-        }
+        // Particle drawParticle;
+        // drawParticle.color = sf::Color(255, 255, 0, 255);
+        // drawParticle.matterType = MatterType::Solid;
+        // drawParticle.physicsType = PhysicsType::Sand;
+        // drawParticle.playerCollisionType = PlayerCollisionType::Solid;
+        // if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+        // {
+        //     drawParticle.color = sf::Color(0, 0, 0, 0);
+        //     drawParticle.matterType = MatterType::None;
+        //     drawParticle.physicsType = PhysicsType::None;
+        //     drawParticle.playerCollisionType = PlayerCollisionType::None;
+        // }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
-        {
-            drawParticle.color = sf::Color(220, 0, 0, 255);
-            drawParticle.matterType = MatterType::Liquid;
-            drawParticle.physicsType = PhysicsType::Water;
-            drawParticle.playerCollisionType = PlayerCollisionType::None;
-        }
+        // if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+        // {
+        //     drawParticle.color = sf::Color(220, 0, 0, 255);
+        //     drawParticle.matterType = MatterType::Liquid;
+        //     drawParticle.physicsType = PhysicsType::Water;
+        //     drawParticle.playerCollisionType = PlayerCollisionType::None;
+        // }
 
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && windowInfo.IS_FOCUSED)
-        {
-            sf::Vector2i localMouse = sf::Mouse::getPosition(renderWindow);
-            sf::Vector2f mouseLoc;
-            worldCamera->screenToWorld(localMouse.x, localMouse.y, mouseLoc.x, mouseLoc.y);
+        // if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && windowInfo.IS_FOCUSED)
+        // {
+        //     sf::Vector2i localMouse = sf::Mouse::getPosition(renderWindow);
+        //     sf::Vector2f mouseLoc;
+        //     worldCamera->screenToWorld(localMouse.x, localMouse.y, mouseLoc.x, mouseLoc.y);
 
-            net::Message<GameMessages> updateWorldMessage = world->drawParticles(mouseLoc.x / 5, mouseLoc.y / 5, drawParticle, 2);
-            updateWorldMessage.header.id = GameMessages::Client2S_ModifyWorld;
-            client.sendMessageToServer(updateWorldMessage);
-        }
+        //     net::Message<GameMessages> updateWorldMessage = world->drawParticles(mouseLoc.x / 5, mouseLoc.y / 5, drawParticle, 2);
+        //     updateWorldMessage.header.id = GameMessages::Client2S_ModifyWorld;
+        //     client.sendMessageToServer(updateWorldMessage);
+        // }
 
         world->update();
         world->render(worldCamera);
@@ -63,6 +63,7 @@ CurrentScene Scene_LobbyArena::run()
         {
             players[localId]->update(windowInfo.DELTA_TIME, windowInfo);
 
+            // packet senders in this conditional will be sent at a constant rate: 'packetSendRate'
             if (packetCanSend)
             {
                 client_player_action_handleMove();
