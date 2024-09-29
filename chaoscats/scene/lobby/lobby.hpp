@@ -23,8 +23,6 @@ public:
     }
     ~Scene_Lobby()
     {
-        std::cout << "delete lobby" << std::endl;
-
         if (lobbyScene != nullptr)
         {
             delete lobbyScene;

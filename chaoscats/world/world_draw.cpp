@@ -1,6 +1,6 @@
 #include "world.hpp"
 
-net::Message<GameMessages> World::drawParticles(int loc_x, int loc_y, Particle particle, int radius = 5, DrawShape drawShape = DrawShape::Circle)
+net::Message<GameMessages> World::drawParticles(int loc_x, int loc_y, Particle particle, int radius, DrawShape drawShape)
 {
     std::vector<ParticleData> updatedParticles;
 

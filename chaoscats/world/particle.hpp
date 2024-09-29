@@ -42,6 +42,16 @@ struct Particle
                matterType == MatterType::None;
     }
 
+    bool isSolid()
+    {
+        return matterType == MatterType::Solid;
+    }
+
+    bool isLiquid()
+    {
+        return matterType == MatterType::Liquid;
+    }
+
     bool isAir()
     {
         return matterType == MatterType::Gas ||

@@ -24,12 +24,9 @@ public:
     }
     ~Scene_LobbyArena()
     {
-        std::cout << "delete arena" << std::endl;
-
         // delete local serverplayers
         for (auto &pair : players)
         {
-            std::cout << "deleting " << pair.second->getPlayerData().id << std::endl;
             delete pair.second;
         }
         players.clear();

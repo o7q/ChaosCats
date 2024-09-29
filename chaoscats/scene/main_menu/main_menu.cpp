@@ -2,11 +2,13 @@
 
 #include "main_menu.hpp"
 
+#include "../../utils/logger.hpp"
+
 CurrentScene Scene_MainMenu::run()
 {
     if (init())
     {
-        std::cout << "MainMenu init" << std::endl;
+        Logger::log(Logger::LogType::Info, "mainmenu", "Initializing main menu");
     }
 
     if (update())

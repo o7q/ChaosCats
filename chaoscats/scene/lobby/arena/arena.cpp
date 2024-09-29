@@ -31,10 +31,10 @@ CurrentScene Scene_LobbyArena::run()
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
         {
-            drawParticle.color = sf::Color(0, 0, 255, 255);
+            drawParticle.color = sf::Color(220, 0, 0, 255);
             drawParticle.matterType = MatterType::Liquid;
             drawParticle.physicsType = PhysicsType::Water;
-            drawParticle.playerCollisionType = PlayerCollisionType::Solid;
+            drawParticle.playerCollisionType = PlayerCollisionType::None;
         }
 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && windowInfo.IS_FOCUSED)
