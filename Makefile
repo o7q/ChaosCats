@@ -59,8 +59,8 @@ EXECUTABLE = ChaosCats
 # Windows-specific settings
 compile-windows-static: INCLUDES = $(SFML_INCLUDE_STATIC) $(ASIO_INCLUDE) -include "chaoscats/net/framework/net.hpp"
 compile-windows-static: LIBRARIES = $(SFML_LIBRARY_STATIC)
-compile-windows-static:
-	$(CXX) $(CXXFLAGS) $(OBJECTS) $(INCLUDES_STATIC) $(LIBRARIES_STATIC) -o $(EXECUTABLE)  \
+compile-windows-static: $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(OBJECTS) $(INCLUDES) $(LIBRARIES) -o $(EXECUTABLE)  \
 	-static \
 	$(WINDOWS_STD_LINK_STATIC) \
 	$(WINDOWS_SFML_LINK_STATIC) \
@@ -68,7 +68,7 @@ compile-windows-static:
 
 compile-windows-shared: INCLUDES = $(SFML_INCLUDE_SHARED) $(ASIO_INCLUDE) -include "chaoscats/net/framework/net.hpp"
 compile-windows-shared: LIBRARIES = $(SFML_LIBRARY_SHARED)
-compile-windows-shared:
+compile-windows-shared: $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(OBJECTS) $(INCLUDES) $(LIBRARIES) -o $(EXECUTABLE)  \
 	$(WINDOWS_SFML_LINK_SHARED) \
 	$(WINDOWS_NET_LINK)
