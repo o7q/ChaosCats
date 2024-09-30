@@ -18,38 +18,38 @@ ASIO_ROOT = C:\CppLibs\Asio\asio-1.30.2
 ASIO_INCLUDE = -I "$(ASIO_ROOT)/include"
 
 WINDOWS_STD_LINK_STATIC = -static-libstdc++ \
-				   		  -static-libgcc
+	-static-libgcc
 WINDOWS_SFML_LINK_STATIC = -DSFML_STATIC \
-						   -lsfml-window-s \
-						   -lsfml-graphics-s \
-						   -lsfml-audio-s \
-						   -lsfml-system-s \
-						   -lopengl32 \
-						   -lwinmm \
-						   -lgdi32 \
-						   -lfreetype \
-						   -lopenal32 \
-					       -lflac \
-					       -lvorbisenc \
-					       -lvorbisfile \
-					       -lvorbis \
-					       -logg
+	-lsfml-window-s \
+	-lsfml-graphics-s \
+	-lsfml-audio-s \
+	-lsfml-system-s \
+	-lopengl32 \
+	-lwinmm \
+	-lgdi32 \
+	-lfreetype \
+	-lopenal32 \
+	-lflac \
+	-lvorbisenc \
+	-lvorbisfile \
+	-lvorbis \
+	-logg
 WINDOWS_SFML_LINK_SHARED = -lsfml-window \
-						   -lsfml-graphics \
-					       -lsfml-audio \
-					       -lsfml-system \
-					       -lopengl32 \
-					       -lwinmm \
-					       -lgdi32 \
-					       -lfreetype \
-					       -lopenal32 \
-					       -lflac \
-					       -lvorbisenc \
-					       -lvorbisfile \
-					       -lvorbis \
-					       -logg
+	-lsfml-graphics \
+	-lsfml-audio \
+	-lsfml-system \
+	-lopengl32 \
+	-lwinmm \
+	-lgdi32 \
+	-lfreetype \
+	-lopenal32 \
+	-lflac \
+	-lvorbisenc \
+	-lvorbisfile \
+	-lvorbis \
+	-logg
 WINDOWS_NET_LINK = -lwsock32 \
-				   -lws2_32
+	-lws2_32
 
 EXECUTABLE = ChaosCats
 
@@ -59,7 +59,7 @@ EXECUTABLE = ChaosCats
 # Windows-specific settings
 compile-windows-static: INCLUDES = $(SFML_INCLUDE_STATIC) $(ASIO_INCLUDE) -include "chaoscats/net/framework/net.hpp"
 compile-windows-static: LIBRARIES = $(SFML_LIBRARY_STATIC)
-compile-windows-static: $(OBJECTS)
+compile-windows-static:
 	$(CXX) $(CXXFLAGS) $(OBJECTS) $(INCLUDES_STATIC) $(LIBRARIES_STATIC) -o $(EXECUTABLE)  \
 	-static \
 	$(WINDOWS_STD_LINK_STATIC) \
@@ -68,7 +68,7 @@ compile-windows-static: $(OBJECTS)
 
 compile-windows-shared: INCLUDES = $(SFML_INCLUDE_SHARED) $(ASIO_INCLUDE) -include "chaoscats/net/framework/net.hpp"
 compile-windows-shared: LIBRARIES = $(SFML_LIBRARY_SHARED)
-compile-windows-shared: $(OBJECTS)
+compile-windows-shared:
 	$(CXX) $(CXXFLAGS) $(OBJECTS) $(INCLUDES) $(LIBRARIES) -o $(EXECUTABLE)  \
 	$(WINDOWS_SFML_LINK_SHARED) \
 	$(WINDOWS_NET_LINK)
