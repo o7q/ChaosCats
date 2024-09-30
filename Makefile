@@ -19,8 +19,7 @@ ASIO_INCLUDE = -I "$(ASIO_ROOT)/include"
 
 WINDOWS_STD_LINK_STATIC = -static-libstdc++ \
 	-static-libgcc
-WINDOWS_SFML_LINK_STATIC = -DSFML_STATIC \
-	-lsfml-window-s \
+WINDOWS_SFML_LINK_STATIC = -lsfml-window-s \
 	-lsfml-graphics-s \
 	-lsfml-audio-s \
 	-lsfml-system-s \
@@ -54,7 +53,7 @@ WINDOWS_NET_LINK = -lwsock32 \
 EXECUTABLE = ChaosCats
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(INCLUDES)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(INCLUDES) -DSFML_STATIC
 
 # Windows-specific settings
 compile-windows-static: INCLUDES = $(SFML_INCLUDE_STATIC) $(ASIO_INCLUDE) -include "chaoscats/net/framework/net.hpp"
