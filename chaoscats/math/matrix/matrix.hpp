@@ -16,7 +16,7 @@ struct Matrix
         delete[] matrix;
     }
 
-    T get(int row, int col)
+    T get(int row, int col) const
     {
         return *(matrix + get1DIndex(row, col));
     }
@@ -26,17 +26,17 @@ struct Matrix
         matrix[get1DIndex(row, col)] = value;
     }
 
-    int getRowSize()
+    int getRowSize() const
     {
         return rowSize;
     }
 
-    int getColSize()
+    int getColSize() const
     {
         return colSize;
     }
 
-    bool inBounds(int row, int col)
+    bool inBounds(int row, int col) const
     {
         return row >= 0 && row < rowSize && col >= 0 && col < colSize;
     }
@@ -47,7 +47,7 @@ private:
     int rowSize = 0;
     int colSize = 0;
 
-    int get1DIndex(int row, int col)
+    int get1DIndex(int row, int col) const
     {
         return row * colSize + col;
     }

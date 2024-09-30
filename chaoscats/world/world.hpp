@@ -120,7 +120,7 @@ public:
 
     net::Message<GameMessages> drawParticles(int loc_x, int loc_y, Particle particle, int radius = 5, DrawShape drawShape = DrawShape::Circle);
 
-    Particle getParticle(int x, int y)
+    Particle getParticle(int x, int y) const
     {
         if (particles.inBounds(y, x))
         {
@@ -130,24 +130,30 @@ public:
         return Particle();
     }
 
-    Particle getParticleFromWorldCoords(int worldX, int worldY)
+    Point<int> getWorldCoords(int worldX, int worldY) const
     {
-        int y = worldY / pixelSize;
         int x = worldX / pixelSize;
-        if (particles.inBounds(y, x))
+        int y = worldY / pixelSize;
+        return Point<int>(x, y);
+    }
+
+    Particle getParticleFromWindowCoords(int x, int y) const
+    {
+        Point<int> worldCoords = getWorldCoords(x, y);
+        if (particles.inBounds(worldCoords.y, worldCoords.x))
         {
-            return particles.get(y, x);
+            return particles.get(worldCoords.y, worldCoords.x);
         }
 
         return Particle();
     }
 
-    int getPixelSize()
+    int getPixelSize() const
     {
         return pixelSize;
     }
 
-    void modify(net::Message<GameMessages> &message)
+    void updateFromMessage(net::Message<GameMessages> &message)
     {
         size_t size;
         message >> size;
@@ -160,9 +166,14 @@ public:
         }
     }
 
-    std::vector<EdgeData> &getCollisionMesh()
+    const std::vector<EdgeData> &getCollisionMesh() const
     {
         return collisionMesh;
+    }
+
+    Size<int> getSize() const
+    {
+        return Size<int>(width, height);
     }
 
 private:

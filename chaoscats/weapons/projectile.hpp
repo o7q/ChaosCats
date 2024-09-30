@@ -12,45 +12,78 @@
 
 #include "../world/world.hpp"
 #include "../world/collision/collision.hpp"
+#include "../math/geometry/geometry_common.hpp"
+
+struct ProjectileSettings
+{
+    float speed = 1.0f;
+    int damageRadius = 3;
+    int playerDamage = 3;
+};
+
+struct ProjectileCollideInfo
+{
+    int x = 0;
+    int y = 0;
+    bool isPlayer = false;
+    ProjectileSettings projectileSettings;
+};
 
 class Projectile
 {
 public:
-    Projectile(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, World *world, float startX, float startY, float slopeX, float slopeY, float speed) : renderWindow(renderWindow),
-                                                                                                                                                            world(world),
-                                                                                                                                                            windowInfo(windowInfo)
+    Projectile(sf::RenderWindow &renderWindow,
+               WindowInfo &windowInfo,
+               const World *world,
+               ProjectileSettings projectileSettings,
+               Point<float> startPosition,
+               Point<float> slope) : renderWindow(renderWindow),
+                                     windowInfo(windowInfo),
+                                     world(world)
     {
-        this->startX = startX;
-        this->startY = startY;
+        this->projectileSettings = projectileSettings;
 
-        this->slopeX = slopeX;
-        this->slopeY = slopeY;
+        this->startPosition = startPosition;
+        this->position = startPosition;
+        this->slope = slope;
+    }
 
-        this->speed = speed;
+    // handle copy
+    Projectile &operator=(const Projectile &other)
+    {
+        if (this != &other)
+        {
+            this->projectileSettings = other.projectileSettings;
 
-        positionX = startX;
-        positionY = startY;
+            this->startPosition = other.startPosition;
+            this->position = other.position;
+            this->slope = other.slope;
+
+            this->hit = other.hit;
+        }
+        return *this;
     }
     virtual ~Projectile()
     {
     }
 
-    virtual void update()
+    virtual ProjectileCollideInfo update()
     {
-        float distance = std::sqrt(slopeX * slopeX + slopeY * slopeY);
-        float dirX = slopeX / distance;
-        float dirY = slopeY / distance;
-        float velX = dirX * speed;
-        float velY = dirY * speed;
+        float distance = std::sqrt(slope.x * slope.x + slope.y * slope.y);
+        Point<float> direction = Point<float>(slope.x / distance, slope.y / distance);
+        Point<float> velocity(direction.x * projectileSettings.speed, direction.y * projectileSettings.speed);
 
+        // get future position
         Point<float> projectileFuturePos;
-        projectileFuturePos.x = positionX + velX * windowInfo.DELTA_TIME;
-        projectileFuturePos.y = positionY + velY * windowInfo.DELTA_TIME;
+        projectileFuturePos.x = position.x + velocity.x * windowInfo.DELTA_TIME;
+        projectileFuturePos.y = position.y + velocity.y * windowInfo.DELTA_TIME;
 
-        Segment<float> futureVelocity = Segment<float>(Point<float>(positionX, positionY), projectileFuturePos);
+        Segment<float> futureVelocity = Segment<float>(Point<float>(position.x, position.y), projectileFuturePos);
 
+        drawSegment(renderWindow, futureVelocity, sf::Color(0, 255, 0, 255));
+
+        // check world intersection
         Point<float> intersectPoint;
-        bool intersected = false;
         for (EdgeData edge : world->getCollisionMesh())
         {
             SS_IntersectData intersectData = segmentSegment(futureVelocity, edge.segment);
@@ -58,34 +91,50 @@ public:
             {
                 intersectPoint.x = intersectData.x;
                 intersectPoint.y = intersectData.y;
-                intersected = true;
+
+                ProjectileCollideInfo projectileCollideInfo;
+
+                Point<int> hitPoint = world->getWorldCoords(intersectPoint.x, intersectPoint.y);
+
+                projectileCollideInfo.isPlayer = false;
+                projectileCollideInfo.projectileSettings = projectileSettings;
+                projectileCollideInfo.x = hitPoint.x;
+                projectileCollideInfo.y = hitPoint.y;
+
+                hit = true;
+
+                return projectileCollideInfo;
             }
         }
 
-        if (intersected || !rendaer)
-        {
-            rendaer = false;
-            return;
-        }
+        position.x += velocity.x * windowInfo.DELTA_TIME;
+        position.y += velocity.y * windowInfo.DELTA_TIME;
 
-        positionX += velX;
-        positionY += velY;
-
-        calculateRotation(startX, startY, startX + slopeX, startY + slopeY);
+        return ProjectileCollideInfo();
     }
 
-    void render()
+    virtual void render()
     {
-        if (!rendaer)
-        {
-            return;
-        }
-        Rect<float> rect(positionX, positionY, 10, 5);
+        float rotation = calculateRotation(startPosition.x, startPosition.y, startPosition.x + slope.x, startPosition.y + slope.y);
+
+        Rect<float> rect(position.x, position.y, 10, 5);
         drawRect(renderWindow, rect, sf::Color(255, 220, 200, 255), DrawMode::Solid, rotation);
     }
 
+    virtual bool hasHit() const
+    {
+        return hit;
+    }
+
+    virtual bool outOfBounds() const
+    {
+        Size<int> worldSize = world->getSize();
+        Point<int> worldPos = world->getWorldCoords(position.x, position.y);
+        return worldPos.x < 0 || worldPos.y < 0 || worldPos.x > worldSize.w - 1 || worldPos.y > worldSize.h - 1;
+    }
+
 protected:
-    void calculateRotation(float startX, float startY, float endX, float endY)
+    float calculateRotation(float startX, float startY, float endX, float endY)
     {
         float dx = endX - startX;
         float dy = endY - startY;
@@ -93,26 +142,19 @@ protected:
         float degrees = (180.0f / PI) * radians;
         float degrees360 = std::fmod(degrees + 360.0f, 360.0f);
 
-        rotation = degrees360;
+        return degrees360;
     }
-
-    bool rendaer = true;
 
 protected:
     sf::RenderWindow &renderWindow;
-    World *world;
     WindowInfo &windowInfo;
+    const World *world;
 
-    float rotation = 0;
+    ProjectileSettings projectileSettings;
 
-    float positionX = 0;
-    float positionY = 0;
+    Point<float> position;
+    Point<float> startPosition;
+    Point<float> slope;
 
-    float startX = 0;
-    float startY = 0;
-
-    float slopeX = 1.0f;
-    float slopeY = 1.0f;
-
-    float speed = 0;
+    bool hit = false;
 };

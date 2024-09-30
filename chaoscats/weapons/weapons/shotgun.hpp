@@ -10,18 +10,18 @@
 class Shotgun : public Weapon
 {
 public:
-    Shotgun(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, World *world, sf::Texture &weaponTexture) : Weapon(renderWindow, windowInfo, world, weaponTexture)
+    Shotgun(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, const World *world, sf::Texture &weaponTexture) : Weapon(renderWindow, windowInfo, world, weaponTexture)
     {
     }
     virtual ~Shotgun() override
     {
     }
 
-    virtual void shoot() override
+    virtual Point<float> shoot() override
     {
-        if (windowInfo.INPUT_INFO.MOUSE_CLICKED)
+        if (windowInfo.INPUT_INFO.MOUSE_CLICKED && windowInfo.IS_FOCUSED)
         {
-            int shellCount = 3;
+            int shellCount = 10;
             float spreadAngle = 15.0f;
             float halfSpreadAngle = spreadAngle / 2.0f;
 
@@ -29,6 +29,11 @@ public:
             float dy = aimY - playerY;
 
             float baseAngle = std::atan2(dy, dx);
+
+            ProjectileSettings projectileSettings;
+            projectileSettings.damageRadius = 3;
+            projectileSettings.playerDamage = 3;
+            projectileSettings.speed = 100.0f;
 
             for (int i = 0; i < shellCount; ++i)
             {
@@ -39,29 +44,54 @@ public:
                 float new_dx = std::cos(newAngle);
                 float new_dy = std::sin(newAngle);
 
-                Projectile projectile(renderWindow, windowInfo, world, playerX, playerY, new_dx, new_dy, 30.0f);
+                Projectile projectile(renderWindow, windowInfo, world, projectileSettings, Point<float>(playerX, playerY), Point<float>(new_dx, new_dy));
                 projectiles.push_back(projectile);
             }
+
+            float distance = std::sqrt(dx * dx + dy * dy);
+            float dirX = dx / distance;
+            float dirY = dy / distance;
+
+            return Point<float>(-dirX * 30, -dirY * 10);
         }
+
+        return Point<float>(0, 0);
     }
 
-    virtual void update(float playerX, float playerY, float aimX, float aimY) override
+    virtual std::vector<ProjectileCollideInfo> update(float playerX, float playerY, float aimX, float aimY) override
     {
         this->playerX = playerX;
         this->playerY = playerY;
         this->aimX = aimX;
         this->aimY = aimY;
 
-        calculateRotation(playerX, playerY, aimX, aimY);
+        std::vector<ProjectileCollideInfo> hitPoints;
 
         for (Projectile &projectile : projectiles)
         {
-            projectile.update();
+            ProjectileCollideInfo projectileCollideInfo = projectile.update();
+
+            if (projectile.hasHit())
+            {
+                hitPoints.push_back(projectileCollideInfo);
+            }
         }
+
+        projectiles.erase(
+            std::remove_if(projectiles.begin(), projectiles.end(),
+                           [](const Projectile &projectile)
+                           {
+                               return projectile.hasHit() || projectile.outOfBounds();
+                           }),
+            projectiles.end());
+
+        return hitPoints;
     }
 
     void render(float x, float y) override
     {
+        float rotation = calculateRotation(playerX, playerY, aimX, aimY);
+
         sf::Vector2i rotateVector(1, 1);
         if (rotation > 90 && rotation < 270)
         {

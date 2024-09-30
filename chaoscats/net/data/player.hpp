@@ -8,5 +8,6 @@ struct PlayerData
 {
     uint32_t id = 0;
 
+    Point<float> aim;
     Point<float> position;
 };

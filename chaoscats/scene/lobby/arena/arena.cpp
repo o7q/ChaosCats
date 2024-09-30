@@ -68,6 +68,18 @@ CurrentScene Scene_LobbyArena::run()
             {
                 client_player_action_handleMove();
             }
+
+            std::vector<ProjectileCollideInfo> projectileCollideInfo = players[localId]->getProjectileCollideInfo();
+
+            if (projectileCollideInfo.size() > 0)
+            {
+                for (ProjectileCollideInfo pci : projectileCollideInfo)
+                {
+                    net::Message<GameMessages> updateWorldMessage = world->drawParticles(pci.x, pci.y, Particle(), pci.projectileSettings.damageRadius, DrawShape::Circle);
+                    updateWorldMessage.header.id = GameMessages::Client2S_ModifyWorld;
+                    client.sendMessageToServer(updateWorldMessage);
+                }
+            }
         }
 
         if (!players.empty())

@@ -17,11 +17,11 @@
 class Player
 {
 public:
-    Player(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, World *world, sf::Texture &playerTexture, sf::Vector2f size) : renderWindow(renderWindow),
-                                                                                                                                  windowInfo(windowInfo),
-                                                                                                                                  playerTexture(playerTexture)
+    Player(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, const World *world, sf::Texture &playerTexture, sf::Vector2f size) : renderWindow(renderWindow),
+                                                                                                                                        windowInfo(windowInfo),
+                                                                                                                                        world(world),
+                                                                                                                                        playerTexture(playerTexture)
     {
-        this->world = world;
         playerSize = imageAspect(playerTexture, size);
         collisionBox = Rect<float>(0, 0, playerSize.x, playerSize.y);
     }
@@ -35,94 +35,33 @@ public:
         weapon = new Shotgun(renderWindow, windowInfo, world, texture);
     }
 
+    const Weapon *getWeapon() const
+    {
+        return weapon;
+    }
+
+    void handleMovement();
+    void handleWeapons();
+    void handleCollision();
+
+    const std::vector<ProjectileCollideInfo> &getProjectileCollideInfo() const;
+
+    // this function only runs for the local player (client-side)
     void update()
     {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-        {
-            playerSpeed = 16.0f;
-        }
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
-        {
-            playerSpeed = 0.1f;
-        }
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt))
-        {
-            playerSpeed = 40.0f;
-        }
-        else
-        {
-            playerSpeed = 6.0f;
-        }
-
-        Particle groundParticle = world->getParticleFromWorldCoords(bottomCollisionPoint.x, bottomCollisionPoint.y + 5);
-        Particle subGroundParticle = world->getParticleFromWorldCoords(bottomCollisionPoint.x, bottomCollisionPoint.y + 10);
-
-        switch (groundParticle.playerCollisionType)
-        {
-        case PlayerCollisionType::None:
-            if (velocity.y < 10.0f)
-            {
-                velocity.y += 1.0f * windowInfo.DELTA_TIME;
-            }
-            break;
-        case PlayerCollisionType::Solid:
-            if (!jumped)
-            {
-                velocity.y = 0.0f;
-            }
-            break;
-        }
-
-        bool onGround = subGroundParticle.playerCollisionType == PlayerCollisionType::Solid;
-
-        velocity.x = 0;
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && windowInfo.IS_FOCUSED)
-        {
-            velocity.x = -playerSpeed;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && windowInfo.IS_FOCUSED)
-        {
-            velocity.x = playerSpeed;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && windowInfo.IS_FOCUSED)
-        {
-            if (onGround && !jumped)
-            {
-                velocity.y = -15.0f;
-                jumped = true;
-            }
-        }
-        else
-        {
-            jumped = false;
-        }
-
-        std::vector<EdgeData> collisionMesh = world->getCollisionMesh();
-        bool collisionHappened = false;
-        for (EdgeData edge : collisionMesh)
-        {
-            bool bottomCollision = handleBottomCollision(playerData.position, velocity, collisionBox, edge, bottomCollisionPoint, windowInfo.DELTA_TIME);
-            bool topCollision = handleTopCollision(playerData.position, velocity, collisionBox, edge, topCollisionPoint, windowInfo.DELTA_TIME);
-
-            if (bottomCollision || topCollision)
-            {
-                collisionHappened = true;
-            }
-        }
-
-        if (!collisionHappened)
-        {
-            playerData.position.y += velocity.y * windowInfo.DELTA_TIME;
-            playerData.position.x += velocity.x * windowInfo.DELTA_TIME;
-        }
+        handleMovement();
+        handleWeapons();
+        handleCollision();
 
         setPosition(playerData.position.x, playerData.position.y);
+    }
 
-        sf::Vector2i mouseLoc = sf::Mouse::getPosition(renderWindow);
-        weapon->update(playerData.position.x, playerData.position.y, mouseLoc.x, mouseLoc.y);
+    void updateFromPlayerData(PlayerData playerData)
+    {
+        this->playerData = playerData;
 
-        weapon->shoot();
+        setPosition(playerData.position.x, playerData.position.y);
+        setAim(playerData.aim.x, playerData.aim.y);
     }
 
     void setPosition(float x, float y)
@@ -139,12 +78,18 @@ public:
         topCollisionPoint.y = collisionBox.getPosition().y - collisionBox.half_size.h;
     }
 
+    void setAim(float x, float y)
+    {
+        playerData.aim.x = x;
+        playerData.aim.y = y;
+    }
+
     void setID(int id)
     {
         playerData.id = id;
     }
 
-    PlayerData getPlayerData()
+    const PlayerData &getPlayerData() const
     {
         return playerData;
     }
@@ -165,8 +110,8 @@ public:
 protected:
     sf::RenderWindow &renderWindow;
     WindowInfo &windowInfo;
+    const World *world = nullptr;
 
-    World *world = nullptr;
     sf::Texture &playerTexture;
     sf::Vector2f playerSize;
 
@@ -175,6 +120,8 @@ protected:
     Point<float> topCollisionPoint;
 
     PlayerData playerData;
+    std::vector<ProjectileCollideInfo> projectileCollideInfo;
+
     Point<float> velocity;
 
     float playerSpeed = 6.0f;

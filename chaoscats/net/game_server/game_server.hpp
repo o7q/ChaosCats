@@ -66,6 +66,11 @@ public:
             player_action_handleMove(client, message);
         }
         break;
+        case GameMessages::Client2S_Shoot:
+        {
+            player_action_handleShoot(client, message);
+        }
+        break;
         case GameMessages::Client2S_ModifyWorld:
         {
             player_action_handleWorldModify(client, message);
@@ -90,5 +95,6 @@ public:
     void player_connect_purgeHusks();
     void player_connect_handleRegister(std::shared_ptr<net::Connection<GameMessages>> &client, net::Message<GameMessages> &message);
     void player_action_handleMove(std::shared_ptr<net::Connection<GameMessages>> &client, net::Message<GameMessages> &message);
+    void player_action_handleShoot(std::shared_ptr<net::Connection<GameMessages>> &client, net::Message<GameMessages> &message);
     void player_action_handleWorldModify(std::shared_ptr<net::Connection<GameMessages>> &client, net::Message<GameMessages> &message);
 };

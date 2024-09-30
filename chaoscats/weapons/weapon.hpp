@@ -17,19 +17,21 @@
 class Weapon
 {
 public:
-    Weapon(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, World* world, sf::Texture &weaponTexture) : renderWindow(renderWindow), windowInfo(windowInfo), world(world), weaponTexture(weaponTexture)
+    Weapon(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, const World *world, sf::Texture &weaponTexture) : renderWindow(renderWindow), windowInfo(windowInfo), world(world), weaponTexture(weaponTexture)
     {
     }
     virtual ~Weapon()
     {
     }
 
-    virtual void shoot()
+    virtual Point<float> shoot()
     {
+        return Point<float>(0, 0);
     }
 
-    virtual void update(float aimX, float aimY, float playerX, float playerY)
+    virtual std::vector<ProjectileCollideInfo> update(float playerX, float playerY, float aimX, float aimY)
     {
+        return std::vector<ProjectileCollideInfo>();
     }
 
     virtual void render(float x, float y)
@@ -37,7 +39,7 @@ public:
     }
 
 protected:
-    void calculateRotation(float startX, float startY, float endX, float endY)
+    float calculateRotation(float startX, float startY, float endX, float endY)
     {
         float dx = endX - startX;
         float dy = endY - startY;
@@ -45,18 +47,16 @@ protected:
         float degrees = (180.0f / PI) * radians;
         float degrees360 = std::fmod(degrees + 360.0f, 360.0f);
 
-        rotation = degrees360;
+        return degrees360;
     }
 
 protected:
     sf::RenderWindow &renderWindow;
     WindowInfo &windowInfo;
-    World* world;
+    const World *world;
     sf::Texture &weaponTexture;
 
     std::vector<Projectile> projectiles;
-
-    float rotation = 0;
 
     float playerX = 0;
     float playerY = 0;

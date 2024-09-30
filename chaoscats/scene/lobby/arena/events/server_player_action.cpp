@@ -7,11 +7,11 @@ void Scene_LobbyArena::server_player_action_handleMove(net::Message<GameMessages
 
     if (mapContains(players, playerData.id))
     {
-        players[playerData.id]->setPosition(playerData.position.x, playerData.position.y);
+        players[playerData.id]->updateFromPlayerData(playerData);
     }
 }
 
 void Scene_LobbyArena::server_player_action_handleModifyWorld(net::Message<GameMessages> &message)
 {
-    world->modify(message);
+    world->updateFromMessage(message);
 }
