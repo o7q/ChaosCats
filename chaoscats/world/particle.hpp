@@ -32,6 +32,7 @@ struct Particle
     MatterType matterType = MatterType::None;
     PlayerCollisionType playerCollisionType = PlayerCollisionType::None;
     bool unbreakable = false;
+    float liquidSaturation = 0.0f;
 
     sf::Color color = sf::Color(0, 0, 0, 0);
 
@@ -56,5 +57,10 @@ struct Particle
     {
         return matterType == MatterType::Gas ||
                matterType == MatterType::None;
+    }
+
+    bool canAbsorbLiquid()
+    {
+        return physicsType == PhysicsType::Sand;
     }
 };

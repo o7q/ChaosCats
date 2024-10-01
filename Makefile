@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -O0
+CXXFLAGS = -std=c++17 -Wall -Og
 
 rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 SOURCES := $(call rwildcard,./,*.cpp)
@@ -53,7 +53,9 @@ WINDOWS_NET_LINK = -lwsock32 \
 EXECUTABLE = ChaosCats
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(INCLUDES) -DSFML_STATIC
+	$(CXX) $(CXXFLAGS) -MMD -MP -include "chaoscats/net/framework/net.hpp" -c $< -o $@ $(INCLUDES) -DSFML_STATIC
+
+-include $(OBJECTS:.o=.d)
 
 # Windows-specific settings
 compile-windows-static: INCLUDES = $(SFML_INCLUDE_STATIC) $(ASIO_INCLUDE) -include "chaoscats/net/framework/net.hpp"
