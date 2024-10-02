@@ -12,9 +12,9 @@
 
 #include "collision/collision_mesh.hpp"
 
-#include "../window/window_info.hpp"
+#include "../game_info/game_info.hpp"
 
-#include "../assets/maps.hpp"
+#include "../game_assets/maps.hpp"
 
 #include "../net/data/world.hpp"
 #include "../net/messages.hpp"
@@ -45,7 +45,7 @@ enum class DrawShape
 class World
 {
 public:
-    World(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, Map &map, int pixelSize = 10) : renderWindow(renderWindow), windowInfo(windowInfo), particles(map.height, map.width)
+    World(Map &map, int pixelSize = 10) : particles(map.height, map.width)
     {
         this->width = map.width;
         this->height = map.height;
@@ -55,7 +55,7 @@ public:
 
         createWorldFromMap(map);
     }
-    World(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, int width, int height, int pixelSize = 10) : renderWindow(renderWindow), windowInfo(windowInfo), particles(height, width)
+    World(int width, int height, int pixelSize = 10) : particles(height, width)
     {
         this->width = width;
         this->height = height;
@@ -85,11 +85,11 @@ public:
         updateCollisionMesh(collisionMesh, particles, PlayerCollisionType::Solid, pixelSize);
     }
 
-    void render(WorldCamera *camera)
+    void render(WorldCamera *camera, sf::RenderWindow& renderWindow, int width, int height)
     {
         worldTexture.update(worldPixels);
 
-        shader.setUniform("resolution", sf::Vector2f(windowInfo.WIDTH, windowInfo.HEIGHT));
+        shader.setUniform("resolution", sf::Vector2f(width, height));
         shader.setUniform("translation", sf::Vector2f(0, 0));
         shader.setUniform("zoom", 1.0f);
 
@@ -177,9 +177,6 @@ public:
     }
 
 private:
-    sf::RenderWindow &renderWindow;
-    WindowInfo &windowInfo;
-
     Matrix<Particle> particles;
 
     std::vector<EdgeData> collisionMesh;

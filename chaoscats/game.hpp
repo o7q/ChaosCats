@@ -9,9 +9,9 @@
 #include "scene/scene.hpp"
 #include "scene/scenes_common.hpp"
 
-#include "assets/asset_manager.hpp"
+#include "game_assets/game_assets.hpp"
 
-#include "window/window_info.hpp"
+#include "game_info/game_info.hpp"
 
 class GameWindow
 {
@@ -23,10 +23,10 @@ private:
     void handleInput();
 
     sf::RenderWindow renderWindow;
-    sf::View view;
-    WindowInfo WINDOW_INFO;
+    GameInfo gameInfo;
 
-    AssetStorage ASSETS;
+    // this is all of the games assets, this one line automatically loads all game assets
+    GameAssets gameAssets;
 
     Scene *scene = nullptr;
     CurrentScene currentScene = CurrentScene::None;

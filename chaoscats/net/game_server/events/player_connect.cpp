@@ -1,5 +1,6 @@
 #include "../game_server.hpp"
 
+// Client2S_Register
 void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<GameMessages>> &client, net::Message<GameMessages> &message)
 {
     uint32_t clientId = client->getID();
@@ -7,15 +8,13 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
     Logger::log(Logger::LogType::Info, "gameserver", "Client reqested register, assigning ID: " + std::to_string(clientId));
 
     // read playerdata from connect packet
-    PlayerData playerData;
-    message >> playerData;
-    playerData.id = clientId;
-    serverPlayers.insert_or_assign(playerData.id, playerData);
+    Player* player = new Player(world, serverGameInfo, gameAssets);
+    serverPlayers.insert_or_assign(clientId, player);
 
     // send new id back to newly connected client
     net::Message<GameMessages> assignIdPacket;
     assignIdPacket.header.id = GameMessages::Server2C_AssignID;
-    assignIdPacket << playerData.id;
+    assignIdPacket << clientId;
     sendMessageToClient(client, assignIdPacket);
 
     // send new player to all clients, including the connected client
@@ -23,7 +22,7 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
     // the client sends a request to the server, and the server will allow the client to display the newly created client
     net::Message<GameMessages> addNewPlayerPacket;
     addNewPlayerPacket.header.id = GameMessages::Server2C_AddPlayer;
-    addNewPlayerPacket << playerData;
+    addNewPlayerPacket << clientId;
     sendMessageToAllClients(addNewPlayerPacket);
 
     // display all already connected clients to the newly connected client

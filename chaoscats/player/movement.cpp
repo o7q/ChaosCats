@@ -27,7 +27,7 @@ void Player::handleMovement()
     case PlayerCollisionType::None:
         if (velocity.y < 10.0f)
         {
-            velocity.y += 1.0f * windowInfo.DELTA_TIME;
+            velocity.y += 1.0f * gameInfo.time.DELTA_TIME;
         }
         break;
     case PlayerCollisionType::Solid:
@@ -42,15 +42,15 @@ void Player::handleMovement()
 
     velocity.x = 0;
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && windowInfo.IS_FOCUSED)
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && gameInfo.window.IS_FOCUSED)
     {
         velocity.x = -playerSpeed;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && windowInfo.IS_FOCUSED)
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && gameInfo.window.IS_FOCUSED)
     {
         velocity.x = playerSpeed;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && windowInfo.IS_FOCUSED)
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameInfo.window.IS_FOCUSED)
     {
         if (onGround && !jumped)
         {

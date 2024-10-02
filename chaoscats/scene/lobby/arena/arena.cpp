@@ -9,7 +9,7 @@ CurrentScene Scene_LobbyArena::run()
         Logger::log(Logger::LogType::Info, "lobby", "Initializing lobby arena");
 
         worldCamera = new WorldCamera();
-        world = new World(renderWindow, windowInfo, ASSETS.MAPS.TEST_MAP, 5);
+        world = new World(gameAssets.maps.TEST_MAP, 5);
     }
 
     if (update())
@@ -49,10 +49,10 @@ CurrentScene Scene_LobbyArena::run()
         // }
 
         world->update();
-        world->render(worldCamera);
+        world->render(worldCamera, renderWindow, gameInfo.window.WIDTH, gameInfo.window.HEIGHT);
 
         // packet limiter, only allows packets to send at 'packetSendRate'
-        if (packetSendCounter > windowInfo.FRAMERATE / packetSendRate)
+        if (packetSendCounter > gameInfo.time.FRAMERATE / packetSendRate)
         {
             packetCanSend = true;
             packetSendCounter = 0;
@@ -61,32 +61,32 @@ CurrentScene Scene_LobbyArena::run()
         // update local player
         if (mapContains(players, localId))
         {
-            players[localId]->update();
+            // players[localId]->update();
 
-            // packet senders in this conditional will be sent at a constant rate: 'packetSendRate'
-            if (packetCanSend)
-            {
-                client_player_action_handleMove();
-            }
+            // // packet senders in this conditional will be sent at a constant rate: 'packetSendRate'
+            // if (packetCanSend)
+            // {
+            //     client_player_action_handleMove();
+            // }
 
-            std::vector<ProjectileCollideInfo> projectileCollideInfo = players[localId]->getProjectileCollideInfo();
+            // std::vector<ProjectileCollideInfo> projectileCollideInfo = players[localId]->getProjectileCollideInfo();
 
-            if (projectileCollideInfo.size() > 0)
-            {
-                for (ProjectileCollideInfo pci : projectileCollideInfo)
-                {
-                    net::Message<GameMessages> updateWorldMessage = world->drawParticles(pci.x, pci.y, Particle(), pci.projectileSettings.damageRadius, DrawShape::Circle);
-                    updateWorldMessage.header.id = GameMessages::Client2S_ModifyWorld;
-                    client.sendMessageToServer(updateWorldMessage);
-                }
-            }
+            // if (projectileCollideInfo.size() > 0)
+            // {
+            //     for (ProjectileCollideInfo pci : projectileCollideInfo)
+            //     {
+            //         net::Message<GameMessages> updateWorldMessage = world->drawParticles(pci.x, pci.y, Particle(), pci.projectileSettings.damageRadius, DrawShape::Circle);
+            //         updateWorldMessage.header.id = GameMessages::Client2S_ModifyWorld;
+            //         client.sendMessageToServer(updateWorldMessage);
+            //     }
+            // }
         }
 
         if (!players.empty())
         {
             for (const auto &player : players)
             {
-                player.second->render(worldCamera);
+                player.second->render(renderWindow);
             }
         }
 
@@ -95,7 +95,7 @@ CurrentScene Scene_LobbyArena::run()
                                    "   PY: " + std::to_string(worldCamera->getTranslateY()) +
                                    "   /   ZX: " + std::to_string(worldCamera->getZoomX()) +
                                    "   ZY: " + std::to_string(worldCamera->getZoomY());
-        drawText(renderWindow, positionInfo, ASSETS.FONTS.ALAGARD_FONT, sf::Vector2f(0, 720 - 30), 15);
+        drawText(renderWindow, positionInfo, gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(0, 720 - 30), 15);
 
         ++packetSendCounter;
         packetCanSend = false;

@@ -6,7 +6,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "../rendering/draw.hpp"
-#include "../window/window_info.hpp"
+#include "../game_info/game_info.hpp"
 
 #include "../math/constants.hpp"
 
@@ -32,14 +32,10 @@ struct ProjectileCollideInfo
 class Projectile
 {
 public:
-    Projectile(sf::RenderWindow &renderWindow,
-               WindowInfo &windowInfo,
-               const World *world,
+    Projectile(const World *world,
                ProjectileSettings projectileSettings,
                Point<float> startPosition,
-               Point<float> slope) : renderWindow(renderWindow),
-                                     windowInfo(windowInfo),
-                                     world(world)
+               Point<float> slope) : world(world)
     {
         this->projectileSettings = projectileSettings;
 
@@ -67,7 +63,7 @@ public:
     {
     }
 
-    virtual ProjectileCollideInfo update()
+    virtual ProjectileCollideInfo update(float dt)
     {
         float distance = std::sqrt(slope.x * slope.x + slope.y * slope.y);
         Point<float> direction = Point<float>(slope.x / distance, slope.y / distance);
@@ -75,12 +71,10 @@ public:
 
         // get future position
         Point<float> projectileFuturePos;
-        projectileFuturePos.x = position.x + velocity.x * windowInfo.DELTA_TIME;
-        projectileFuturePos.y = position.y + velocity.y * windowInfo.DELTA_TIME;
+        projectileFuturePos.x = position.x + velocity.x * dt;
+        projectileFuturePos.y = position.y + velocity.y * dt;
 
         Segment<float> futureVelocity = Segment<float>(Point<float>(position.x, position.y), projectileFuturePos);
-
-        drawSegment(renderWindow, futureVelocity, sf::Color(0, 255, 0, 255));
 
         // check world intersection
         Point<float> intersectPoint;
@@ -107,13 +101,13 @@ public:
             }
         }
 
-        position.x += velocity.x * windowInfo.DELTA_TIME;
-        position.y += velocity.y * windowInfo.DELTA_TIME;
+        position.x += velocity.x * dt;
+        position.y += velocity.y * dt;
 
         return ProjectileCollideInfo();
     }
 
-    virtual void render()
+    virtual void render(sf::RenderWindow &renderWindow)
     {
         float rotation = calculateRotation(startPosition.x, startPosition.y, startPosition.x + slope.x, startPosition.y + slope.y);
 
@@ -146,8 +140,6 @@ protected:
     }
 
 protected:
-    sf::RenderWindow &renderWindow;
-    WindowInfo &windowInfo;
     const World *world;
 
     ProjectileSettings projectileSettings;

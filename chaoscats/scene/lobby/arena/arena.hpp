@@ -18,8 +18,8 @@
 class Scene_LobbyArena : public Scene
 {
 public:
-    Scene_LobbyArena(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, AssetStorage &ASSETS, GameClient &client) : Scene(renderWindow, windowInfo, ASSETS),
-                                                                                                                         client(client)
+    Scene_LobbyArena(sf::RenderWindow &renderWindow, GameInfo &gameInfo, GameAssets &gameAssets, GameClient &client) : Scene(renderWindow, gameInfo, gameAssets),
+                                                                                                                       client(client)
     {
     }
     ~Scene_LobbyArena()
@@ -27,7 +27,10 @@ public:
         // delete local serverplayers
         for (auto &pair : players)
         {
-            delete pair.second;
+            if (pair.second != nullptr)
+            {
+                delete pair.second;
+            }
         }
         players.clear();
 

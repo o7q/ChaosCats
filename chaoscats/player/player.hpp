@@ -12,17 +12,14 @@
 #include "../math/geometry/geometry_common.hpp"
 #include "../rendering/draw.hpp"
 
-#include "../net/data/player.hpp"
-
 class Player
 {
 public:
-    Player(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, const World *world, sf::Texture &playerTexture, sf::Vector2f size) : renderWindow(renderWindow),
-                                                                                                                                        windowInfo(windowInfo),
-                                                                                                                                        world(world),
-                                                                                                                                        playerTexture(playerTexture)
+    Player(const World *world, GameInfo &gameInfo, GameAssets &gameAssets) : world(world),
+                                                                             gameInfo(gameInfo),
+                                                                             gameAssets(gameAssets)
     {
-        playerSize = imageAspect(playerTexture, size);
+        playerSize = Point<float>(100, 100);
         collisionBox = Rect<float>(0, 0, playerSize.x, playerSize.y);
     }
     virtual ~Player()
@@ -32,7 +29,7 @@ public:
 
     void pickupWeapon(sf::Texture &texture)
     {
-        weapon = new Shotgun(renderWindow, windowInfo, world, texture);
+        weapon = new Shotgun(world, gameInfo, gameAssets);
     }
 
     const Weapon *getWeapon() const
@@ -47,29 +44,27 @@ public:
     const std::vector<ProjectileCollideInfo> &getProjectileCollideInfo() const;
 
     // this function only runs for the local player (client-side)
-    void update()
+    void clientUpdate()
     {
         handleMovement();
         handleWeapons();
         handleCollision();
 
-        setPosition(playerData.position.x, playerData.position.y);
+        setPosition(position.x, position.y);
     }
 
-    void updateFromPlayerData(PlayerData playerData)
+    void serverUpdate()
     {
-        this->playerData = playerData;
-
-        setPosition(playerData.position.x, playerData.position.y);
-        setAim(playerData.aim.x, playerData.aim.y);
+        handleWeapons();
+        setPosition(position.x, position.y);
     }
 
     void setPosition(float x, float y)
     {
-        playerData.position.x = x;
-        playerData.position.y = y;
+        position.x = x;
+        position.y = y;
 
-        collisionBox.setPosition(playerData.position.x, playerData.position.y);
+        collisionBox.setPosition(position.x, position.y);
 
         bottomCollisionPoint.x = collisionBox.getPosition().x;
         bottomCollisionPoint.y = collisionBox.getPosition().y + collisionBox.half_size.h;
@@ -78,23 +73,18 @@ public:
         topCollisionPoint.y = collisionBox.getPosition().y - collisionBox.half_size.h;
     }
 
+    Point<float> getPosition() const
+    {
+        return position;
+    }
+
     void setAim(float x, float y)
     {
-        playerData.aim.x = x;
-        playerData.aim.y = y;
+        aimLocation.x = x;
+        aimLocation.y = y;
     }
 
-    void setID(int id)
-    {
-        playerData.id = id;
-    }
-
-    const PlayerData &getPlayerData() const
-    {
-        return playerData;
-    }
-
-    void render(WorldCamera *camera)
+    void render(sf::RenderWindow &renderWindow)
     {
         bool collide = false;
         drawSegment(renderWindow, collisionBox.segments[0], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
@@ -104,28 +94,30 @@ public:
         drawPoint(renderWindow, bottomCollisionPoint, sf::Color(255, 0, 0, 255));
         drawPoint(renderWindow, topCollisionPoint, sf::Color(255, 0, 0, 255));
 
-        weapon->render(playerData.position.x, playerData.position.y);
+        weapon->render(renderWindow, position.x, position.y);
     }
 
 protected:
-    sf::RenderWindow &renderWindow;
-    WindowInfo &windowInfo;
     const World *world = nullptr;
+    GameInfo &gameInfo;
+    GameAssets &gameAssets;
 
-    sf::Texture &playerTexture;
-    sf::Vector2f playerSize;
+protected:
+    Point<float> position;
+    Point<float> velocity;
 
+protected:
+    Weapon *weapon = nullptr;
+    std::vector<ProjectileCollideInfo> projectileCollideInfo;
+    Point<float> aimLocation;
+
+protected:
     Rect<float> collisionBox;
     Point<float> bottomCollisionPoint;
     Point<float> topCollisionPoint;
 
-    PlayerData playerData;
-    std::vector<ProjectileCollideInfo> projectileCollideInfo;
-
-    Point<float> velocity;
+    Point<float> playerSize;
 
     float playerSpeed = 6.0f;
     bool jumped = false;
-
-    Weapon *weapon = nullptr;
 };

@@ -4,17 +4,15 @@
 #include "../../rendering/draw.hpp"
 #include "../../math/geometry/geometry_common.hpp"
 
-#include "../../player/player.hpp"
 #include "../../world/world.hpp"
 #include "../../world/camera.hpp"
 
 class Scene_MainMenu : public Scene
 {
 public:
-    Scene_MainMenu(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, AssetStorage &ASSETS) : Scene(renderWindow, windowInfo, ASSETS) {}
+    Scene_MainMenu(sf::RenderWindow &renderWindow, GameInfo &gameInfo, GameAssets &gameAssets) : Scene(renderWindow, gameInfo, gameAssets) {}
     ~Scene_MainMenu()
     {
-
     }
 
     CurrentScene run() override;

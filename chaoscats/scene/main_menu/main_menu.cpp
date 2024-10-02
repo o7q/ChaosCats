@@ -13,7 +13,7 @@ CurrentScene Scene_MainMenu::run()
 
     if (update())
     {
-        drawText(renderWindow, "hello", ASSETS.FONTS.ALAGARD_FONT, sf::Vector2f(100, 100), 40);
+        drawText(renderWindow, "hello", gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(100, 100), 40);
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::H))

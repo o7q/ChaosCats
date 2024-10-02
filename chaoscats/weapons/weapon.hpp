@@ -8,16 +8,18 @@
 #include "projectile.hpp"
 
 #include "../rendering/draw.hpp"
-#include "../window/window_info.hpp"
+#include "../game_info/game_info.hpp"
 
 #include "../math/constants.hpp"
 
 #include "../world/world.hpp"
 
+#include "../game_assets/game_assets.hpp"
+
 class Weapon
 {
 public:
-    Weapon(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, const World *world, sf::Texture &weaponTexture) : renderWindow(renderWindow), windowInfo(windowInfo), world(world), weaponTexture(weaponTexture)
+    Weapon(const World *world, GameInfo& gameInfo, GameAssets &gameAssets) : world(world), gameInfo(gameInfo), gameAssets(gameAssets)
     {
     }
     virtual ~Weapon()
@@ -34,7 +36,7 @@ public:
         return std::vector<ProjectileCollideInfo>();
     }
 
-    virtual void render(float x, float y)
+    virtual void render(sf::RenderWindow &renderWindow, float x, float y)
     {
     }
 
@@ -51,10 +53,9 @@ protected:
     }
 
 protected:
-    sf::RenderWindow &renderWindow;
-    WindowInfo &windowInfo;
     const World *world;
-    sf::Texture &weaponTexture;
+    GameInfo& gameInfo;
+    GameAssets& gameAssets;
 
     std::vector<Projectile> projectiles;
 

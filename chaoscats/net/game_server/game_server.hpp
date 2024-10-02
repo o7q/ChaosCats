@@ -2,24 +2,107 @@
 
 #include <iostream>
 #include <unordered_map>
+#include <thread>
+#include <mutex>
+#include <atomic>
+#include <chrono>
 
 #include "../framework/net.hpp"
 #include "../messages.hpp"
-#include "../data/player.hpp"
 #include "../data/world.hpp"
 #include "../../utils/map.hpp"
+#include "../../player/player.hpp"
+#include "../../game_info/game_info.hpp"
 
 class GameServer : public net::ServerInterface<GameMessages>
 {
 public:
-    std::unordered_map<uint32_t, PlayerData> serverPlayers;
+    std::unordered_map<uint32_t, Player *> serverPlayers;
+    World *world = nullptr;
     std::vector<uint32_t> husks;
 
-    GameServer(uint16_t nPort) : net::ServerInterface<GameMessages>(nPort)
+    std::atomic<bool> keepTick;
+    std::thread tickThread;
+    std::mutex playersMutex;
+    std::mutex worldMutex;
+
+    GameInfo serverGameInfo;
+
+    GameAssets &gameAssets;
+
+    const int serverTickRate = 5;
+    // tick function, will be limited to 'serverTickRate'
+    void start_tick()
     {
+        const std::chrono::milliseconds frameDuration(1000 / serverTickRate);
+        while (keepTick.load())
+        {
+            auto startTime = std::chrono::high_resolution_clock::now();
+
+            tick();
+
+            auto endTime = std::chrono::high_resolution_clock::now();
+            auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+
+            if (elapsedTime < frameDuration)
+            {
+                std::this_thread::sleep_for(frameDuration - elapsedTime);
+            }
+        }
+    }
+
+    void tick()
+    {
+        updateWorld();
+        updatePlayers();
+    }
+
+    void updateWorld()
+    {
+        std::lock_guard<std::mutex> guard(worldMutex);
+        world->update();
+    }
+
+    void updatePlayers()
+    {
+        std::lock_guard<std::mutex> guard(playersMutex);
+        if (!serverPlayers.empty())
+        {
+            for (const auto &player : serverPlayers)
+            {
+                player.second->serverUpdate();
+            }
+        }
+    }
+
+    GameServer(uint16_t nPort, GameAssets &gameAssets) : net::ServerInterface<GameMessages>(nPort), gameAssets(gameAssets)
+    {
+        world = new World(gameAssets.maps.TEST_MAP, 5);
+
+        keepTick.store(true);
+        tickThread = std::thread(&GameServer::start_tick, this);
     }
     ~GameServer()
     {
+        keepTick.store(false);
+        if (tickThread.joinable())
+        {
+            tickThread.join();
+        }
+
+        for (auto &pair : serverPlayers)
+        {
+            if (pair.second != nullptr)
+            {
+                delete pair.second;
+            }
+        }
+        serverPlayers.clear();
+
+        if (world != nullptr)
+        {
+            delete world;
+        }
     }
 
     bool onClientConnect(std::shared_ptr<net::Connection<GameMessages>> client) override
@@ -29,7 +112,7 @@ public:
 
     void onClientValidated(std::shared_ptr<net::Connection<GameMessages>> client) override
     {
-        Logger::log(Logger::LogType::Info, "gameserver", "Client validated, sending new ID");
+        Logger::log(Logger::LogType::Info, "gameserver", "Client validated, informing client");
         net::Message<GameMessages> validatedMessage;
         validatedMessage.header.id = GameMessages::Server2C_Validated;
         sendMessageToClient(client, validatedMessage);
@@ -44,6 +127,11 @@ public:
         {
             if (mapContains(serverPlayers, id))
             {
+                if (serverPlayers[id] != nullptr)
+                {
+                    delete serverPlayers[id];
+                }
+
                 serverPlayers.erase(id);
                 husks.push_back(id);
             }

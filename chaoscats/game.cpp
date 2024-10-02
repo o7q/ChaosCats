@@ -30,33 +30,29 @@ GameWindow::GameWindow(const std::string &name, int width, int height, const std
                 renderWindow.close();
                 break;
             case sf::Event::GainedFocus:
-                WINDOW_INFO.IS_FOCUSED = true;
+                gameInfo.window.IS_FOCUSED = true;
                 break;
             case sf::Event::LostFocus:
-                WINDOW_INFO.IS_FOCUSED = false;
+                gameInfo.window.IS_FOCUSED = false;
                 break;
             default:
                 break;
             }
         }
 
-        handleInput();
-
         renderWindow.clear(sf::Color::Black);
         update();
 
         // display on-screen framerate counter
-        fpsCountString = "FPS: " + std::to_string(WINDOW_INFO.FRAMERATE) + "   DT: " + std::to_string(WINDOW_INFO.DELTA_TIME);
-        drawText(renderWindow, fpsCountString, ASSETS.FONTS.ALAGARD_FONT, sf::Vector2f(0, height - 15), 15);
+        fpsCountString = "FPS: " + std::to_string(gameInfo.time.FRAMERATE) + "   DT: " + std::to_string(gameInfo.time.DELTA_TIME);
+        drawText(renderWindow, fpsCountString, gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(0, height - 15), 15);
 
         renderWindow.display();
 
         clock_t end = clock();
-        WINDOW_INFO.FRAMERATE = std::round(1 / (static_cast<float>(end - start) / CLOCKS_PER_SEC));
-        WINDOW_INFO.DELTA_TIME = 60.0f / WINDOW_INFO.FRAMERATE;
-        sf::Vector2u windowSize = renderWindow.getSize();
-        WINDOW_INFO.WIDTH = windowSize.x;
-        WINDOW_INFO.HEIGHT = windowSize.y;
-        WINDOW_INFO.ASPECT = windowSize.y / static_cast<float>(windowSize.x);
+
+        gameInfo.time.refresh(start, end);
+        gameInfo.window.refresh(renderWindow);
+        gameInfo.input.refresh(renderWindow);
     }
 }

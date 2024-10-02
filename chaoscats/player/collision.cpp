@@ -6,8 +6,8 @@ void Player::handleCollision()
     bool collisionHappened = false;
     for (EdgeData edge : collisionMesh)
     {
-        bool bottomCollision = handleBottomCollision(playerData.position, velocity, collisionBox, edge, bottomCollisionPoint, windowInfo.DELTA_TIME);
-        bool topCollision = handleTopCollision(playerData.position, velocity, collisionBox, edge, topCollisionPoint, windowInfo.DELTA_TIME);
+        bool bottomCollision = handleBottomCollision(position, velocity, collisionBox, edge, bottomCollisionPoint, gameInfo.time.DELTA_TIME);
+        bool topCollision = handleTopCollision(position, velocity, collisionBox, edge, topCollisionPoint, gameInfo.time.DELTA_TIME);
 
         if (bottomCollision || topCollision)
         {
@@ -17,7 +17,7 @@ void Player::handleCollision()
 
     if (!collisionHappened)
     {
-        playerData.position.y += velocity.y * windowInfo.DELTA_TIME;
-        playerData.position.x += velocity.x * windowInfo.DELTA_TIME;
+        position.y += velocity.y * gameInfo.time.DELTA_TIME;
+        position.x += velocity.x * gameInfo.time.DELTA_TIME;
     }
 }

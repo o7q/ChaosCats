@@ -14,8 +14,8 @@ CurrentScene Scene_Lobby::run()
     {
         Logger::log(Logger::LogType::Info, "lobby", "Initializing lobby");
 
-        std::string address;
-        uint16_t port;
+        std::string address = "";
+        uint16_t port = 0;
 
         // if a server, host the server, then join on the localhost
         if (netArgs[0] == "host")
@@ -25,7 +25,7 @@ CurrentScene Scene_Lobby::run()
             address = "127.0.0.1";
             port = std::stoi(netArgs[1]);
 
-            gameServer = new GameServer(port);
+            gameServer = new GameServer(port, gameAssets);
             gameServer->start();
 
             keepServer.store(true);
@@ -64,7 +64,7 @@ CurrentScene Scene_Lobby::run()
             switch (currentLobbyScene)
             {
             case CurrentScene::LobbyArena:
-                lobbyScene = new Scene_LobbyArena(renderWindow, windowInfo, ASSETS, gameClient);
+                lobbyScene = new Scene_LobbyArena(renderWindow, gameInfo, gameAssets, gameClient);
                 break;
             default:
                 break;
@@ -73,7 +73,7 @@ CurrentScene Scene_Lobby::run()
 
         previousLobbyScene = currentLobbyScene;
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::G) && windowInfo.IS_FOCUSED)
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::G) && gameInfo.window.IS_FOCUSED)
         {
             terminateConnection();
             return CurrentScene::MainMenu;

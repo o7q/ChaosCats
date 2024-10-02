@@ -10,7 +10,7 @@
 class Shotgun : public Weapon
 {
 public:
-    Shotgun(sf::RenderWindow &renderWindow, WindowInfo &windowInfo, const World *world, sf::Texture &weaponTexture) : Weapon(renderWindow, windowInfo, world, weaponTexture)
+    Shotgun(const World *world, GameInfo& gameInfo, GameAssets &assets) : Weapon(world, gameInfo, assets)
     {
     }
     virtual ~Shotgun() override
@@ -19,7 +19,7 @@ public:
 
     virtual Point<float> shoot() override
     {
-        if (windowInfo.INPUT_INFO.MOUSE_CLICKED && windowInfo.IS_FOCUSED)
+        if (gameInfo.input.MOUSE_LMB_CLICKED && gameInfo.window.IS_FOCUSED)
         {
             int shellCount = 10;
             float spreadAngle = 15.0f;
@@ -44,7 +44,7 @@ public:
                 float new_dx = std::cos(newAngle);
                 float new_dy = std::sin(newAngle);
 
-                Projectile projectile(renderWindow, windowInfo, world, projectileSettings, Point<float>(playerX, playerY), Point<float>(new_dx, new_dy));
+                Projectile projectile(world, projectileSettings, Point<float>(playerX, playerY), Point<float>(new_dx, new_dy));
                 projectiles.push_back(projectile);
             }
 
@@ -69,7 +69,7 @@ public:
 
         for (Projectile &projectile : projectiles)
         {
-            ProjectileCollideInfo projectileCollideInfo = projectile.update();
+            ProjectileCollideInfo projectileCollideInfo = projectile.update(gameInfo.time.DELTA_TIME);
 
             if (projectile.hasHit())
             {
@@ -88,7 +88,7 @@ public:
         return hitPoints;
     }
 
-    void render(float x, float y) override
+    void render(sf::RenderWindow &renderWindow, float x, float y) override
     {
         float rotation = calculateRotation(playerX, playerY, aimX, aimY);
 
@@ -100,9 +100,9 @@ public:
 
         for (Projectile &projectile : projectiles)
         {
-            projectile.render();
+            projectile.render(renderWindow);
         }
 
-        drawTexture(renderWindow, weaponTexture, sf::Vector2f(x, y), sf::Vector2f(120, -1), rotation, rotateVector);
+        drawTexture(renderWindow, gameAssets.textures.WEAPON_SHOTGUN_TEXTURE, sf::Vector2f(x, y), sf::Vector2f(120, -1), rotation, rotateVector);
     }
 };
