@@ -18,36 +18,32 @@ void Scene_LobbyArena::server_player_connect_handleAssignID(net::Message<GameMes
 // Server2C_AddPlayer
 void Scene_LobbyArena::server_player_connect_handleAdd(net::Message<GameMessages> &message)
 {
-    // Player *player = new Player(windowInfo, world, ASSETS.TEXTURES.TEST_PLAYER_TEXTURE, sf::Vector2f(100, -1));
+    uint32_t id;
+    Point<float> position;
+    message >> id >> position;
 
-    // player->setID(playerData.id);
-    // player->setPosition(playerData.position.x, playerData.position.y);
+    Player *player = new Player(world, gameInfo, gameAssets);
 
-    // player->pickupWeapon(ASSETS.TEXTURES.WEAPON_SHOTGUN_TEXTURE);
+    player->setPosition(position.x, position.y);
 
-    // players.insert_or_assign(playerData.id, player);
+    players.insert_or_assign(id, player);
 
-    // if (player->getPlayerData().id == localId)
-    // {
-    //     validated = true;
-    // }
-
-    // Logger::log(Logger::LogType::Info, "lobby", "Player joined server: " + std::to_string(player->getPlayerData().id));
+    Logger::log(Logger::LogType::Info, "lobby", "Player joined server: " + std::to_string(id));
 }
 
 // Server2C_RemovePlayer
 void Scene_LobbyArena::server_player_connect_handleRemove(net::Message<GameMessages> &message)
 {
-    // uint32_t id;
-    // message >> id;
+    uint32_t id;
+    message >> id;
 
-    // if (mapContains(players, id))
-    // {
-    //     if (players[id] != nullptr)
-    //     {
-    //         delete players[id];
-    //     }
+    if (mapContains(players, id))
+    {
+        if (players[id] != nullptr)
+        {
+            delete players[id];
+        }
 
-    //     players.erase(id);
-    // }
+        players.erase(id);
+    }
 }

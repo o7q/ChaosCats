@@ -20,6 +20,7 @@ public:
                                                                                                                                        netArgs(netArgs)
     {
         keepServer.store(false);
+        serverStarted.store(false);
     }
     ~Scene_Lobby()
     {
@@ -31,7 +32,7 @@ public:
 
     CurrentScene run() override;
 
-    void runServer();
+    void runServer(uint16_t port);
 
     void terminateConnection()
     {
@@ -61,6 +62,7 @@ private:
     GameServer *gameServer = nullptr;
 
     std::atomic<bool> keepServer;
+    std::atomic<bool> serverStarted;
     std::thread serverThread;
 
     Scene *lobbyScene = nullptr;

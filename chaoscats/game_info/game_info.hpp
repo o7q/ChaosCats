@@ -12,7 +12,7 @@ private:
         int FRAMERATE = 0;
         float DELTA_TIME = 0;
 
-        void refresh(clock_t frame_start, clock_t frame_end);
+        void refresh(std::chrono::high_resolution_clock::time_point frame_start, std::chrono::high_resolution_clock::time_point frame_end);
     };
 
     struct WindowInfo

@@ -5,7 +5,7 @@
 
 GameWindow::GameWindow(const std::string &name, int width, int height, const std::vector<std::string> &netArgs) : netArgs(netArgs)
 {
-    renderWindow.create(sf::VideoMode(width, height), name);
+    renderWindow.create(sf::VideoMode(width, height), name, sf::Style::Default);
 
     currentScene = CurrentScene::Lobby;
 
@@ -18,7 +18,7 @@ GameWindow::GameWindow(const std::string &name, int width, int height, const std
 
     while (renderWindow.isOpen())
     {
-        clock_t start = clock();
+        std::chrono::high_resolution_clock::time_point frame_start = std::chrono::high_resolution_clock::now();
 
         sf::Event event;
         while (renderWindow.pollEvent(event))
@@ -49,9 +49,9 @@ GameWindow::GameWindow(const std::string &name, int width, int height, const std
 
         renderWindow.display();
 
-        clock_t end = clock();
+        std::chrono::high_resolution_clock::time_point frame_end = std::chrono::high_resolution_clock::now();
 
-        gameInfo.time.refresh(start, end);
+        gameInfo.time.refresh(frame_start, frame_end);
         gameInfo.window.refresh(renderWindow);
         gameInfo.input.refresh(renderWindow);
     }

@@ -1,7 +1,12 @@
 #include "lobby.hpp"
 
-void Scene_Lobby::runServer()
+void Scene_Lobby::runServer(uint16_t port)
 {
+    gameServer = new GameServer(port, gameAssets);
+    gameServer->start();
+
+    serverStarted.store(true);
+
     while (keepServer.load())
     {
         gameServer->update(-1, true);
@@ -25,12 +30,14 @@ CurrentScene Scene_Lobby::run()
             address = "127.0.0.1";
             port = std::stoi(netArgs[1]);
 
-            gameServer = new GameServer(port, gameAssets);
-            gameServer->start();
-
             keepServer.store(true);
 
-            serverThread = std::thread(&Scene_Lobby::runServer, this);
+            serverThread = std::thread(&Scene_Lobby::runServer, this, port);
+
+            // wait for server to load before continuing
+            while (!serverStarted.load())
+            {
+            }
         }
 
         // if a client, join the server using the address and port specified

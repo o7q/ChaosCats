@@ -30,47 +30,56 @@ public:
 
     GameAssets &gameAssets;
 
-    const int serverTickRate = 5;
+    const int serverTickRate = 120;
     // tick function, will be limited to 'serverTickRate'
     void start_tick()
     {
         const std::chrono::milliseconds frameDuration(1000 / serverTickRate);
         while (keepTick.load())
         {
-            auto startTime = std::chrono::high_resolution_clock::now();
+            std::chrono::high_resolution_clock::time_point tick_start = std::chrono::high_resolution_clock::now();
 
+            std::chrono::high_resolution_clock::time_point start_delay_time = std::chrono::high_resolution_clock::now();
             tick();
+            std::chrono::high_resolution_clock::time_point end_delay_time = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<float> tickTime = std::chrono::duration_cast<std::chrono::duration<float>>(end_delay_time - start_delay_time);
 
-            auto endTime = std::chrono::high_resolution_clock::now();
-            auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
-
-            if (elapsedTime < frameDuration)
+            // inject delay to force the server to run at at the set tickrate
+            if (tickTime < frameDuration)
             {
-                std::this_thread::sleep_for(frameDuration - elapsedTime);
+                std::this_thread::sleep_for(frameDuration - tickTime);
             }
+
+            std::chrono::high_resolution_clock::time_point tick_end = std::chrono::high_resolution_clock::now();
+
+            serverGameInfo.time.refresh(tick_start, tick_end);
         }
     }
 
     void tick()
     {
-        updateWorld();
-        updatePlayers();
-    }
-
-    void updateWorld()
-    {
-        std::lock_guard<std::mutex> guard(worldMutex);
+        worldMutex.lock();
         world->update();
-    }
+        worldMutex.unlock();
 
-    void updatePlayers()
-    {
-        std::lock_guard<std::mutex> guard(playersMutex);
-        if (!serverPlayers.empty())
         {
-            for (const auto &player : serverPlayers)
+            std::lock_guard<std::mutex> playersLock(playersMutex);
+            if (!serverPlayers.empty())
             {
-                player.second->serverUpdate();
+                for (const auto &player : serverPlayers)
+                {
+                    player.second->serverUpdate();
+                    std::vector<ProjectileCollideInfo> projectileCollideInfo = player.second->getProjectileCollideInfo();
+                    for (ProjectileCollideInfo pci : projectileCollideInfo)
+                    {
+                        Particle particle;
+                        worldMutex.lock();
+                        net::Message<GameMessages> worldModifyMessage = world->drawParticles(pci.x, pci.y, particle, pci.projectileSettings.damageRadius, DrawShape::Circle);
+                        worldMutex.unlock();
+                        worldModifyMessage.header.id = GameMessages::Server2C_ModifyWorld;
+                        sendMessageToAllClients(worldModifyMessage);
+                    }
+                }
             }
         }
     }
@@ -89,6 +98,8 @@ public:
         {
             tickThread.join();
         }
+
+        player_connect_purgeHusks();
 
         for (auto &pair : serverPlayers)
         {
@@ -157,11 +168,6 @@ public:
         case GameMessages::Client2S_Shoot:
         {
             player_action_handleShoot(client, message);
-        }
-        break;
-        case GameMessages::Client2S_ModifyWorld:
-        {
-            player_action_handleWorldModify(client, message);
         }
         break;
         default:

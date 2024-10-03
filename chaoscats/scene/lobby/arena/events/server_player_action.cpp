@@ -3,18 +3,32 @@
 // Server2C_MovePlayer
 void Scene_LobbyArena::server_player_action_handleMove(net::Message<GameMessages> &message)
 {
-    // Point<float> position;
-    // uint32_t id;
-    // message >> id >> position;
+    Point<float> position;
+    Point<float> aimPosition;
+    uint32_t id;
+    message >> id >> aimPosition >> position;
 
-    // if (mapContains(players, id))
-    // {
-    //     players[id]->setPosition(position.x, position.y);
-    // }
+    if (mapContains(players, id))
+    {
+        players[id]->setPosition(position.x, position.y);
+        players[id]->setAim(aimPosition.x, aimPosition.y);
+    }
 }
 
-// Server2C_ModifyWorld
-void Scene_LobbyArena::server_player_action_handleModifyWorld(net::Message<GameMessages> &message)
+void Scene_LobbyArena::server_player_action_handleShoot(net::Message<GameMessages> &message)
 {
-    // world->updateFromMessage(message);
+    uint32_t id;
+    message >> id;
+
+    if (mapContains(players, id))
+    {
+        players[id]->shoot();
+    }
+}
+
+
+// Server2C_ModifyWorld
+void Scene_LobbyArena::server_world_action_handleModifyWorld(net::Message<GameMessages> &message)
+{
+    world->updateFromMessage(message);
 }

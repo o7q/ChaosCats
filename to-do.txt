@@ -2,8 +2,6 @@
 - Add button class system
 - Finish basic lobby system
 - Draw basic playermodel
-- Draw basic map
-- Implement first weapon
 - Get basic multiplayer to work with above additions
 - Finish camera system
 - Move rendering pipeline to the GPU/GLSL

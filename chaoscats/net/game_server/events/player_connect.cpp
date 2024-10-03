@@ -7,9 +7,12 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
 
     Logger::log(Logger::LogType::Info, "gameserver", "Client reqested register, assigning ID: " + std::to_string(clientId));
 
-    // read playerdata from connect packet
-    Player* player = new Player(world, serverGameInfo, gameAssets);
+    // add new player to the server player list
+    Player *player = new Player(world, serverGameInfo, gameAssets);
+
+    playersMutex.lock();
     serverPlayers.insert_or_assign(clientId, player);
+    playersMutex.unlock();
 
     // send new id back to newly connected client
     net::Message<GameMessages> assignIdPacket;
@@ -22,16 +25,19 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
     // the client sends a request to the server, and the server will allow the client to display the newly created client
     net::Message<GameMessages> addNewPlayerPacket;
     addNewPlayerPacket.header.id = GameMessages::Server2C_AddPlayer;
-    addNewPlayerPacket << clientId;
+    addNewPlayerPacket << Point<float>(0, 0) << clientId;
     sendMessageToAllClients(addNewPlayerPacket);
 
     // display all already connected clients to the newly connected client
-    for (const auto &player : serverPlayers)
     {
-        net::Message<GameMessages> addPastPlayersPacket;
-        addPastPlayersPacket.header.id = GameMessages::Server2C_AddPlayer;
-        addPastPlayersPacket << player.second;
-        sendMessageToClient(client, addPastPlayersPacket);
+        std::lock_guard<std::mutex> playersLock(playersMutex);
+        for (const auto &player : serverPlayers)
+        {
+            net::Message<GameMessages> addPastPlayersPacket;
+            addPastPlayersPacket.header.id = GameMessages::Server2C_AddPlayer;
+            addPastPlayersPacket << player.second->getPosition() << player.first;
+            sendMessageToClient(client, addPastPlayersPacket);
+        }
     }
 }
 

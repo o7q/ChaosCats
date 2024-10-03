@@ -21,15 +21,15 @@ public:
     {
         playerSize = Point<float>(100, 100);
         collisionBox = Rect<float>(0, 0, playerSize.x, playerSize.y);
+        weapon = new Shotgun(world, gameInfo, gameAssets);
     }
     virtual ~Player()
     {
         delete weapon;
     }
 
-    void pickupWeapon(sf::Texture &texture)
+    void pickupWeapon()
     {
-        weapon = new Shotgun(world, gameInfo, gameAssets);
     }
 
     const Weapon *getWeapon() const
@@ -38,25 +38,42 @@ public:
     }
 
     void handleMovement();
-    void handleWeapons();
     void handleCollision();
-
-    const std::vector<ProjectileCollideInfo> &getProjectileCollideInfo() const;
 
     // this function only runs for the local player (client-side)
     void clientUpdate()
     {
         handleMovement();
-        handleWeapons();
         handleCollision();
 
         setPosition(position.x, position.y);
+        if (gameInfo.window.IS_FOCUSED)
+        {
+            setAim(gameInfo.input.MOUSE_POS.x, gameInfo.input.MOUSE_POS.y);
+        }
+
+        weapon->update(position.x, position.y, aimPosition.x, aimPosition.y);
+    }
+
+    void visualClientUpdate()
+    {
+        weapon->update(position.x, position.y, aimPosition.x, aimPosition.y);
     }
 
     void serverUpdate()
     {
-        handleWeapons();
-        setPosition(position.x, position.y);
+        projectileCollideInfo.clear();
+        projectileCollideInfo = projectileCollideInfo = weapon->update(position.x, position.y, aimPosition.x, aimPosition.y);
+    }
+
+    const std::vector<ProjectileCollideInfo> &getProjectileCollideInfo() const
+    {
+        return projectileCollideInfo;
+    }
+
+    void shoot()
+    {
+        weapon->shoot(position.x, position.y, aimPosition.x, aimPosition.y);
     }
 
     void setPosition(float x, float y)
@@ -80,8 +97,13 @@ public:
 
     void setAim(float x, float y)
     {
-        aimLocation.x = x;
-        aimLocation.y = y;
+        aimPosition.x = x;
+        aimPosition.y = y;
+    }
+
+    Point<float> getAim() const
+    {
+        return aimPosition;
     }
 
     void render(sf::RenderWindow &renderWindow)
@@ -94,7 +116,7 @@ public:
         drawPoint(renderWindow, bottomCollisionPoint, sf::Color(255, 0, 0, 255));
         drawPoint(renderWindow, topCollisionPoint, sf::Color(255, 0, 0, 255));
 
-        weapon->render(renderWindow, position.x, position.y);
+        weapon->render(renderWindow, position.x, position.y, aimPosition.x, aimPosition.y);
     }
 
 protected:
@@ -103,13 +125,13 @@ protected:
     GameAssets &gameAssets;
 
 protected:
-    Point<float> position;
-    Point<float> velocity;
+    Point<float> position = Point<float>(0, 0);
+    Point<float> velocity = Point<float>(0, 0);
 
 protected:
     Weapon *weapon = nullptr;
     std::vector<ProjectileCollideInfo> projectileCollideInfo;
-    Point<float> aimLocation;
+    Point<float> aimPosition = Point<float>(0, 0);
 
 protected:
     Rect<float> collisionBox;

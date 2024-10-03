@@ -20,7 +20,6 @@ public:
 
 private:
     void update();
-    void handleInput();
 
     sf::RenderWindow renderWindow;
     GameInfo gameInfo;

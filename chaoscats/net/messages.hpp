@@ -6,7 +6,6 @@ enum class GameMessages
     Client2S_Register,
     Client2S_Move,
     Client2S_Shoot,
-    Client2S_ModifyWorld,
 
     //
     //

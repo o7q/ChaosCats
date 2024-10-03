@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
-void GameInfo::InputInfo::refresh(sf::RenderWindow& renderWindow)
+void GameInfo::InputInfo::refresh(sf::RenderWindow &renderWindow)
 {
     MOUSE_POS = sf::Mouse::getPosition(renderWindow);
 

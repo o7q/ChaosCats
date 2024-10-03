@@ -26,7 +26,7 @@ public:
     {
     }
 
-    virtual Point<float> shoot()
+    virtual Point<float> shoot(float playerX, float playerY, float aimX, float aimY)
     {
         return Point<float>(0, 0);
     }
@@ -36,7 +36,7 @@ public:
         return std::vector<ProjectileCollideInfo>();
     }
 
-    virtual void render(sf::RenderWindow &renderWindow, float x, float y)
+    virtual void render(sf::RenderWindow &renderWindow, float playerX, float playerY, float aimX, float aimY)
     {
     }
 

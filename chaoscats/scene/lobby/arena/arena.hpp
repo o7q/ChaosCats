@@ -87,9 +87,14 @@ protected:
                     server_player_action_handleMove(message);
                 }
                 break;
+                case GameMessages::Server2C_Shoot:
+                {
+                    server_player_action_handleShoot(message);
+                }
+                break;
                 case GameMessages::Server2C_ModifyWorld:
                 {
-                    server_player_action_handleModifyWorld(message);
+                    server_world_action_handleModifyWorld(message);
                 }
                 break;
                 default:
@@ -105,9 +110,11 @@ protected:
     void server_player_connect_handleRemove(net::Message<GameMessages> &message);
 
     void server_player_action_handleMove(net::Message<GameMessages> &message);
-    void server_player_action_handleModifyWorld(net::Message<GameMessages> &message);
+    void server_player_action_handleShoot(net::Message<GameMessages> &message);
+    void server_world_action_handleModifyWorld(net::Message<GameMessages> &message);
 
     void client_player_action_handleMove();
+    void client_player_action_handleShoot();
 
 protected:
     const int packetSendRate = 60;
