@@ -12,6 +12,9 @@ class Shotgun : public Weapon
 public:
     Shotgun(const World *world, GameInfo &gameInfo, GameAssets &assets) : Weapon(world, gameInfo, assets)
     {
+        sf::Vector2f aspect = imageAspect(gameAssets.textures.WEAPON_SHOTGUN_TEXTURE, sf::Vector2f(100, -1));
+        weaponSize.x = aspect.x;
+        weaponSize.y = aspect.y;
     }
     virtual ~Shotgun() override
     {
@@ -93,6 +96,6 @@ public:
             projectile.render(renderWindow);
         }
 
-        drawTexture(renderWindow, gameAssets.textures.WEAPON_SHOTGUN_TEXTURE, sf::Vector2f(x, y), sf::Vector2f(120, -1), rotation, rotateVector);
+        drawTexture(renderWindow, gameAssets.textures.WEAPON_SHOTGUN_TEXTURE, sf::Vector2f(x, y), sf::Vector2f(weaponSize.x, weaponSize.y), rotation, rotateVector);
     }
 };

@@ -19,7 +19,9 @@ public:
                                                                              gameInfo(gameInfo),
                                                                              gameAssets(gameAssets)
     {
-        playerSize = Point<float>(100, 100);
+        playerTexture = gameAssets.textures.PLAYER_TEXTURE;
+        sf::Vector2f size = imageAspect(playerTexture, sf::Vector2f(60, -1));
+        playerSize = Point<float>(size.x, size.y);
         collisionBox = Rect<float>(0, 0, playerSize.x, playerSize.y);
         weapon = new Shotgun(world, gameInfo, gameAssets);
     }
@@ -115,6 +117,7 @@ public:
         drawSegment(renderWindow, collisionBox.segments[3], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
         drawPoint(renderWindow, bottomCollisionPoint, sf::Color(255, 0, 0, 255));
         drawPoint(renderWindow, topCollisionPoint, sf::Color(255, 0, 0, 255));
+        drawTexture(renderWindow, playerTexture, sf::Vector2f(position.x, position.y), sf::Vector2f(playerSize.x, playerSize.y));
 
         weapon->render(renderWindow, position.x, position.y, aimPosition.x, aimPosition.y);
     }
@@ -123,6 +126,8 @@ protected:
     const World *world = nullptr;
     GameInfo &gameInfo;
     GameAssets &gameAssets;
+
+    sf::Texture playerTexture;
 
 protected:
     Point<float> position = Point<float>(0, 0);

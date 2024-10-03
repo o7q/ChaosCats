@@ -28,6 +28,8 @@ struct MapStorage
 private:
     void loadMap(Map &map, const std::string &path)
     {
+        Logger::log(Logger::LogType::Info, "loadMap", "Loading: " + path);
+
         const std::string map_color_path = path + "/map_color.png";
         const std::string map_material_mask_path = path + "/map_material_mask.png";
 

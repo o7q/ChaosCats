@@ -59,6 +59,12 @@ protected:
 
     std::vector<Projectile> projectiles;
 
+    Point<float> muzzlePosition;
+    Point<float> handMountPosition1;
+    Point<float> handMountPosition2;
+
+    Point<float> weaponSize;
+
     float playerX = 0;
     float playerY = 0;
     float aimX = 0;

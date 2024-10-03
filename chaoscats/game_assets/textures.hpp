@@ -8,18 +8,21 @@
 
 struct TextureStorage
 {
-    sf::Texture TEST_PLAYER_TEXTURE;
+    sf::Texture PLAYER_TEXTURE;
+    sf::Texture PLAYER_HAND_TEXTURE;
     sf::Texture WEAPON_SHOTGUN_TEXTURE;
 
     TextureStorage()
     {
-        loadTexture(TEST_PLAYER_TEXTURE, "assets/textures/player/test_player.png");
+        loadTexture(PLAYER_TEXTURE, "assets/textures/player/player.png");
+        loadTexture(PLAYER_HAND_TEXTURE, "assets/textures/player/hand.png");
         loadTexture(WEAPON_SHOTGUN_TEXTURE, "assets/textures/weapons/shotgun/shotgun.png");
     };
 
 private:
     void loadTexture(sf::Texture &texture, const std::string &path)
     {
+        Logger::log(Logger::LogType::Info, "loadTexture", "Loading: " + path);
         if (!texture.loadFromFile(path))
         {
             Logger::log(Logger::LogType::Error, "loadTexture", "Failed to load: " + path);

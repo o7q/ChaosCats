@@ -18,6 +18,7 @@ struct FontStorage
 private:
     void loadFont(sf::Font &font, const std::string &path)
     {
+        Logger::log(Logger::LogType::Info, "loadFont", "Loading: " + path);
         if (!font.loadFromFile(path))
         {
             Logger::log(Logger::LogType::Error, "loadFont", "Failed to load: " + path);
