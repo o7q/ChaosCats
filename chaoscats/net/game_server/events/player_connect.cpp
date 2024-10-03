@@ -43,6 +43,7 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
 
 void GameServer::player_connect_purgeHusks()
 {
+    // purge all players that are considered a 'husk', a serverPlayer with no corresponding client
     if (!husks.empty())
     {
         for (uint32_t husk_id : husks)
@@ -50,6 +51,18 @@ void GameServer::player_connect_purgeHusks()
             net::Message<GameMessages> removePlayerMessage;
             removePlayerMessage.header.id = GameMessages::Server2C_RemovePlayer;
             removePlayerMessage << husk_id;
+
+            if (mapContains(serverPlayers, husk_id))
+            {
+                std::lock_guard<std::mutex> playersLock(playersMutex);
+                if (serverPlayers[husk_id] != nullptr)
+                {
+                    delete serverPlayers[husk_id];
+                }
+
+                serverPlayers.erase(husk_id);
+            }
+
             Logger::log(Logger::LogType::Info, "gameserver", "Removing: " + std::to_string(husk_id) + " from clients");
             sendMessageToAllClients(removePlayerMessage);
         }
