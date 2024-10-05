@@ -1,10 +1,12 @@
 #pragma once
 
 #include <iostream>
+#include <utility>
 
 #include <SFML/Graphics.hpp>
 
 #include "../../rendering/draw.hpp"
+#include "../../math/trig.hpp"
 #include "../weapon.hpp"
 
 class Shotgun : public Weapon
@@ -12,9 +14,38 @@ class Shotgun : public Weapon
 public:
     Shotgun(const World *world, GameInfo &gameInfo, GameAssets &assets) : Weapon(world, gameInfo, assets)
     {
-        sf::Vector2f aspect = imageAspect(gameAssets.textures.WEAPON_SHOTGUN_TEXTURE, sf::Vector2f(100, -1));
+        int scale = 4;
+        sf::Vector2u textureSize = assets.textures.WEAPON_SHOTGUN_TEXTURE.getSize();
+
+        sf::Vector2f aspect = imageAspect(gameAssets.textures.WEAPON_SHOTGUN_TEXTURE, sf::Vector2f(textureSize.x * scale, -1));
+
+        sf::Image gunPointsImage = assets.textures.WEAPON_SHOTGUN_POINTS_TEXTURE.copyToImage();
+
+        for (unsigned int y = 0; y < gunPointsImage.getSize().y; ++y)
+        {
+            for (unsigned int x = 0; x < gunPointsImage.getSize().x; ++x)
+            {
+                sf::Color pixColor = gunPointsImage.getPixel(x, y);
+                if (pixColor == sf::Color(255, 0, 0, 255))
+                {
+                    muzzlePosition = Point<int>(x, y);
+                }
+                else if (pixColor == sf::Color(0, 255, 0, 255))
+                {
+                    handMountPosition1 = Point<int>(x, y);
+                }
+                else if (pixColor == sf::Color(0, 0, 255, 255))
+                {
+                    handMountPosition2 = Point<int>(x, y);
+                }
+            }
+        }
+
         weaponSize.x = aspect.x;
         weaponSize.y = aspect.y;
+
+        weaponPositionOffset.x = 20;
+        weaponPositionOffset.y = 5;
     }
     virtual ~Shotgun() override
     {
@@ -26,8 +57,16 @@ public:
         float spreadAngle = 15.0f;
         float halfSpreadAngle = spreadAngle / 2.0f;
 
-        float dx = aimX - playerX;
-        float dy = aimY - playerY;
+        Point<float> mp = rotatePoint(Point<float>(
+                                          muzzlePosition.x * scale - weaponSize.x / 2,
+                                          muzzlePosition.y * scale - weaponSize.y / 2),
+                                      rotation_radians);
+
+        float x_new = mp.x + playerX;
+        float y_new = mp.y + playerY;
+
+        float dx = aimX - x_new;
+        float dy = aimY - y_new;
 
         float baseAngle = std::atan2(dy, dx);
 
@@ -45,7 +84,7 @@ public:
             float new_dx = std::cos(newAngle);
             float new_dy = std::sin(newAngle);
 
-            Projectile projectile(world, projectileSettings, Point<float>(playerX, playerY), Point<float>(new_dx, new_dy));
+            Projectile projectile(world, projectileSettings, Point<float>(x_new, y_new), Point<float>(new_dx, new_dy));
             projectiles.push_back(projectile);
         }
 
@@ -78,17 +117,22 @@ public:
                            }),
             projectiles.end());
 
+        rotation_radians = radiansFromPoints(playerX, playerY, aimX, aimY);
+        rotation_degrees = degreesFromPoints(playerX, playerY, aimX, aimY);
+
         return hitPoints;
     }
 
     void render(sf::RenderWindow &renderWindow, float x, float y, float aimX, float aimY) override
     {
-        float rotation = calculateRotation(x, y, aimX, aimY);
+        weaponPositionOffset.x = std::fabs(weaponPositionOffset.x);
+        weaponPositionOffset.y = std::fabs(weaponPositionOffset.y);
 
         sf::Vector2i rotateVector(1, 1);
-        if (rotation > 90 && rotation < 270)
+        if (rotation_degrees > 90 && rotation_degrees < 270)
         {
             rotateVector = sf::Vector2i(1, -1);
+            weaponPositionOffset.x *= -1;
         }
 
         for (Projectile &projectile : projectiles)
@@ -96,6 +140,12 @@ public:
             projectile.render(renderWindow);
         }
 
-        drawTexture(renderWindow, gameAssets.textures.WEAPON_SHOTGUN_TEXTURE, sf::Vector2f(x, y), sf::Vector2f(weaponSize.x, weaponSize.y), rotation, rotateVector);
+        drawTexture(renderWindow,
+                    gameAssets.textures.WEAPON_SHOTGUN_TEXTURE,
+                    sf::Vector2f(x + weaponPositionOffset.x,
+                                 y + weaponPositionOffset.y),
+                    sf::Vector2f(weaponSize.x, weaponSize.y),
+                    rotation_degrees,
+                    rotateVector);
     }
 };

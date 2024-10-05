@@ -119,7 +119,11 @@ public:
         drawPoint(renderWindow, topCollisionPoint, sf::Color(255, 0, 0, 255));
         drawTexture(renderWindow, playerTexture, sf::Vector2f(position.x, position.y), sf::Vector2f(playerSize.x, playerSize.y));
 
+
+        std::pair<Point<float>, Point<float>> handPlacements = weapon->getHandPlacementPoints(position.x, position.y);
+        drawTexture(renderWindow, gameAssets.textures.PLAYER_HAND_TEXTURE, sf::Vector2f(handPlacements.second.x, handPlacements.second.y), sf::Vector2f(20, -1));
         weapon->render(renderWindow, position.x, position.y, aimPosition.x, aimPosition.y);
+        drawTexture(renderWindow, gameAssets.textures.PLAYER_HAND_TEXTURE, sf::Vector2f(handPlacements.first.x, handPlacements.first.y), sf::Vector2f(20, -1));
     }
 
 protected:

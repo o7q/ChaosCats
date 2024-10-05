@@ -109,7 +109,7 @@ public:
 
     virtual void render(sf::RenderWindow &renderWindow)
     {
-        float rotation = calculateRotation(startPosition.x, startPosition.y, startPosition.x + slope.x, startPosition.y + slope.y);
+        float rotation = degreesFromPoints(startPosition.x, startPosition.y, startPosition.x + slope.x, startPosition.y + slope.y);
 
         Rect<float> rect(position.x, position.y, 10, 5);
         drawRect(renderWindow, rect, sf::Color(255, 220, 200, 255), DrawMode::Solid, rotation);
@@ -125,18 +125,6 @@ public:
         Size<int> worldSize = world->getSize();
         Point<int> worldPos = world->getWorldCoords(position.x, position.y);
         return worldPos.x < 0 || worldPos.y < 0 || worldPos.x > worldSize.w - 1 || worldPos.y > worldSize.h - 1;
-    }
-
-protected:
-    float calculateRotation(float startX, float startY, float endX, float endY)
-    {
-        float dx = endX - startX;
-        float dy = endY - startY;
-        float radians = std::atan2(dy, dx);
-        float degrees = (180.0f / PI) * radians;
-        float degrees360 = std::fmod(degrees + 360.0f, 360.0f);
-
-        return degrees360;
     }
 
 protected:

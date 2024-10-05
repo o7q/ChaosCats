@@ -11,12 +11,14 @@ struct TextureStorage
     sf::Texture PLAYER_TEXTURE;
     sf::Texture PLAYER_HAND_TEXTURE;
     sf::Texture WEAPON_SHOTGUN_TEXTURE;
+    sf::Texture WEAPON_SHOTGUN_POINTS_TEXTURE;
 
     TextureStorage()
     {
         loadTexture(PLAYER_TEXTURE, "assets/textures/player/player.png");
         loadTexture(PLAYER_HAND_TEXTURE, "assets/textures/player/hand.png");
         loadTexture(WEAPON_SHOTGUN_TEXTURE, "assets/textures/weapons/shotgun/shotgun.png");
+        loadTexture(WEAPON_SHOTGUN_POINTS_TEXTURE, "assets/textures/weapons/shotgun/shotgun_points.png");
     };
 
 private:

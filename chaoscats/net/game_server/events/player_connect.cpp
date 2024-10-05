@@ -33,6 +33,12 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
         std::lock_guard<std::mutex> playersLock(playersMutex);
         for (const auto &player : serverPlayers)
         {
+            // skip duplicating newly connected client
+            if (player.first == clientId)
+            {
+                continue;
+            }
+
             net::Message<GameMessages> addPastPlayersPacket;
             addPastPlayersPacket.header.id = GameMessages::Server2C_AddPlayer;
             addPastPlayersPacket << player.second->getPosition() << player.first;
