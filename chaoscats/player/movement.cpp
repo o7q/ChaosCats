@@ -63,3 +63,23 @@ void Player::handleMovement()
         jumped = false;
     }
 }
+
+void Player::setPosition(float x, float y)
+{
+    position.x = x;
+    position.y = y;
+
+    body_hitbox.setPosition(position.x, position.y + body_hitbox.half_size.y - leftLeg_hitbox.half_size.y);
+    head_hitbox.setPosition(position.x, position.y - head_hitbox.half_size.y - leftLeg_hitbox.half_size.y);
+
+    leftLeg_hitbox.setPosition(position.x - leftLeg_hitbox.half_size.x, position.y + body_hitbox.half_size.y + leftLeg_hitbox.half_size.y);
+    rightLeg_hitbox.setPosition(position.x + leftLeg_hitbox.half_size.x, position.y + body_hitbox.half_size.y + leftLeg_hitbox.half_size.y);
+
+    player_collisionBox.setPosition(position.x, position.y);
+
+    bottomCollisionPoint.x = player_collisionBox.getPosition().x;
+    bottomCollisionPoint.y = player_collisionBox.getPosition().y + player_collisionBox.half_size.y;
+
+    topCollisionPoint.x = player_collisionBox.getPosition().x;
+    topCollisionPoint.y = player_collisionBox.getPosition().y - player_collisionBox.half_size.y;
+}

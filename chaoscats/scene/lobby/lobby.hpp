@@ -20,7 +20,8 @@ public:
                                                                                                                                        netArgs(netArgs)
     {
         keepServer.store(false);
-        serverStarted.store(false);
+        // serverStarted.store(false);
+        serverStarted = false;
     }
     ~Scene_Lobby()
     {
@@ -62,7 +63,9 @@ private:
     GameServer *gameServer = nullptr;
 
     std::atomic<bool> keepServer;
-    std::atomic<bool> serverStarted;
+    bool serverStarted = false;
+    std::mutex serverStarted_mutex;
+    std::condition_variable serverStarted_cv;
     std::thread serverThread;
 
     Scene *lobbyScene = nullptr;

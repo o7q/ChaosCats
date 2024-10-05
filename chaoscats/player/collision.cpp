@@ -6,8 +6,8 @@ void Player::handleCollision()
     bool collisionHappened = false;
     for (EdgeData edge : collisionMesh)
     {
-        bool bottomCollision = handleBottomCollision(position, velocity, collisionBox, edge, bottomCollisionPoint, gameInfo.time.DELTA_TIME);
-        bool topCollision = handleTopCollision(position, velocity, collisionBox, edge, topCollisionPoint, gameInfo.time.DELTA_TIME);
+        bool bottomCollision = handleBottomCollision(position, velocity, player_collisionBox, edge, bottomCollisionPoint, gameInfo.time.DELTA_TIME);
+        bool topCollision = handleTopCollision(position, velocity, player_collisionBox, edge, topCollisionPoint, gameInfo.time.DELTA_TIME);
 
         if (bottomCollision || topCollision)
         {

@@ -5,7 +5,11 @@ void Scene_Lobby::runServer(uint16_t port)
     gameServer = new GameServer(port, gameAssets);
     gameServer->start();
 
-    serverStarted.store(true);
+    serverStarted_mutex.lock();
+    serverStarted = true;
+    serverStarted_mutex.unlock();
+
+    serverStarted_cv.notify_one();
 
     while (keepServer.load())
     {
@@ -35,9 +39,9 @@ CurrentScene Scene_Lobby::run()
             serverThread = std::thread(&Scene_Lobby::runServer, this, port);
 
             // wait for server to load before continuing
-            while (!serverStarted.load())
-            {
-            }
+            std::unique_lock<std::mutex> lock(serverStarted_mutex);
+            serverStarted_cv.wait(lock, [this]
+                                  { return serverStarted; });
         }
 
         // if a client, join the server using the address and port specified

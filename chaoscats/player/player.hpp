@@ -19,10 +19,25 @@ public:
                                                                              gameInfo(gameInfo),
                                                                              gameAssets(gameAssets)
     {
-        playerTexture = gameAssets.textures.PLAYER_TEXTURE;
-        sf::Vector2f size = imageAspect(playerTexture, sf::Vector2f(60, -1));
-        playerSize = Vector<float>(size.x, size.y);
-        collisionBox = Rect<float>(0, 0, playerSize.x, playerSize.y);
+        sf::Vector2u bodyTextureSize = gameAssets.textures.PLAYER_BODY_TEXTURE.getSize();
+        sf::Vector2f sf_body_size = imageAspect(gameAssets.textures.PLAYER_BODY_TEXTURE, sf::Vector2f(bodyTextureSize.x * scale, -1));
+        body_size = Vector<float>(sf_body_size.x, sf_body_size.y);
+        body_hitbox = Rect<float>(0, 0, body_size.x, body_size.y);
+
+        sf::Vector2u headTextureSize = gameAssets.textures.PLAYER_HEAD_TEXTURE.getSize();
+        sf::Vector2f sf_head_size = imageAspect(gameAssets.textures.PLAYER_HEAD_TEXTURE, sf::Vector2f(headTextureSize.x * scale, -1));
+        head_size = Vector<float>(sf_head_size.x, sf_head_size.y);
+        head_hitbox = Rect<float>(0, 0, body_size.x, body_size.y);
+
+        sf::Vector2u legTextureSize = gameAssets.textures.PLAYER_LEG_TEXTURE.getSize();
+        sf::Vector2f sf_leg_size = imageAspect(gameAssets.textures.PLAYER_LEG_TEXTURE, sf::Vector2f(legTextureSize.x * scale, -1));
+        leftLeg_size = Vector<float>(sf_leg_size.x, sf_leg_size.y);
+        leftLeg_hitbox = Rect<float>(0, 0, leftLeg_size.x, leftLeg_size.y);
+        rightLeg_size = Vector<float>(sf_leg_size.x, sf_leg_size.y);
+        rightLeg_hitbox = Rect<float>(0, 0, rightLeg_size.x, rightLeg_size.y);
+
+        player_collisionBox = Rect<float>(0, 0, body_hitbox.size.x, body_hitbox.size.y + head_hitbox.size.y);
+
         weapon = new Shotgun(world, gameInfo, gameAssets);
     }
     virtual ~Player()
@@ -57,11 +72,13 @@ public:
         weapon->update(position.x, position.y, aimPosition.x, aimPosition.y);
     }
 
+    // this function only runs for server replicated clients
     void visualClientUpdate()
     {
         weapon->update(position.x, position.y, aimPosition.x, aimPosition.y);
     }
 
+    // this function only runs on the server
     void serverUpdate()
     {
         projectileCollideInfo.clear();
@@ -78,19 +95,7 @@ public:
         weapon->shoot(position.x, position.y, aimPosition.x, aimPosition.y);
     }
 
-    void setPosition(float x, float y)
-    {
-        position.x = x;
-        position.y = y;
-
-        collisionBox.setPosition(position.x, position.y);
-
-        bottomCollisionPoint.x = collisionBox.getPosition().x;
-        bottomCollisionPoint.y = collisionBox.getPosition().y + collisionBox.half_size.y;
-
-        topCollisionPoint.x = collisionBox.getPosition().x;
-        topCollisionPoint.y = collisionBox.getPosition().y - collisionBox.half_size.y;
-    }
+    void setPosition(float x, float y);
 
     Vector<float> getPosition() const
     {
@@ -108,30 +113,12 @@ public:
         return aimPosition;
     }
 
-    void render(sf::RenderWindow &renderWindow)
-    {
-        bool collide = false;
-        drawSegment(renderWindow, collisionBox.segments[0], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
-        drawSegment(renderWindow, collisionBox.segments[1], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
-        drawSegment(renderWindow, collisionBox.segments[2], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
-        drawSegment(renderWindow, collisionBox.segments[3], collide ? sf::Color(255, 0, 0, 255) : sf::Color(0, 255, 0, 255));
-        drawPoint(renderWindow, bottomCollisionPoint, sf::Color(255, 0, 0, 255));
-        drawPoint(renderWindow, topCollisionPoint, sf::Color(255, 0, 0, 255));
-        drawTexture(renderWindow, playerTexture, sf::Vector2f(position.x, position.y), sf::Vector2f(playerSize.x, playerSize.y));
-
-
-        std::pair<Vector<float>, Vector<float>> handPlacements = weapon->getHandPlacementPoints(position.x, position.y);
-        drawTexture(renderWindow, gameAssets.textures.PLAYER_HAND_TEXTURE, sf::Vector2f(handPlacements.second.x, handPlacements.second.y), sf::Vector2f(20, -1));
-        weapon->render(renderWindow, position.x, position.y, aimPosition.x, aimPosition.y);
-        drawTexture(renderWindow, gameAssets.textures.PLAYER_HAND_TEXTURE, sf::Vector2f(handPlacements.first.x, handPlacements.first.y), sf::Vector2f(20, -1));
-    }
+    void render(sf::RenderWindow &renderWindow);
 
 protected:
     const World *world = nullptr;
     GameInfo &gameInfo;
     GameAssets &gameAssets;
-
-    sf::Texture playerTexture;
 
 protected:
     Vector<float> position = Vector<float>(0, 0);
@@ -143,12 +130,24 @@ protected:
     Vector<float> aimPosition = Vector<float>(0, 0);
 
 protected:
-    Rect<float> collisionBox;
+    Rect<float> body_hitbox;
+    Vector<float> body_size;
+    Rect<float> head_hitbox;
+    Vector<float> head_size;
+
+    Rect<float> leftLeg_hitbox;
+    Vector<float> leftLeg_size;
+    Rect<float> rightLeg_hitbox;
+    Vector<float> rightLeg_size;
+
+    Rect<float> player_collisionBox;
+
     Vector<float> bottomCollisionPoint;
     Vector<float> topCollisionPoint;
 
-    Vector<float> playerSize;
+    bool renderHitboxes = true;
 
+    int scale = 4;
     float playerSpeed = 6.0f;
     bool jumped = false;
 };
