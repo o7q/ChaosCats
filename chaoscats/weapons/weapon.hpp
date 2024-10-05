@@ -27,9 +27,9 @@ public:
     {
     }
 
-    virtual Point<float> shoot(float playerX, float playerY, float aimX, float aimY)
+    virtual Vector<float> shoot(float playerX, float playerY, float aimX, float aimY)
     {
-        return Point<float>(0, 0);
+        return Vector<float>(0, 0);
     }
 
     virtual std::vector<ProjectileCollideInfo> update(float playerX, float playerY, float aimX, float aimY)
@@ -41,13 +41,13 @@ public:
     {
     }
 
-    virtual std::pair<Point<float>, Point<float>> getHandPlacementPoints(float x, float y)
+    virtual std::pair<Vector<float>, Vector<float>> getHandPlacementPoints(float x, float y)
     {
-        Point<float> handPosition1 = rotatePoint(Point<float>(
+        Vector<float> handPosition1 = rotatePoint(Vector<float>(
                                                      handMountPosition1.x * scale - weaponSize.x / 2,
                                                      handMountPosition1.y * scale - weaponSize.y / 2),
                                                  rotation_radians);
-        Point<float> handPosition2 = rotatePoint(Point<float>(
+        Vector<float> handPosition2 = rotatePoint(Vector<float>(
                                                      handMountPosition2.x * scale - weaponSize.x / 2,
                                                      handMountPosition2.y * scale - weaponSize.y / 2),
                                                  rotation_radians);
@@ -57,7 +57,7 @@ public:
         handPosition2.x += x + weaponPositionOffset.x;
         handPosition2.y += y + weaponPositionOffset.y;
 
-        return std::pair<Point<float>, Point<float>>(handPosition1, handPosition2);
+        return std::pair<Vector<float>, Vector<float>>(handPosition1, handPosition2);
     }
 
 protected:
@@ -67,13 +67,13 @@ protected:
 
     std::vector<Projectile> projectiles;
 
-    Point<int> handMountPosition1;
-    Point<int> handMountPosition2;
-    Point<int> muzzlePosition;
+    Vector<int> handMountPosition1;
+    Vector<int> handMountPosition2;
+    Vector<int> muzzlePosition;
 
     const float scale = 4.0f;
-    Point<float> weaponSize;
-    Point<float> weaponPositionOffset;
+    Vector<float> weaponSize;
+    Vector<float> weaponPositionOffset;
 
     float rotation_radians = 0.0f;
     float rotation_degrees = 0.0f;

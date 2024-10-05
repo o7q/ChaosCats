@@ -11,9 +11,9 @@ inline float radiansToDegrees(float radians)
     return std::fmod(degrees + 360.0f, 360.0f);
 }
 
-inline Point<float> rotatePoint(Point<float> point, float angle)
+inline Vector<float> rotatePoint(Vector<float> point, float angle)
 {
-    Point<float> newPoint;
+    Vector<float> newPoint;
     newPoint.x = point.x * std::cos(angle) - point.y * std::sin(angle);
     newPoint.y = point.x * std::sin(angle) + point.y * std::cos(angle);
 

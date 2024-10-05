@@ -19,7 +19,7 @@ void Scene_LobbyArena::server_player_connect_handleAssignID(net::Message<GameMes
 void Scene_LobbyArena::server_player_connect_handleAdd(net::Message<GameMessages> &message)
 {
     uint32_t id;
-    Point<float> position;
+    Vector<float> position;
     message >> id >> position;
 
     Player *player = new Player(world, gameInfo, gameAssets);

@@ -3,8 +3,8 @@
 // Server2C_MovePlayer
 void Scene_LobbyArena::server_player_action_handleMove(net::Message<GameMessages> &message)
 {
-    Point<float> position;
-    Point<float> aimPosition;
+    Vector<float> position;
+    Vector<float> aimPosition;
     uint32_t id;
     message >> id >> aimPosition >> position;
 

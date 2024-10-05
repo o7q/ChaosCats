@@ -5,8 +5,7 @@
 void GameInfo::InputInfo::refresh(sf::RenderWindow &renderWindow)
 {
     MOUSE_POS = sf::Mouse::getPosition(renderWindow);
-
-    bool MOUSE_LMB_DOWN = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+    MOUSE_LMB_DOWN = sf::Mouse::isButtonPressed(sf::Mouse::Left);
 
     if (!mouseDownPrev && MOUSE_LMB_DOWN)
     {

@@ -21,7 +21,7 @@ public:
     {
         playerTexture = gameAssets.textures.PLAYER_TEXTURE;
         sf::Vector2f size = imageAspect(playerTexture, sf::Vector2f(60, -1));
-        playerSize = Point<float>(size.x, size.y);
+        playerSize = Vector<float>(size.x, size.y);
         collisionBox = Rect<float>(0, 0, playerSize.x, playerSize.y);
         weapon = new Shotgun(world, gameInfo, gameAssets);
     }
@@ -86,13 +86,13 @@ public:
         collisionBox.setPosition(position.x, position.y);
 
         bottomCollisionPoint.x = collisionBox.getPosition().x;
-        bottomCollisionPoint.y = collisionBox.getPosition().y + collisionBox.half_size.h;
+        bottomCollisionPoint.y = collisionBox.getPosition().y + collisionBox.half_size.y;
 
         topCollisionPoint.x = collisionBox.getPosition().x;
-        topCollisionPoint.y = collisionBox.getPosition().y - collisionBox.half_size.h;
+        topCollisionPoint.y = collisionBox.getPosition().y - collisionBox.half_size.y;
     }
 
-    Point<float> getPosition() const
+    Vector<float> getPosition() const
     {
         return position;
     }
@@ -103,7 +103,7 @@ public:
         aimPosition.y = y;
     }
 
-    Point<float> getAim() const
+    Vector<float> getAim() const
     {
         return aimPosition;
     }
@@ -120,7 +120,7 @@ public:
         drawTexture(renderWindow, playerTexture, sf::Vector2f(position.x, position.y), sf::Vector2f(playerSize.x, playerSize.y));
 
 
-        std::pair<Point<float>, Point<float>> handPlacements = weapon->getHandPlacementPoints(position.x, position.y);
+        std::pair<Vector<float>, Vector<float>> handPlacements = weapon->getHandPlacementPoints(position.x, position.y);
         drawTexture(renderWindow, gameAssets.textures.PLAYER_HAND_TEXTURE, sf::Vector2f(handPlacements.second.x, handPlacements.second.y), sf::Vector2f(20, -1));
         weapon->render(renderWindow, position.x, position.y, aimPosition.x, aimPosition.y);
         drawTexture(renderWindow, gameAssets.textures.PLAYER_HAND_TEXTURE, sf::Vector2f(handPlacements.first.x, handPlacements.first.y), sf::Vector2f(20, -1));
@@ -134,20 +134,20 @@ protected:
     sf::Texture playerTexture;
 
 protected:
-    Point<float> position = Point<float>(0, 0);
-    Point<float> velocity = Point<float>(0, 0);
+    Vector<float> position = Vector<float>(0, 0);
+    Vector<float> velocity = Vector<float>(0, 0);
 
 protected:
     Weapon *weapon = nullptr;
     std::vector<ProjectileCollideInfo> projectileCollideInfo;
-    Point<float> aimPosition = Point<float>(0, 0);
+    Vector<float> aimPosition = Vector<float>(0, 0);
 
 protected:
     Rect<float> collisionBox;
-    Point<float> bottomCollisionPoint;
-    Point<float> topCollisionPoint;
+    Vector<float> bottomCollisionPoint;
+    Vector<float> topCollisionPoint;
 
-    Point<float> playerSize;
+    Vector<float> playerSize;
 
     float playerSpeed = 6.0f;
     bool jumped = false;

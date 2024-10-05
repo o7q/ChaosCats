@@ -23,7 +23,7 @@ void drawRect(
     sf::RectangleShape rect;
 
     rect.setPosition(sf::Vector2f(rectangle.getPosition().x, rectangle.getPosition().y));
-    rect.setSize(sf::Vector2f(rectangle.size.w, rectangle.size.h));
+    rect.setSize(sf::Vector2f(rectangle.size.x, rectangle.size.y));
     rect.setRotation(rotation);
     switch (drawMode)
     {
@@ -37,7 +37,7 @@ void drawRect(
         break;
     }
 
-    rect.setOrigin(rectangle.size.w / 2, rectangle.size.h / 2);
+    rect.setOrigin(rectangle.size.x / 2, rectangle.size.y / 2);
 
     renderWindow.draw(rect);
 }
@@ -55,7 +55,7 @@ void drawSegment(sf::RenderWindow &renderWindow, Segment<T> segment, sf::Color c
 }
 
 template <typename T>
-void drawPoint(sf::RenderWindow &renderWindow, Point<T> point, sf::Color color = sf::Color(255, 255, 255, 255))
+void drawPoint(sf::RenderWindow &renderWindow, Vector<T> point, sf::Color color = sf::Color(255, 255, 255, 255))
 {
     float size = 2.0f;
     sf::CircleShape circle(size);

@@ -3,8 +3,8 @@
 #include "../../math/geometry/geometry_common.hpp"
 #include "collision_mesh.hpp"
 
-bool handleBottomCollision(Point<float> &position, Point<float> &velocity, Rect<float> collisionBox, EdgeData edge, Point<float> bottom, float dt);
-bool handleTopCollision(Point<float> &position, Point<float> &velocity, Rect<float> collisionBox, EdgeData edge, Point<float> top, float dt);
+bool handleBottomCollision(Vector<float> &position, Vector<float> &velocity, Rect<float> collisionBox, EdgeData edge, Vector<float> bottom, float dt);
+bool handleTopCollision(Vector<float> &position, Vector<float> &velocity, Rect<float> collisionBox, EdgeData edge, Vector<float> top, float dt);
 
 struct SS_IntersectData
 {

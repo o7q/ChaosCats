@@ -28,15 +28,15 @@ public:
                 sf::Color pixColor = gunPointsImage.getPixel(x, y);
                 if (pixColor == sf::Color(255, 0, 0, 255))
                 {
-                    muzzlePosition = Point<int>(x, y);
+                    muzzlePosition = Vector<int>(x, y);
                 }
                 else if (pixColor == sf::Color(0, 255, 0, 255))
                 {
-                    handMountPosition1 = Point<int>(x, y);
+                    handMountPosition1 = Vector<int>(x, y);
                 }
                 else if (pixColor == sf::Color(0, 0, 255, 255))
                 {
-                    handMountPosition2 = Point<int>(x, y);
+                    handMountPosition2 = Vector<int>(x, y);
                 }
             }
         }
@@ -51,16 +51,16 @@ public:
     {
     }
 
-    virtual Point<float> shoot(float playerX, float playerY, float aimX, float aimY) override
+    virtual Vector<float> shoot(float playerX, float playerY, float aimX, float aimY) override
     {
         int shellCount = 10;
         float spreadAngle = 15.0f;
         float halfSpreadAngle = spreadAngle / 2.0f;
 
-        Point<float> mp = rotatePoint(Point<float>(
-                                          muzzlePosition.x * scale - weaponSize.x / 2,
-                                          muzzlePosition.y * scale - weaponSize.y / 2),
-                                      rotation_radians);
+        Vector<float> mp = rotatePoint(Vector<float>(
+                                           muzzlePosition.x * scale - weaponSize.x / 2,
+                                           muzzlePosition.y * scale - weaponSize.y / 2),
+                                       rotation_radians);
 
         float x_new = mp.x + playerX;
         float y_new = mp.y + playerY;
@@ -84,7 +84,7 @@ public:
             float new_dx = std::cos(newAngle);
             float new_dy = std::sin(newAngle);
 
-            Projectile projectile(world, projectileSettings, Point<float>(x_new, y_new), Point<float>(new_dx, new_dy));
+            Projectile projectile(world, projectileSettings, Vector<float>(x_new, y_new), Vector<float>(new_dx, new_dy));
             projectiles.push_back(projectile);
         }
 
@@ -92,7 +92,7 @@ public:
         float dirX = dx / distance;
         float dirY = dy / distance;
 
-        return Point<float>(-dirX * 30, -dirY * 10);
+        return Vector<float>(-dirX * 30, -dirY * 10);
     }
 
     virtual std::vector<ProjectileCollideInfo> update(float playerX, float playerY, float aimX, float aimY) override

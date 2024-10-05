@@ -1,7 +1,7 @@
 #pragma once
 
 #include "segment.hpp"
-#include "point.hpp"
+#include "vector.hpp"
 
 template <typename T>
 struct Rect
@@ -9,16 +9,16 @@ struct Rect
     Rect() = default;
     Rect(T x, T y, T w, T h)
     {
-        this->position = Point<T>(x, y);
-        this->size = Size<T>(w, h);
-        half_size = Size<T>(size.w / 2.0f, size.h / 2.0f);
+        this->position = Vector<T>(x, y);
+        this->size = Vector<T>(w, h);
+        half_size = Vector<T>(size.x / 2.0f, size.y / 2.0f);
 
         updatePoints();
     }
 
     void setPosition(T x, T y)
     {
-        this->position = Point<T>(x, y);
+        this->position = Vector<T>(x, y);
         updatePoints();
     }
 
@@ -29,19 +29,19 @@ struct Rect
         updatePoints();
     }
 
-    Point<T> getPosition()
+    Vector<T> getPosition()
     {
         return position;
     }
 
-    Point<T> points[4];
+    Vector<T> points[4];
     Segment<T> segments[4];
 
-    Size<T> size;
-    Size<T> half_size;
+    Vector<T> size;
+    Vector<T> half_size;
 
 private:
-    Point<T> position;
+    Vector<T> position;
 
     void updatePoints()
     {
@@ -49,10 +49,10 @@ private:
         //  [-]
         // 3   2
 
-        points[0] = Point<T>(position.x - half_size.w, position.y - half_size.h);
-        points[1] = Point<T>(position.x + half_size.w, position.y - half_size.h);
-        points[2] = Point<T>(position.x + half_size.w, position.y + half_size.h);
-        points[3] = Point<T>(position.x - half_size.w, position.y + half_size.h);
+        points[0] = Vector<T>(position.x - half_size.x, position.y - half_size.y);
+        points[1] = Vector<T>(position.x + half_size.x, position.y - half_size.y);
+        points[2] = Vector<T>(position.x + half_size.x, position.y + half_size.y);
+        points[3] = Vector<T>(position.x - half_size.x, position.y + half_size.y);
 
         segments[0] = Segment<T>(points[0], points[1]);
         segments[1] = Segment<T>(points[1], points[2]);

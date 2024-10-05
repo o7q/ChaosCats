@@ -1,5 +1,5 @@
 #pragma once
 
-#include "point.hpp"
+#include "vector.hpp"
 #include "segment.hpp"
 #include "rectangle.hpp"

@@ -18,8 +18,13 @@
 class Scene_LobbyArena : public Scene
 {
 public:
-    Scene_LobbyArena(sf::RenderWindow &renderWindow, GameInfo &gameInfo, GameAssets &gameAssets, GameClient &client) : Scene(renderWindow, gameInfo, gameAssets),
-                                                                                                                       client(client)
+    Scene_LobbyArena(sf::RenderWindow &renderWindow,
+                     GameInfo &gameInfo,
+                     GameAssets &gameAssets,
+                     GameClient &client) : Scene(renderWindow,
+                                                 gameInfo,
+                                                 gameAssets),
+                                           client(client)
     {
     }
     ~Scene_LobbyArena()

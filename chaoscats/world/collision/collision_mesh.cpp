@@ -51,16 +51,16 @@ void appendLookupSegment(std::vector<EdgeData> &segments, int index, int x, int 
     constexpr float FLOAT_MAX = std::numeric_limits<float>::max();
 
     float half_scale = scale / 2.0f;
-    Point<float> l(
+    Vector<float> l(
         (x + 0  ) * scale + half_scale,
         (y + 0.5) * scale + half_scale);
-    Point<float> b(
+    Vector<float> b(
         (x + 0.5) * scale + half_scale,
         (y + 1  ) * scale + half_scale);
-    Point<float> r(
+    Vector<float> r(
         (x + 1  ) * scale + half_scale,
         (y + 0.5) * scale + half_scale);
-    Point<float> t(
+    Vector<float> t(
         (x + 0.5) * scale + half_scale,
         (y + 0  ) * scale + half_scale);
 

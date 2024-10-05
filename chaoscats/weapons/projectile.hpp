@@ -34,8 +34,8 @@ class Projectile
 public:
     Projectile(const World *world,
                ProjectileSettings projectileSettings,
-               Point<float> startPosition,
-               Point<float> slope) : world(world)
+               Vector<float> startPosition,
+               Vector<float> slope) : world(world)
     {
         this->projectileSettings = projectileSettings;
 
@@ -66,18 +66,18 @@ public:
     virtual ProjectileCollideInfo update(float dt)
     {
         float distance = std::sqrt(slope.x * slope.x + slope.y * slope.y);
-        Point<float> direction = Point<float>(slope.x / distance, slope.y / distance);
-        Point<float> velocity(direction.x * projectileSettings.speed, direction.y * projectileSettings.speed);
+        Vector<float> direction = Vector<float>(slope.x / distance, slope.y / distance);
+        Vector<float> velocity(direction.x * projectileSettings.speed, direction.y * projectileSettings.speed);
 
         // get future position
-        Point<float> projectileFuturePos;
+        Vector<float> projectileFuturePos;
         projectileFuturePos.x = position.x + velocity.x * dt;
         projectileFuturePos.y = position.y + velocity.y * dt;
 
-        Segment<float> futureVelocity = Segment<float>(Point<float>(position.x, position.y), projectileFuturePos);
+        Segment<float> futureVelocity = Segment<float>(Vector<float>(position.x, position.y), projectileFuturePos);
 
         // check world intersection
-        Point<float> intersectPoint;
+        Vector<float> intersectPoint;
         for (EdgeData edge : world->getCollisionMesh())
         {
             SS_IntersectData intersectData = segmentSegment(futureVelocity, edge.segment);
@@ -88,7 +88,7 @@ public:
 
                 ProjectileCollideInfo projectileCollideInfo;
 
-                Point<int> hitPoint = world->getWorldCoords(intersectPoint.x, intersectPoint.y);
+                Vector<int> hitPoint = world->getWorldCoords(intersectPoint.x, intersectPoint.y);
 
                 projectileCollideInfo.isPlayer = false;
                 projectileCollideInfo.projectileSettings = projectileSettings;
@@ -122,9 +122,9 @@ public:
 
     virtual bool outOfBounds() const
     {
-        Size<int> worldSize = world->getSize();
-        Point<int> worldPos = world->getWorldCoords(position.x, position.y);
-        return worldPos.x < 0 || worldPos.y < 0 || worldPos.x > worldSize.w - 1 || worldPos.y > worldSize.h - 1;
+        Vector<int> worldSize = world->getSize();
+        Vector<int> worldPos = world->getWorldCoords(position.x, position.y);
+        return worldPos.x < 0 || worldPos.y < 0 || worldPos.x > worldSize.x - 1 || worldPos.y > worldSize.y - 1;
     }
 
 protected:
@@ -132,9 +132,9 @@ protected:
 
     ProjectileSettings projectileSettings;
 
-    Point<float> position;
-    Point<float> startPosition;
-    Point<float> slope;
+    Vector<float> position;
+    Vector<float> startPosition;
+    Vector<float> slope;
 
     bool hit = false;
 };

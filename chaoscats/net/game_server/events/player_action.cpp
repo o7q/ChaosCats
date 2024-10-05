@@ -4,8 +4,8 @@
 void GameServer::player_action_handleMove(std::shared_ptr<net::Connection<GameMessages>> &client, net::Message<GameMessages> &message)
 {
     uint32_t id;
-    Point<float> position;
-    Point<float> aimPosition;
+    Vector<float> position;
+    Vector<float> aimPosition;
     message >> id >> aimPosition >> position;
 
     playersMutex.lock();

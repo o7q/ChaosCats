@@ -130,16 +130,16 @@ public:
         return Particle();
     }
 
-    Point<int> getWorldCoords(int worldX, int worldY) const
+    Vector<int> getWorldCoords(int worldX, int worldY) const
     {
         int x = worldX / pixelSize;
         int y = worldY / pixelSize;
-        return Point<int>(x, y);
+        return Vector<int>(x, y);
     }
 
     Particle getParticleFromWindowCoords(int x, int y) const
     {
-        Point<int> worldCoords = getWorldCoords(x, y);
+        Vector<int> worldCoords = getWorldCoords(x, y);
         if (particles.inBounds(worldCoords.y, worldCoords.x))
         {
             return particles.get(worldCoords.y, worldCoords.x);
@@ -171,9 +171,9 @@ public:
         return collisionMesh;
     }
 
-    Size<int> getSize() const
+    Vector<int> getSize() const
     {
-        return Size<int>(width, height);
+        return Vector<int>(width, height);
     }
 
 private:

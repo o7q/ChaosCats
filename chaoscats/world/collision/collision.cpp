@@ -3,9 +3,9 @@
 #include <iostream>
 #include <cmath>
 
-bool handleBottomCollision(Point<float> &position, Point<float> &velocity, Rect<float> collisionBox, EdgeData edge, Point<float> bottom, float dt)
+bool handleBottomCollision(Vector<float> &position, Vector<float> &velocity, Rect<float> collisionBox, EdgeData edge, Vector<float> bottom, float dt)
 {
-    Point<float> playerFuturePos;
+    Vector<float> playerFuturePos;
     playerFuturePos.x = bottom.x + velocity.x * dt;
     playerFuturePos.y = bottom.y + velocity.y * dt;
 
@@ -13,7 +13,7 @@ bool handleBottomCollision(Point<float> &position, Point<float> &velocity, Rect<
 
     SS_IntersectData intersectData = segmentSegment(futureVelocity, edge.segment);
 
-    Point<float> intersectPoint = Point<float>(intersectData.x, intersectData.y);
+    Vector<float> intersectPoint = Vector<float>(intersectData.x, intersectData.y);
 
     // check if the edge intersected
     if (!intersectData.intersected)
@@ -25,7 +25,7 @@ bool handleBottomCollision(Point<float> &position, Point<float> &velocity, Rect<
     if (edge.slopeType == SlopeType::Horizontal)
     {
         position.x = intersectPoint.x;
-        position.y = intersectPoint.y - collisionBox.half_size.h - 1;
+        position.y = intersectPoint.y - collisionBox.half_size.y - 1;
 
         return true;
     }
@@ -35,7 +35,7 @@ bool handleBottomCollision(Point<float> &position, Point<float> &velocity, Rect<
         edge.slopeType == SlopeType::DownHill)
     {
         position.x = intersectPoint.x;
-        position.y = intersectPoint.y - collisionBox.half_size.h - std::fabs(velocity.x * dt) - 1;
+        position.y = intersectPoint.y - collisionBox.half_size.y - std::fabs(velocity.x * dt) - 1;
 
         return true;
     }
@@ -46,7 +46,7 @@ bool handleBottomCollision(Point<float> &position, Point<float> &velocity, Rect<
         int sign = velocity.x >= 0 ? 1 : -1;
 
         position.x = intersectPoint.x - sign * 2;
-        position.y = intersectPoint.y - collisionBox.half_size.h;
+        position.y = intersectPoint.y - collisionBox.half_size.y;
 
         return true;
     }
@@ -54,9 +54,9 @@ bool handleBottomCollision(Point<float> &position, Point<float> &velocity, Rect<
     return false;
 }
 
-bool handleTopCollision(Point<float> &position, Point<float> &velocity, Rect<float> collisionBox, EdgeData edge, Point<float> top, float dt)
+bool handleTopCollision(Vector<float> &position, Vector<float> &velocity, Rect<float> collisionBox, EdgeData edge, Vector<float> top, float dt)
 {
-    Point<float> playerFuturePos;
+    Vector<float> playerFuturePos;
     playerFuturePos.x = top.x + velocity.x * dt;
     playerFuturePos.y = top.y + velocity.y * dt;
 
@@ -64,7 +64,7 @@ bool handleTopCollision(Point<float> &position, Point<float> &velocity, Rect<flo
 
     SS_IntersectData intersectData = segmentSegment(futureVelocity, edge.segment);
 
-    Point<float> intersectPoint = Point<float>(intersectData.x, intersectData.y);
+    Vector<float> intersectPoint = Vector<float>(intersectData.x, intersectData.y);
 
     // check if the edge intersected
     if (!intersectData.intersected)
@@ -76,7 +76,7 @@ bool handleTopCollision(Point<float> &position, Point<float> &velocity, Rect<flo
     if (edge.slopeType == SlopeType::Horizontal)
     {
         position.x = intersectPoint.x;
-        position.y = intersectPoint.y + collisionBox.half_size.h + 1;
+        position.y = intersectPoint.y + collisionBox.half_size.y + 1;
 
         velocity.y = 0;
 
@@ -90,7 +90,7 @@ bool handleTopCollision(Point<float> &position, Point<float> &velocity, Rect<flo
         int sign = velocity.x >= 0 ? 1 : -1;
 
         position.x = intersectPoint.x - sign * 2;
-        position.y = intersectPoint.y + collisionBox.half_size.h;
+        position.y = intersectPoint.y + collisionBox.half_size.y;
 
         velocity.y = 0;
 
@@ -103,7 +103,7 @@ bool handleTopCollision(Point<float> &position, Point<float> &velocity, Rect<flo
         int sign = velocity.x >= 0 ? 1 : -1;
 
         position.x = intersectPoint.x - sign * 2;
-        position.y = intersectPoint.y + collisionBox.half_size.h;
+        position.y = intersectPoint.y + collisionBox.half_size.y;
 
         return true;
     }
