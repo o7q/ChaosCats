@@ -5,7 +5,7 @@
 #include "../particle.hpp"
 
 #include "../../math/geometry/geometry_common.hpp"
-#include "../../math/matrix/matrix.hpp"
+#include "../../math/matrix.hpp"
 
 enum class SlopeType
 {

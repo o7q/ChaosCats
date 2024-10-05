@@ -1,5 +1,5 @@
 #include "world.hpp"
-#include "../math/random/random.hpp"
+#include "../math/random.hpp"
 
 void World::update_particles()
 {

@@ -3,7 +3,7 @@
 #include <random>
 #include <iostream>
 
-#include "../../utils/logger.hpp"
+#include "../utils/logger.hpp"
 
 namespace Random
 {

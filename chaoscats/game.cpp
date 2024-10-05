@@ -1,7 +1,7 @@
 #include "game.hpp"
 
 #include "utils/logger.hpp"
-#include "math/random/random.hpp"
+#include "math/random.hpp"
 
 GameWindow::GameWindow(const std::string &name, int width, int height, const std::vector<std::string> &netArgs) : netArgs(netArgs)
 {

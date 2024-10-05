@@ -1,5 +1,5 @@
 #include "../world.hpp"
-#include "../../math/random/random.hpp"
+#include "../../math/random.hpp"
 
 void World::p_water(Particle particle, int x, int y, BoundRules boundRules)
 {

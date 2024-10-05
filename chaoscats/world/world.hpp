@@ -6,9 +6,9 @@
 #include "camera.hpp"
 
 #include "../math/geometry/geometry_common.hpp"
-#include "../math/matrix/matrix.hpp"
+#include "../math/matrix.hpp"
 #include "../rendering/draw.hpp"
-#include "../math/random/random.hpp"
+#include "../math/random.hpp"
 
 #include "collision/collision_mesh.hpp"
 
