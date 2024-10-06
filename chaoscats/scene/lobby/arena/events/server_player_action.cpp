@@ -32,3 +32,15 @@ void Scene_LobbyArena::server_world_action_handleModifyWorld(net::Message<GameMe
 {
     world->updateFromMessage(message);
 }
+
+void Scene_LobbyArena::server_player_action_handleDamage(net::Message<GameMessages> &message)
+{
+    uint32_t id;
+    ProjectileCollideInfo pci;
+    message >> id >> pci;
+
+    if (mapContains(players, id))
+    {
+        players[id]->damage(pci);
+    }
+}

@@ -6,7 +6,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "projectile.hpp"
+#include "projectile/projectile.hpp"
 
 #include "../rendering/draw.hpp"
 #include "../game_info/game_info.hpp"
@@ -36,9 +36,9 @@ public:
         return Vector<float>(0, 0);
     }
 
-    virtual std::vector<ProjectileCollideInfo> update(float playerX, float playerY, float aimX, float aimY)
+    virtual void update(float playerX, float playerY, float aimX, float aimY)
     {
-        return std::vector<ProjectileCollideInfo>();
+
     }
 
     virtual void render(sf::RenderWindow &renderWindow, float playerX, float playerY, float aimX, float aimY)
@@ -64,7 +64,7 @@ public:
         return std::pair<Vector<float>, Vector<float>>(handPosition1, handPosition2);
     }
 
-    virtual const std::vector<Projectile> &getActiveProjectiles() const
+    virtual std::vector<Projectile> &getActiveProjectiles()
     {
         return projectiles;
     }

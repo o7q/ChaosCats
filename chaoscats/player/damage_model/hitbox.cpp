@@ -1,5 +1,7 @@
 #include "damage_model.hpp"
 
+// collision mesh generator/updater
+// implements: https://en.wikipedia.org/wiki/Marching_squares
 void DamageModel::updateHitbox(int playerX, int playerY, int playerScale)
 {
     damageHitbox.clear();
@@ -8,6 +10,9 @@ void DamageModel::updateHitbox(int playerX, int playerY, int playerScale)
     {
         for (int x = 0; x < sizeX - 1; ++x)
         {
+            // [d][c]
+            // [a][b]
+
             int a = binaryHitbox.get(y + 1, x    );
             int b = binaryHitbox.get(y + 1, x + 1);
             int c = binaryHitbox.get(y,     x + 1);
@@ -49,48 +54,48 @@ void DamageModel::appendLookupSegment(int index, int x, int y, int playerX, int 
     case 0:
         break;
     case 1:
-        damageHitbox.push_back(DamageModelEdge{Segment<float>(l, b), x, y});
+        damageHitbox.push_back(DamageModelEdgeData{Segment<float>(l, b), x, y});
         break;
     case 2:
-        damageHitbox.push_back(DamageModelEdge{Segment<float>(b, r), x, y});
+        damageHitbox.push_back(DamageModelEdgeData{Segment<float>(b, r), x, y});
         break;
     case 3:
-        damageHitbox.push_back(DamageModelEdge{Segment<float>(l, r), x, y});
+        damageHitbox.push_back(DamageModelEdgeData{Segment<float>(l, r), x, y});
         break;
     case 4:
-        damageHitbox.push_back(DamageModelEdge{Segment<float>(t, r), x, y});
+        damageHitbox.push_back(DamageModelEdgeData{Segment<float>(t, r), x, y});
         break;
     case 5:
-        damageHitbox.push_back(DamageModelEdge{Segment<float>(l, t), x, y});
-        damageHitbox.push_back(DamageModelEdge{Segment<float>(b, r), x, y});
+        damageHitbox.push_back(DamageModelEdgeData{Segment<float>(l, t), x, y});
+        damageHitbox.push_back(DamageModelEdgeData{Segment<float>(b, r), x, y});
         break;
     case 6:
-        damageHitbox.push_back(DamageModelEdge{Segment<float>(t, b), x, y});
+        damageHitbox.push_back(DamageModelEdgeData{Segment<float>(t, b), x, y});
         break;
     case 7:
-        damageHitbox.push_back(DamageModelEdge{Segment<float>(l, t), x, y});
+        damageHitbox.push_back(DamageModelEdgeData{Segment<float>(l, t), x, y});
         break;
     case 8:
-        damageHitbox.push_back(DamageModelEdge{Segment<float>(l, t), x, y});
+        damageHitbox.push_back(DamageModelEdgeData{Segment<float>(l, t), x, y});
         break;
     case 9:
-        damageHitbox.push_back(DamageModelEdge{Segment<float>(t, b), x, y});
+        damageHitbox.push_back(DamageModelEdgeData{Segment<float>(t, b), x, y});
         break;
     case 10:
-        damageHitbox.push_back(DamageModelEdge{Segment<float>(l, b), x, y});
-        damageHitbox.push_back(DamageModelEdge{Segment<float>(t, r), x, y});
+        damageHitbox.push_back(DamageModelEdgeData{Segment<float>(l, b), x, y});
+        damageHitbox.push_back(DamageModelEdgeData{Segment<float>(t, r), x, y});
         break;
     case 11:
-        damageHitbox.push_back(DamageModelEdge{Segment<float>(t, r), x, y});
+        damageHitbox.push_back(DamageModelEdgeData{Segment<float>(t, r), x, y});
         break;
     case 12:
-        damageHitbox.push_back(DamageModelEdge{Segment<float>(l, r), x, y});
+        damageHitbox.push_back(DamageModelEdgeData{Segment<float>(l, r), x, y});
         break;
     case 13:
-        damageHitbox.push_back(DamageModelEdge{Segment<float>(b, r), x, y});
+        damageHitbox.push_back(DamageModelEdgeData{Segment<float>(b, r), x, y});
         break;
     case 14:
-        damageHitbox.push_back(DamageModelEdge{Segment<float>(l, b), x, y});
+        damageHitbox.push_back(DamageModelEdgeData{Segment<float>(l, b), x, y});
         break;
     case 15:
         break;

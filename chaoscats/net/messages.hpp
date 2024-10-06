@@ -24,6 +24,7 @@ enum class GameMessages
     Server2C_AddPlayer,
     Server2C_RemovePlayer,
     Server2C_MovePlayer,
+    Server2C_DamagePlayer,
     Server2C_Shoot,
     Server2C_ModifyWorld
 };

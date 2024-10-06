@@ -17,7 +17,7 @@ void Player::handleCollision()
 
     if (!collisionHappened)
     {
-        position.y += velocity.y * gameInfo.time.DELTA_TIME;
         position.x += velocity.x * gameInfo.time.DELTA_TIME;
+        position.y += velocity.y * gameInfo.time.DELTA_TIME;
     }
 }

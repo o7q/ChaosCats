@@ -10,21 +10,7 @@
 #include "../../math/matrix.hpp"
 #include "../../math/random.hpp"
 
-struct PlayerDamageModels
-{
-    DamageModel *head = nullptr;
-    DamageModel *body = nullptr;
-
-    ~PlayerDamageModels()
-    {
-        delete head;
-        head = nullptr;
-        delete body;
-        body = nullptr;
-    }
-};
-
-struct DamageModelEdge
+struct DamageModelEdgeData
 {
     Segment<float> segment;
     int localX = 0;
@@ -45,6 +31,7 @@ public:
         this->sizeX = sizeX;
         this->sizeY = sizeY;
 
+
         for (int y = 0; y < sizeY; ++y)
         {
             for (int x = 0; x < sizeX; ++x)
@@ -55,6 +42,7 @@ public:
             }
         }
 
+        modelImage.create(sizeX, sizeY);
         modelTexture.loadFromImage(goreLayers[0]);
     }
 
@@ -83,7 +71,7 @@ public:
         updateHitbox(playerX, playerY, playerScale);
     }
 
-    std::vector<DamageModelEdge> &getDamageHitbox()
+    std::vector<DamageModelEdgeData> &getDamageHitbox()
     {
         return damageHitbox;
     }
@@ -99,7 +87,7 @@ private:
 
     Matrix<int> damageIndexes;
     Matrix<int> binaryHitbox;
-    std::vector<DamageModelEdge> damageHitbox;
+    std::vector<DamageModelEdgeData> damageHitbox;
     std::vector<sf::Image> goreLayers;
 
     sf::Image modelImage;
@@ -121,7 +109,7 @@ private:
                     int y_clamped = std::clamp(y, 0, sizeY - 1);
 
                     int upper = goreLayers.size() - 1;
-                    int damageChance = Random::genInt(0, 1);
+                    int damageChance = Random::genInt(0, 3);
                     int damageValue = std::clamp(damageIndexes.get(y_clamped, x_clamped) + (damageChance == 0 ? 1 : 0), 0, upper);
 
                     damageIndexes.set(y_clamped, x_clamped, damageValue);
@@ -133,5 +121,19 @@ private:
                 }
             }
         }
+    }
+};
+
+struct PlayerDamageModel
+{
+    DamageModel *head = nullptr;
+    DamageModel *body = nullptr;
+
+    ~PlayerDamageModel()
+    {
+        delete head;
+        head = nullptr;
+        delete body;
+        body = nullptr;
     }
 };

@@ -95,6 +95,11 @@ protected:
                     server_player_action_handleMove(message);
                 }
                 break;
+                case GameMessages::Server2C_DamagePlayer:
+                {
+                    server_player_action_handleDamage(message);
+                }
+                break;
                 case GameMessages::Server2C_Shoot:
                 {
                     server_player_action_handleShoot(message);
@@ -119,6 +124,7 @@ protected:
 
     void server_player_action_handleMove(net::Message<GameMessages> &message);
     void server_player_action_handleShoot(net::Message<GameMessages> &message);
+    void server_player_action_handleDamage(net::Message<GameMessages> &message);
     void server_world_action_handleModifyWorld(net::Message<GameMessages> &message);
 
     void client_player_action_handleMove();

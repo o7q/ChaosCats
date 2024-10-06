@@ -69,12 +69,37 @@ public:
                 for (const auto &player : serverPlayers)
                 {
                     player.second->serverUpdate();
-                    std::vector<ProjectileCollideInfo> projectileCollideInfo = player.second->getProjectileCollideInfo();
-                    for (ProjectileCollideInfo pci : projectileCollideInfo)
+                    std::vector<Projectile> &projectiles = player.second->getActiveWeapon()->getActiveProjectiles();
+
+                    for (Projectile &projectile : projectiles)
                     {
+                        for (const auto &otherPlayer : serverPlayers)
+                        {
+                            if (player.first != otherPlayer.first)
+                            {
+                                ProjectileCollideInfo playerCollisionInfo = projectile.checkPlayerCollision(serverGameInfo.time.DELTA_TIME, otherPlayer.second->getDamageModel());
+
+                                if (playerCollisionInfo.intersected)
+                                {
+                                    otherPlayer.second->damage(playerCollisionInfo);
+                                    net::Message<GameMessages> damagePlayerMessage;
+                                    damagePlayerMessage.header.id = GameMessages::Server2C_DamagePlayer;
+                                    damagePlayerMessage << playerCollisionInfo << otherPlayer.first;
+                                    sendMessageToAllClients(damagePlayerMessage);
+                                    continue;
+                                }
+                            }
+                        }
+
+                        // handle world
                         Particle particle;
                         worldMutex.lock();
-                        net::Message<GameMessages> worldModifyMessage = world->drawParticles(pci.x, pci.y, particle, pci.projectileSettings.damageRadius, DrawShape::Circle);
+                        ProjectileCollideInfo worldCollisionInfo = projectile.checkWorldCollision(serverGameInfo.time.DELTA_TIME);
+                        net::Message<GameMessages> worldModifyMessage = world->drawParticles(worldCollisionInfo.x,
+                                                                                             worldCollisionInfo.y,
+                                                                                             particle,
+                                                                                             worldCollisionInfo.projectileSettings.damageRadius,
+                                                                                             DrawShape::Circle);
                         worldMutex.unlock();
                         worldModifyMessage.header.id = GameMessages::Server2C_ModifyWorld;
                         sendMessageToAllClients(worldModifyMessage);

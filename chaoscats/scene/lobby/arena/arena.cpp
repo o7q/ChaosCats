@@ -31,6 +31,18 @@ CurrentScene Scene_LobbyArena::run()
         {
             players[localId]->clientUpdate();
 
+            std::vector<Projectile> &activeProjectiles = players[localId]->getActiveWeapon()->getActiveProjectiles();
+
+            for (Projectile &projectile : activeProjectiles)
+            {
+                projectile.checkWorldCollision(gameInfo.time.DELTA_TIME);
+
+                for (auto &player : players)
+                {
+                    projectile.checkPlayerCollision(gameInfo.time.DELTA_TIME, player.second->getDamageModel());
+                }
+            }
+
             // packet senders in this conditional will be sent at a constant rate: 'packetSendRate'
             if (packetCanSend)
             {
@@ -48,7 +60,27 @@ CurrentScene Scene_LobbyArena::run()
         {
             for (const auto &player : players)
             {
-                player.second->visualClientUpdate();
+                // only update replicated clients
+                if (player.first != localId)
+                {
+                    player.second->replicatedClientUpdate();
+
+                    std::vector<Projectile> &activeProjectiles = player.second->getActiveWeapon()->getActiveProjectiles();
+
+                    for (Projectile &projectile : activeProjectiles)
+                    {
+                        projectile.checkWorldCollision(gameInfo.time.DELTA_TIME);
+
+                        for (auto &otherPlayer : players)
+                        {
+                            if (player.first != otherPlayer.first)
+                            {
+                                projectile.checkPlayerCollision(gameInfo.time.DELTA_TIME, otherPlayer.second->getDamageModel());
+                            }
+                        }
+                    }
+                }
+
                 player.second->render(renderWindow);
             }
         }

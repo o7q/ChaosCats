@@ -5,14 +5,17 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "../rendering/draw.hpp"
-#include "../game_info/game_info.hpp"
+#include "../../rendering/draw.hpp"
+#include "../../game_info/game_info.hpp"
 
-#include "../math/constants.hpp"
+#include "../../math/constants.hpp"
+#include "../../math/trig.hpp"
 
-#include "../world/world.hpp"
-#include "../world/collision/collision.hpp"
-#include "../math/geometry/geometry_common.hpp"
+#include "../../world/world.hpp"
+#include "../../world/collision/collision.hpp"
+#include "../../math/geometry/geometry_common.hpp"
+
+#include "../../player/damage_model/damage_model.hpp"
 
 struct ProjectileSettings
 {
@@ -32,11 +35,10 @@ struct ProjectileCollideInfo
 {
     int x = 0;
     int y = 0;
+    bool intersected = false;
     ProjectileSettings projectileSettings;
     CollideType collideType;
 };
-
-class Player;
 
 class Projectile
 {
@@ -51,6 +53,10 @@ public:
         this->startPosition = startPosition;
         this->position = startPosition;
         this->slope = slope;
+
+        float distance = std::sqrt(slope.x * slope.x + slope.y * slope.y);
+        Vector<float> direction = Vector<float>(slope.x / distance, slope.y / distance);
+        this->velocity = Vector<float>(direction.x * projectileSettings.speed, direction.y * projectileSettings.speed);
     }
 
     // handle copy
@@ -64,6 +70,8 @@ public:
             this->position = other.position;
             this->slope = other.slope;
 
+            this->velocity = other.velocity;
+
             this->hit = other.hit;
         }
         return *this;
@@ -74,16 +82,12 @@ public:
 
     virtual void update(float dt)
     {
-        float distance = std::sqrt(slope.x * slope.x + slope.y * slope.y);
-        Vector<float> direction = Vector<float>(slope.x / distance, slope.y / distance);
-        velocity = Vector<float>(direction.x * projectileSettings.speed, direction.y * projectileSettings.speed);
-
         position.x += velocity.x * dt;
         position.y += velocity.y * dt;
     }
 
-    virtual ProjectileCollideInfo checkWorldCollision(float dt, Segment<float> futureVelocity);
-    virtual ProjectileCollideInfo checkPlayerCollision(float dt, Segment<float> futureVelocity, std::vector<Player*>& players);
+    virtual ProjectileCollideInfo checkWorldCollision(float dt);
+    virtual ProjectileCollideInfo checkPlayerCollision(float dt, PlayerDamageModel &playerHitbox);
 
     virtual void render(sf::RenderWindow &renderWindow)
     {

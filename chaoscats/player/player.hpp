@@ -45,18 +45,18 @@ public:
         headGoreLayers.push_back(&gameAssets.textures.PLAYER_HEAD_GORE1_TEXTURE);
         headGoreLayers.push_back(&gameAssets.textures.PLAYER_HEAD_GORE2_TEXTURE);
         headGoreLayers.push_back(&gameAssets.textures.PLAYER_HEAD_GORE3_TEXTURE);
-        headDamageModel = new DamageModel(headTextureSize.x, headTextureSize.y, headGoreLayers);
+        damageModel.head = new DamageModel(headTextureSize.x, headTextureSize.y, headGoreLayers);
 
         std::vector<sf::Texture *> bodyGoreLayers;
         bodyGoreLayers.push_back(&gameAssets.textures.PLAYER_BODY_TEXTURE);
         bodyGoreLayers.push_back(&gameAssets.textures.PLAYER_BODY_GORE1_TEXTURE);
         bodyGoreLayers.push_back(&gameAssets.textures.PLAYER_BODY_GORE2_TEXTURE);
         bodyGoreLayers.push_back(&gameAssets.textures.PLAYER_BODY_GORE3_TEXTURE);
-        bodyDamageModel = new DamageModel(bodyTextureSize.x, bodyTextureSize.y, bodyGoreLayers);
+        damageModel.body = new DamageModel(bodyTextureSize.x, bodyTextureSize.y, bodyGoreLayers);
 
         weapon = new Shotgun(world, gameInfo, gameAssets);
 
-        // headDamageModel->damage(5, 6, 8);
+        // damageModel.head->damage(5, 6, 8);
         // bodyDamageModel->damage(5, 6, 8);
     }
     virtual ~Player()
@@ -89,30 +89,26 @@ public:
             setAim(gameInfo.input.MOUSE_POS.x, gameInfo.input.MOUSE_POS.y);
         }
 
-        headDamageModel->update(position.x, position.y - head_hitbox.half_size.y - leftLeg_hitbox.half_size.y, scale);
-        bodyDamageModel->update(position.x, position.y + leftLeg_hitbox.half_size.y, scale);
+        damageModel.head->update(position.x, position.y - head_hitbox.half_size.y - leftLeg_hitbox.half_size.y, scale);
+        damageModel.body->update(position.x, position.y + leftLeg_hitbox.half_size.y, scale);
 
         weapon->update(position.x, position.y, aimPosition.x, aimPosition.y);
     }
 
     // this function only runs for server replicated clients
-    void visualClientUpdate()
+    void replicatedClientUpdate()
     {
+        damageModel.head->update(position.x, position.y - head_hitbox.half_size.y - leftLeg_hitbox.half_size.y, scale);
+        damageModel.body->update(position.x, position.y + leftLeg_hitbox.half_size.y, scale);
         weapon->update(position.x, position.y, aimPosition.x, aimPosition.y);
     }
 
     // this function only runs on the server
     void serverUpdate()
     {
-        headDamageModel->update(position.x, position.y, scale);
-        bodyDamageModel->update(position.x, position.y, scale);
-        projectileCollideInfo.clear();
-        projectileCollideInfo = projectileCollideInfo = weapon->update(position.x, position.y, aimPosition.x, aimPosition.y);
-    }
-
-    const std::vector<ProjectileCollideInfo> &getProjectileCollideInfo() const
-    {
-        return projectileCollideInfo;
+        damageModel.head->update(position.x, position.y - head_hitbox.half_size.y - leftLeg_hitbox.half_size.y, scale);
+        damageModel.body->update(position.x, position.y + leftLeg_hitbox.half_size.y, scale);
+        weapon->update(position.x, position.y, aimPosition.x, aimPosition.y);
     }
 
     void shoot()
@@ -140,9 +136,37 @@ public:
 
     void render(sf::RenderWindow &renderWindow);
 
-    const Weapon *getActiveWeapon() const
+    Weapon *getActiveWeapon()
     {
         return weapon;
+    }
+
+    PlayerDamageModel &getDamageModel()
+    {
+        return damageModel;
+    }
+
+    void damage(ProjectileCollideInfo collideInfo)
+    {
+        switch (collideInfo.collideType)
+        {
+        case CollideType::PlayerHead:
+        {
+            int x = (collideInfo.x - head_hitbox.getPosition().x + head_hitbox.half_size.x) / scale;
+            int y = (collideInfo.y - head_hitbox.getPosition().y + head_hitbox.half_size.y) / scale;
+            damageModel.head->damage(x, y, collideInfo.projectileSettings.damageRadius);
+        }
+        break;
+        case CollideType::PlayerBody:
+        {
+            int x = (collideInfo.x - body_hitbox.getPosition().x + body_hitbox.half_size.x) / scale;
+            int y = (collideInfo.y - body_hitbox.getPosition().y + body_hitbox.half_size.y) / scale;
+            damageModel.body->damage(x, y, collideInfo.projectileSettings.damageRadius);
+        }
+        break;
+        default:
+            break;
+        }
     }
 
 protected:
@@ -156,15 +180,13 @@ protected:
 
 protected:
     Weapon *weapon = nullptr;
-    std::vector<ProjectileCollideInfo> projectileCollideInfo;
     Vector<float> aimPosition = Vector<float>(0, 0);
 
 protected:
     Rect<float> body_hitbox;
     Rect<float> head_hitbox;
 
-    DamageModel *headDamageModel;
-    DamageModel *bodyDamageModel;
+    PlayerDamageModel damageModel;
 
     Rect<float> leftLeg_hitbox;
     Rect<float> rightLeg_hitbox;

@@ -55,7 +55,7 @@ public:
     {
     }
 
-    virtual Vector<float> shoot(float playerX, float playerY, float aimX, float aimY) override
+    Vector<float> shoot(float playerX, float playerY, float aimX, float aimY) override
     {
         int shellCount = 10;
         float spreadAngle = 15.0f;
@@ -77,7 +77,7 @@ public:
         ProjectileSettings projectileSettings;
         projectileSettings.damageRadius = 3;
         projectileSettings.playerDamage = 3;
-        projectileSettings.speed = 100.0f;
+        projectileSettings.speed = 90.0f;
 
         for (int i = 0; i < shellCount; ++i)
         {
@@ -99,18 +99,11 @@ public:
         return Vector<float>(-dirX * 30, -dirY * 10);
     }
 
-    virtual std::vector<ProjectileCollideInfo> update(float playerX, float playerY, float aimX, float aimY) override
+    virtual void update(float playerX, float playerY, float aimX, float aimY) override
     {
-        std::vector<ProjectileCollideInfo> hitPoints;
-
         for (Projectile &projectile : projectiles)
         {
-            ProjectileCollideInfo projectileCollideInfo = projectile.update(gameInfo.time.DELTA_TIME);
-
-            if (projectile.hasHit())
-            {
-                hitPoints.push_back(projectileCollideInfo);
-            }
+            projectile.update(gameInfo.time.DELTA_TIME);
         }
 
         projectiles.erase(
@@ -123,8 +116,6 @@ public:
 
         rotation_radians = radiansFromPoints(playerX, playerY, aimX, aimY);
         rotation_degrees = degreesFromPoints(playerX, playerY, aimX, aimY);
-
-        return hitPoints;
     }
 
     void render(sf::RenderWindow &renderWindow, float x, float y, float aimX, float aimY) override
