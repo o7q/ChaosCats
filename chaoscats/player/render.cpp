@@ -3,7 +3,7 @@
 void Player::render(sf::RenderWindow &renderWindow)
 {
     // draw body
-    drawTexture(renderWindow, gameAssets.textures.PLAYER_BODY_TEXTURE, sf::Vector2f(body_hitbox.getPosition().x - scale / 2, body_hitbox.getPosition().y - scale / 2), sf::Vector2f(body_size.x, body_size.y));
+    drawTexture(renderWindow, bodyDamageModel->getTexture(), sf::Vector2f(body_hitbox.getPosition().x - scale / 2, body_hitbox.getPosition().y - scale / 2), sf::Vector2f(body_size.x, body_size.y));
     if (renderHitboxes)
     {
         drawRect(renderWindow, body_hitbox, sf::Color(0, 255, 0, 255), DrawMode::Outline);
@@ -11,7 +11,7 @@ void Player::render(sf::RenderWindow &renderWindow)
     //
 
     // draw head
-    drawTexture(renderWindow, gameAssets.textures.PLAYER_HEAD_TEXTURE, sf::Vector2f(head_hitbox.getPosition().x - scale / 2, head_hitbox.getPosition().y - scale / 2), sf::Vector2f(head_size.x, head_size.y));
+    drawTexture(renderWindow, headDamageModel->getTexture(), sf::Vector2f(head_hitbox.getPosition().x - scale / 2, head_hitbox.getPosition().y - scale / 2), sf::Vector2f(head_size.x, head_size.y));
     if (renderHitboxes)
     {
         drawRect(renderWindow, head_hitbox, sf::Color(0, 255, 0, 255), DrawMode::Outline);
@@ -44,4 +44,9 @@ void Player::render(sf::RenderWindow &renderWindow)
     weapon->render(renderWindow, position.x, position.y, aimPosition.x, aimPosition.y);
     drawTexture(renderWindow, gameAssets.textures.PLAYER_HAND_TEXTURE, sf::Vector2f(handPlacements.first.x, handPlacements.first.y), sf::Vector2f(20, -1));
     //
+
+    for (DamageModelEdge dme : bodyDamageModel->getDamageHitbox())
+    {
+        drawSegment(renderWindow, dme.segment, sf::Color(255, 255, 0, 255));
+    }
 }

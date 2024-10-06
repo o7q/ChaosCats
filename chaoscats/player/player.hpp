@@ -12,6 +12,8 @@
 #include "../math/geometry/geometry_common.hpp"
 #include "../rendering/draw.hpp"
 
+#include "damage_model/damage_model.hpp"
+
 class Player
 {
 public:
@@ -38,11 +40,30 @@ public:
 
         player_collisionBox = Rect<float>(0, 0, body_hitbox.size.x, body_hitbox.size.y + head_hitbox.size.y);
 
+        std::vector<sf::Texture *> headGoreLayers;
+        headGoreLayers.push_back(&gameAssets.textures.PLAYER_HEAD_TEXTURE);
+        headGoreLayers.push_back(&gameAssets.textures.PLAYER_HEAD_GORE1_TEXTURE);
+        headGoreLayers.push_back(&gameAssets.textures.PLAYER_HEAD_GORE2_TEXTURE);
+        headGoreLayers.push_back(&gameAssets.textures.PLAYER_HEAD_GORE3_TEXTURE);
+        headDamageModel = new DamageModel(headTextureSize.x, headTextureSize.y, headGoreLayers);
+
+        std::vector<sf::Texture *> bodyGoreLayers;
+        bodyGoreLayers.push_back(&gameAssets.textures.PLAYER_BODY_TEXTURE);
+        bodyGoreLayers.push_back(&gameAssets.textures.PLAYER_BODY_GORE1_TEXTURE);
+        bodyGoreLayers.push_back(&gameAssets.textures.PLAYER_BODY_GORE2_TEXTURE);
+        bodyGoreLayers.push_back(&gameAssets.textures.PLAYER_BODY_GORE3_TEXTURE);
+        bodyDamageModel = new DamageModel(bodyTextureSize.x, bodyTextureSize.y, bodyGoreLayers);
+
         weapon = new Shotgun(world, gameInfo, gameAssets);
+
+        headDamageModel->damage(5, 6, 8, scale);
+        bodyDamageModel->damage(5, 6, 8, scale);
     }
     virtual ~Player()
     {
         delete weapon;
+        delete headDamageModel;
+        delete bodyDamageModel;
     }
 
     void pickupWeapon()
@@ -134,6 +155,9 @@ protected:
     Vector<float> body_size;
     Rect<float> head_hitbox;
     Vector<float> head_size;
+
+    DamageModel *headDamageModel = nullptr;
+    DamageModel *bodyDamageModel = nullptr;
 
     Rect<float> leftLeg_hitbox;
     Vector<float> leftLeg_size;

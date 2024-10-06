@@ -33,9 +33,11 @@ class Projectile
 {
 public:
     Projectile(const World *world,
+            // std::vector<Player *> &players,
                ProjectileSettings projectileSettings,
                Vector<float> startPosition,
-               Vector<float> slope) : world(world)
+               Vector<float> slope) : /*players(players),*/
+                                      world(world)
     {
         this->projectileSettings = projectileSettings;
 
@@ -101,6 +103,11 @@ public:
             }
         }
 
+        // for (Player *player : players)
+        // {
+        //     for 
+        // }
+
         position.x += velocity.x * dt;
         position.y += velocity.y * dt;
 
@@ -129,6 +136,7 @@ public:
 
 protected:
     const World *world;
+    // const std::vector<Player *> &players;
 
     ProjectileSettings projectileSettings;
 
