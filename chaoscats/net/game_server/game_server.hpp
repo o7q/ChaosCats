@@ -62,52 +62,13 @@ public:
         world->update();
         worldMutex.unlock();
 
-        {
-            std::lock_guard<std::mutex> playersLock(playersMutex);
-            if (!serverPlayers.empty())
-            {
-                for (const auto &player : serverPlayers)
-                {
-                    player.second->serverUpdate();
-                    std::vector<Projectile> &projectiles = player.second->getActiveWeapon()->getActiveProjectiles();
-
-                    for (Projectile &projectile : projectiles)
-                    {
-                        for (const auto &otherPlayer : serverPlayers)
-                        {
-                            if (player.first != otherPlayer.first)
-                            {
-                                ProjectileCollideInfo playerCollisionInfo = projectile.checkPlayerCollision(serverGameInfo.time.DELTA_TIME, otherPlayer.second->getDamageModel());
-
-                                if (playerCollisionInfo.intersected)
-                                {
-                                    otherPlayer.second->damage(playerCollisionInfo);
-                                    net::Message<GameMessages> damagePlayerMessage;
-                                    damagePlayerMessage.header.id = GameMessages::Server2C_DamagePlayer;
-                                    damagePlayerMessage << playerCollisionInfo << otherPlayer.first;
-                                    sendMessageToAllClients(damagePlayerMessage);
-                                    continue;
-                                }
-                            }
-                        }
-
-                        // handle world
-                        Particle particle;
-                        worldMutex.lock();
-                        ProjectileCollideInfo worldCollisionInfo = projectile.checkWorldCollision(serverGameInfo.time.DELTA_TIME);
-                        net::Message<GameMessages> worldModifyMessage = world->drawParticles(worldCollisionInfo.x,
-                                                                                             worldCollisionInfo.y,
-                                                                                             particle,
-                                                                                             worldCollisionInfo.projectileSettings.damageRadius,
-                                                                                             DrawShape::Circle);
-                        worldMutex.unlock();
-                        worldModifyMessage.header.id = GameMessages::Server2C_ModifyWorld;
-                        sendMessageToAllClients(worldModifyMessage);
-                    }
-                }
-            }
-        }
+        playersMutex.lock();
+        updatePlayers();
+        playersMutex.unlock();
     }
+
+    void updatePlayers();
+    void updateProjectiles(uint32_t id, Player *player);
 
     GameServer(uint16_t nPort, GameAssets &gameAssets) : net::ServerInterface<GameMessages>(nPort), gameAssets(gameAssets)
     {

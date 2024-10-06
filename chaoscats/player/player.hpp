@@ -196,7 +196,7 @@ protected:
     Vector<float> bottomCollisionPoint;
     Vector<float> topCollisionPoint;
 
-    bool renderHitboxes = true;
+    bool renderHitboxes = false;
 
     int scale = 4;
     float playerSpeed = 6.0f;
