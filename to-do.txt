@@ -1,8 +1,6 @@
-- Get rid of 'Size' class, and rename 'Point' to 'Vector'
 - Add coyote time to player movement
 - Add button class system
 - Finish basic lobby system
-- Draw basic playermodel
 - Get basic multiplayer to work with above additions
 - Finish camera system
-- Move rendering pipeline to the GPU/GLSL
+- Make window resize properly
