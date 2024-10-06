@@ -21,23 +21,30 @@ struct ProjectileSettings
     int playerDamage = 3;
 };
 
+enum class CollideType
+{
+    World,
+    PlayerHead,
+    PlayerBody
+};
+
 struct ProjectileCollideInfo
 {
     int x = 0;
     int y = 0;
-    bool isPlayer = false;
     ProjectileSettings projectileSettings;
+    CollideType collideType;
 };
+
+class Player;
 
 class Projectile
 {
 public:
     Projectile(const World *world,
-            // std::vector<Player *> &players,
                ProjectileSettings projectileSettings,
                Vector<float> startPosition,
-               Vector<float> slope) : /*players(players),*/
-                                      world(world)
+               Vector<float> slope) : world(world)
     {
         this->projectileSettings = projectileSettings;
 
@@ -65,54 +72,18 @@ public:
     {
     }
 
-    virtual ProjectileCollideInfo update(float dt)
+    virtual void update(float dt)
     {
         float distance = std::sqrt(slope.x * slope.x + slope.y * slope.y);
         Vector<float> direction = Vector<float>(slope.x / distance, slope.y / distance);
-        Vector<float> velocity(direction.x * projectileSettings.speed, direction.y * projectileSettings.speed);
-
-        // get future position
-        Vector<float> projectileFuturePos;
-        projectileFuturePos.x = position.x + velocity.x * dt;
-        projectileFuturePos.y = position.y + velocity.y * dt;
-
-        Segment<float> futureVelocity = Segment<float>(Vector<float>(position.x, position.y), projectileFuturePos);
-
-        // check world intersection
-        Vector<float> intersectPoint;
-        for (EdgeData edge : world->getCollisionMesh())
-        {
-            SS_IntersectData intersectData = segmentSegment(futureVelocity, edge.segment);
-            if (intersectData.intersected)
-            {
-                intersectPoint.x = intersectData.x;
-                intersectPoint.y = intersectData.y;
-
-                ProjectileCollideInfo projectileCollideInfo;
-
-                Vector<int> hitPoint = world->getWorldCoords(intersectPoint.x, intersectPoint.y);
-
-                projectileCollideInfo.isPlayer = false;
-                projectileCollideInfo.projectileSettings = projectileSettings;
-                projectileCollideInfo.x = hitPoint.x;
-                projectileCollideInfo.y = hitPoint.y;
-
-                hit = true;
-
-                return projectileCollideInfo;
-            }
-        }
-
-        // for (Player *player : players)
-        // {
-        //     for 
-        // }
+        velocity = Vector<float>(direction.x * projectileSettings.speed, direction.y * projectileSettings.speed);
 
         position.x += velocity.x * dt;
         position.y += velocity.y * dt;
-
-        return ProjectileCollideInfo();
     }
+
+    virtual ProjectileCollideInfo checkWorldCollision(float dt, Segment<float> futureVelocity);
+    virtual ProjectileCollideInfo checkPlayerCollision(float dt, Segment<float> futureVelocity, std::vector<Player*>& players);
 
     virtual void render(sf::RenderWindow &renderWindow)
     {
@@ -136,13 +107,14 @@ public:
 
 protected:
     const World *world;
-    // const std::vector<Player *> &players;
 
     ProjectileSettings projectileSettings;
 
     Vector<float> position;
     Vector<float> startPosition;
     Vector<float> slope;
+
+    Vector<float> velocity;
 
     bool hit = false;
 };

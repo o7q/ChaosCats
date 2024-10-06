@@ -12,14 +12,18 @@
 class Shotgun : public Weapon
 {
 public:
-    Shotgun(const World *world, GameInfo &gameInfo, GameAssets &assets) : Weapon(world, gameInfo, assets)
+    Shotgun(const World *world,
+            GameInfo &gameInfo,
+            GameAssets &gameAssets) : Weapon(world,
+                                             gameInfo,
+                                             gameAssets)
     {
         int scale = 4;
-        sf::Vector2u textureSize = assets.textures.WEAPON_SHOTGUN_TEXTURE.getSize();
+        sf::Vector2u textureSize = gameAssets.textures.WEAPON_SHOTGUN_TEXTURE.getSize();
 
         sf::Vector2f aspect = imageAspect(gameAssets.textures.WEAPON_SHOTGUN_TEXTURE, sf::Vector2f(textureSize.x * scale, -1));
 
-        sf::Image gunPointsImage = assets.textures.WEAPON_SHOTGUN_POINTS_TEXTURE.copyToImage();
+        sf::Image gunPointsImage = gameAssets.textures.WEAPON_SHOTGUN_POINTS_TEXTURE.copyToImage();
 
         for (unsigned int y = 0; y < gunPointsImage.getSize().y; ++y)
         {

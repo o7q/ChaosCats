@@ -35,12 +35,15 @@ public:
             if (pair.second != nullptr)
             {
                 delete pair.second;
+                pair.second = nullptr;
             }
         }
         players.clear();
 
         delete world;
+        world = nullptr;
         delete worldCamera;
+        worldCamera = nullptr;
     }
 
     CurrentScene run() override;

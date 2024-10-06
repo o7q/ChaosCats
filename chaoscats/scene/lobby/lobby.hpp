@@ -28,6 +28,7 @@ public:
         if (lobbyScene != nullptr)
         {
             delete lobbyScene;
+            lobbyScene = nullptr;
         }
     }
 

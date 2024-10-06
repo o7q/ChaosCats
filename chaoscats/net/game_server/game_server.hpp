@@ -106,6 +106,7 @@ public:
             if (pair.second != nullptr)
             {
                 delete pair.second;
+                pair.second = nullptr;
             }
         }
         serverPlayers.clear();
@@ -113,6 +114,7 @@ public:
         if (world != nullptr)
         {
             delete world;
+            world = nullptr;
         }
     }
 

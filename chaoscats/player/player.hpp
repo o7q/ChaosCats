@@ -21,21 +21,21 @@ public:
                                                                              gameInfo(gameInfo),
                                                                              gameAssets(gameAssets)
     {
-        sf::Vector2u bodyTextureSize = gameAssets.textures.PLAYER_BODY_TEXTURE.getSize();
-        sf::Vector2f sf_body_size = imageAspect(gameAssets.textures.PLAYER_BODY_TEXTURE, sf::Vector2f(bodyTextureSize.x * scale, -1));
-        body_size = Vector<float>(sf_body_size.x, sf_body_size.y);
-        body_hitbox = Rect<float>(0, 0, body_size.x, body_size.y);
-
         sf::Vector2u headTextureSize = gameAssets.textures.PLAYER_HEAD_TEXTURE.getSize();
         sf::Vector2f sf_head_size = imageAspect(gameAssets.textures.PLAYER_HEAD_TEXTURE, sf::Vector2f(headTextureSize.x * scale, -1));
-        head_size = Vector<float>(sf_head_size.x, sf_head_size.y);
-        head_hitbox = Rect<float>(0, 0, body_size.x, body_size.y);
+        Vector<float> head_size = Vector<float>(sf_head_size.x, sf_head_size.y);
+        head_hitbox = Rect<float>(0, 0, head_size.x, head_size.y);
+
+        sf::Vector2u bodyTextureSize = gameAssets.textures.PLAYER_BODY_TEXTURE.getSize();
+        sf::Vector2f sf_body_size = imageAspect(gameAssets.textures.PLAYER_BODY_TEXTURE, sf::Vector2f(bodyTextureSize.x * scale, -1));
+        Vector<float> body_size = Vector<float>(sf_body_size.x, sf_body_size.y);
+        body_hitbox = Rect<float>(0, 0, body_size.x, body_size.y);
 
         sf::Vector2u legTextureSize = gameAssets.textures.PLAYER_LEG_TEXTURE.getSize();
         sf::Vector2f sf_leg_size = imageAspect(gameAssets.textures.PLAYER_LEG_TEXTURE, sf::Vector2f(legTextureSize.x * scale, -1));
-        leftLeg_size = Vector<float>(sf_leg_size.x, sf_leg_size.y);
+        Vector<float> leftLeg_size = Vector<float>(sf_leg_size.x, sf_leg_size.y);
         leftLeg_hitbox = Rect<float>(0, 0, leftLeg_size.x, leftLeg_size.y);
-        rightLeg_size = Vector<float>(sf_leg_size.x, sf_leg_size.y);
+        Vector<float> rightLeg_size = Vector<float>(sf_leg_size.x, sf_leg_size.y);
         rightLeg_hitbox = Rect<float>(0, 0, rightLeg_size.x, rightLeg_size.y);
 
         player_collisionBox = Rect<float>(0, 0, body_hitbox.size.x, body_hitbox.size.y + head_hitbox.size.y);
@@ -56,14 +56,13 @@ public:
 
         weapon = new Shotgun(world, gameInfo, gameAssets);
 
-        headDamageModel->damage(5, 6, 8, scale);
-        bodyDamageModel->damage(5, 6, 8, scale);
+        // headDamageModel->damage(5, 6, 8);
+        // bodyDamageModel->damage(5, 6, 8);
     }
     virtual ~Player()
     {
         delete weapon;
-        delete headDamageModel;
-        delete bodyDamageModel;
+        weapon = nullptr;
     }
 
     void pickupWeapon()
@@ -90,6 +89,9 @@ public:
             setAim(gameInfo.input.MOUSE_POS.x, gameInfo.input.MOUSE_POS.y);
         }
 
+        headDamageModel->update(position.x, position.y - head_hitbox.half_size.y - leftLeg_hitbox.half_size.y, scale);
+        bodyDamageModel->update(position.x, position.y + leftLeg_hitbox.half_size.y, scale);
+
         weapon->update(position.x, position.y, aimPosition.x, aimPosition.y);
     }
 
@@ -102,6 +104,8 @@ public:
     // this function only runs on the server
     void serverUpdate()
     {
+        headDamageModel->update(position.x, position.y, scale);
+        bodyDamageModel->update(position.x, position.y, scale);
         projectileCollideInfo.clear();
         projectileCollideInfo = projectileCollideInfo = weapon->update(position.x, position.y, aimPosition.x, aimPosition.y);
     }
@@ -136,6 +140,11 @@ public:
 
     void render(sf::RenderWindow &renderWindow);
 
+    const Weapon *getActiveWeapon() const
+    {
+        return weapon;
+    }
+
 protected:
     const World *world = nullptr;
     GameInfo &gameInfo;
@@ -152,17 +161,13 @@ protected:
 
 protected:
     Rect<float> body_hitbox;
-    Vector<float> body_size;
     Rect<float> head_hitbox;
-    Vector<float> head_size;
 
-    DamageModel *headDamageModel = nullptr;
-    DamageModel *bodyDamageModel = nullptr;
+    DamageModel *headDamageModel;
+    DamageModel *bodyDamageModel;
 
     Rect<float> leftLeg_hitbox;
-    Vector<float> leftLeg_size;
     Rect<float> rightLeg_hitbox;
-    Vector<float> rightLeg_size;
 
     Rect<float> player_collisionBox;
 

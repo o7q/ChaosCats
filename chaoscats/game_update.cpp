@@ -12,6 +12,7 @@ void GameWindow::update()
         if (scene != nullptr)
         {
             delete scene;
+            scene = nullptr;
         }
         switch (currentScene)
         {

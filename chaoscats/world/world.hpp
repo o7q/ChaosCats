@@ -74,6 +74,7 @@ public:
     ~World()
     {
         delete[] worldPixels;
+        worldPixels = nullptr;
     }
 
     void createWorldFromMap(Map &map);
@@ -85,7 +86,7 @@ public:
         updateCollisionMesh(collisionMesh, particles, PlayerCollisionType::Solid, pixelSize);
     }
 
-    void render(WorldCamera *camera, sf::RenderWindow& renderWindow, int width, int height)
+    void render(WorldCamera *camera, sf::RenderWindow &renderWindow, int width, int height)
     {
         worldTexture.update(worldPixels);
 
@@ -97,7 +98,7 @@ public:
 
         for (EdgeData edge : collisionMesh)
         {
-            drawSegment(renderWindow, edge.segment, sf::Color(220, 220, 220, 255));
+            drawSegment(renderWindow, edge.segment, sf::Color(150, 150, 150, 180));
         }
     }
 

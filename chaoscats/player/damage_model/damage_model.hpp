@@ -10,6 +10,20 @@
 #include "../../math/matrix.hpp"
 #include "../../math/random.hpp"
 
+struct PlayerDamageModels
+{
+    DamageModel *head = nullptr;
+    DamageModel *body = nullptr;
+
+    ~PlayerDamageModels()
+    {
+        delete head;
+        head = nullptr;
+        delete body;
+        body = nullptr;
+    }
+};
+
 struct DamageModelEdge
 {
     Segment<float> segment;
@@ -41,10 +55,10 @@ public:
             }
         }
 
-        modelImage.create(sizeX, sizeY);
+        modelTexture.loadFromImage(goreLayers[0]);
     }
 
-    void damage(int locationX, int locationY, int radius, int playerScale)
+    void damage(int locationX, int locationY, int radius)
     {
         for (int i = radius; i > 0; --i)
         {
@@ -62,8 +76,11 @@ public:
         }
 
         modelTexture.loadFromImage(modelImage);
+    }
 
-        updateHitbox(playerScale);
+    void update(int playerX, int playerY, int playerScale)
+    {
+        updateHitbox(playerX, playerY, playerScale);
     }
 
     std::vector<DamageModelEdge> &getDamageHitbox()
@@ -88,9 +105,9 @@ private:
     sf::Image modelImage;
     sf::Texture modelTexture;
 
-    void updateHitbox(int playerScale);
+    void updateHitbox(int playerX, int playerY, int playerScale);
     int getLookupIndex(int a, int b, int c, int d);
-    void appendLookupSegment(int index, int x, int y, int playerScale);
+    void appendLookupSegment(int index, int x, int y, int playerX, int playerY, int playerScale);
 
     void damageCircle(int locationX, int locationY, int radius)
     {

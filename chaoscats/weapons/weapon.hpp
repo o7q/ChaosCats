@@ -20,7 +20,11 @@
 class Weapon
 {
 public:
-    Weapon(const World *world, GameInfo &gameInfo, GameAssets &gameAssets) : world(world), gameInfo(gameInfo), gameAssets(gameAssets)
+    Weapon(const World *world,
+           GameInfo &gameInfo,
+           GameAssets &gameAssets) : world(world),
+                                     gameInfo(gameInfo),
+                                     gameAssets(gameAssets)
     {
     }
     virtual ~Weapon()
@@ -44,13 +48,13 @@ public:
     virtual std::pair<Vector<float>, Vector<float>> getHandPlacementPoints(float x, float y)
     {
         Vector<float> handPosition1 = rotatePoint(Vector<float>(
-                                                     handMountPosition1.x * scale - weaponSize.x / 2,
-                                                     handMountPosition1.y * scale - weaponSize.y / 2),
-                                                 rotation_radians);
+                                                      handMountPosition1.x * scale - weaponSize.x / 2,
+                                                      handMountPosition1.y * scale - weaponSize.y / 2),
+                                                  rotation_radians);
         Vector<float> handPosition2 = rotatePoint(Vector<float>(
-                                                     handMountPosition2.x * scale - weaponSize.x / 2,
-                                                     handMountPosition2.y * scale - weaponSize.y / 2),
-                                                 rotation_radians);
+                                                      handMountPosition2.x * scale - weaponSize.x / 2,
+                                                      handMountPosition2.y * scale - weaponSize.y / 2),
+                                                  rotation_radians);
 
         handPosition1.x += x + weaponPositionOffset.x;
         handPosition1.y += y + weaponPositionOffset.y;
@@ -58,6 +62,11 @@ public:
         handPosition2.y += y + weaponPositionOffset.y;
 
         return std::pair<Vector<float>, Vector<float>>(handPosition1, handPosition2);
+    }
+
+    virtual const std::vector<Projectile> &getActiveProjectiles() const
+    {
+        return projectiles;
     }
 
 protected:
