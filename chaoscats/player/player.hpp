@@ -55,9 +55,6 @@ public:
         damageModel.body = new DamageModel(bodyTextureSize.x, bodyTextureSize.y, bodyGoreLayers);
 
         weapon = new Shotgun(world, gameInfo, gameAssets);
-
-        // damageModel.head->damage(5, 6, 8);
-        // bodyDamageModel->damage(5, 6, 8);
     }
     virtual ~Player()
     {
@@ -198,7 +195,7 @@ protected:
 
     bool renderHitboxes = false;
 
-    int scale = 4;
+    int scale = 3;
     float playerSpeed = 6.0f;
     bool jumped = false;
 };

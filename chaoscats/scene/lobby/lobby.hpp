@@ -9,7 +9,7 @@
 #include "../../net/game_client/game_client.hpp"
 #include "../../net/game_server/game_server.hpp"
 
-#include "arena/arena.hpp"
+#include "arena.hpp"
 
 #include "../../utils/logger.hpp"
 

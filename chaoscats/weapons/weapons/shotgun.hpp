@@ -18,7 +18,7 @@ public:
                                              gameInfo,
                                              gameAssets)
     {
-        int scale = 4;
+        int scale = 3;
         sf::Vector2u textureSize = gameAssets.textures.WEAPON_SHOTGUN_TEXTURE.getSize();
 
         sf::Vector2f aspect = imageAspect(gameAssets.textures.WEAPON_SHOTGUN_TEXTURE, sf::Vector2f(textureSize.x * scale, -1));
@@ -48,7 +48,7 @@ public:
         weaponSize.x = aspect.x;
         weaponSize.y = aspect.y;
 
-        weaponPositionOffset.x = 20;
+        weaponPositionOffset.x = 10;
         weaponPositionOffset.y = 5;
     }
     virtual ~Shotgun() override

@@ -1,6 +1,6 @@
 #include "arena.hpp"
 
-#include "../../../net/data/world.hpp"
+#include "../../net/data/world.hpp"
 
 CurrentScene Scene_LobbyArena::run()
 {

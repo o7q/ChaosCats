@@ -3,17 +3,17 @@
 #include <cstdint>
 #include <unordered_map>
 
-#include "../../scene.hpp"
-#include "../../../rendering/draw.hpp"
-#include "../../../math/geometry/geometry_common.hpp"
+#include "../scene.hpp"
+#include "../../rendering/draw.hpp"
+#include "../../math/geometry/geometry_common.hpp"
 
-#include "../../../player/player.hpp"
-#include "../../../world/world.hpp"
-#include "../../../world/camera.hpp"
+#include "../../player/player.hpp"
+#include "../../world/world.hpp"
+#include "../../world/camera.hpp"
 
-#include "../../../net/game_client/game_client.hpp"
+#include "../../net/game_client/game_client.hpp"
 
-#include "../../../utils/map.hpp"
+#include "../../utils/map.hpp"
 
 class Scene_LobbyArena : public Scene
 {
