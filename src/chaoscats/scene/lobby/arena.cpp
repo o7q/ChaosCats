@@ -20,7 +20,7 @@ CurrentScene Scene_LobbyArena::run()
         }
         handleIncomingPackets();
 
-        world->update();
+        world->update(gameInfo.time.DELTA_TIME);
         world->render(worldCamera, renderWindow, gameInfo.window.WIDTH, gameInfo.window.HEIGHT);
 
         // packet limiter, only allows packets to send at 'packetSendRate'

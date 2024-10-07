@@ -63,7 +63,7 @@ private:
     {
         {
             std::lock_guard worldLock(worldMutex);
-            world->update();
+            world->update(serverGameInfo.time.DELTA_TIME);
         }
 
         updateProjectiles();
