@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <thread>
 #include <mutex>
+#include <shared_mutex>
 #include <atomic>
 #include <chrono>
 
@@ -21,12 +22,12 @@ private:
     World *world = nullptr;
     std::vector<uint32_t> husks;
 
+    std::shared_mutex playersMutex;
+    std::shared_mutex worldMutex;
+    std::mutex husksMutex;
+
     std::atomic<bool> keepTick;
     std::thread tickThread;
-
-    std::mutex playersMutex;
-    std::mutex husksMutex;
-    std::mutex worldMutex;
 
     GameInfo serverGameInfo;
 
@@ -61,19 +62,12 @@ private:
     void tick()
     {
         {
-            std::scoped_lock lock(worldMutex);
+            std::lock_guard worldLock(worldMutex);
             world->update();
         }
 
-        {
-            std::scoped_lock lock(playersMutex, worldMutex);
-            updateProjectiles();
-        }
-
-        {
-            std::scoped_lock lock(playersMutex);
-            updatePlayers();
-        }
+        updateProjectiles();
+        updatePlayers();
     }
 
     void updatePlayers();
@@ -98,7 +92,7 @@ public:
         player_connect_purgeHusks();
 
         {
-            std::scoped_lock lock(playersMutex);
+            std::lock_guard playersLock(playersMutex);
             for (auto &pair : serverPlayers)
             {
                 if (pair.second != nullptr)
@@ -141,10 +135,10 @@ private:
             std::cout << "lockprep" << std::endl;
 
             {
-                std::scoped_lock lock(playersMutex, husksMutex);
-
+                std::shared_lock<std::shared_mutex> playersLock(playersMutex);
                 if (mapContains(serverPlayers, id))
                 {
+                    std::lock_guard<std::mutex> husksLock(husksMutex);
                     husks.push_back(id);
                 }
             }
@@ -155,10 +149,7 @@ private:
 
     void onMessage(std::shared_ptr<net::Connection<GameMessages>> client, net::Message<GameMessages> &message) override
     {
-        {
-            std::scoped_lock lock(playersMutex, husksMutex);
-            player_connect_purgeHusks();
-        }
+        player_connect_purgeHusks();
 
         switch (message.header.id)
         {

@@ -2,6 +2,7 @@
 
 void GameServer::updatePlayers()
 {
+    std::lock_guard playersLock(playersMutex);
     if (!serverPlayers.empty())
     {
         for (const auto &player : serverPlayers)
@@ -13,6 +14,8 @@ void GameServer::updatePlayers()
 
 void GameServer::updateProjectiles()
 {
+    std::lock_guard<std::shared_mutex> playersLock(playersMutex);
+    std::lock_guard<std::shared_mutex> worldLock(worldMutex);
     if (!serverPlayers.empty())
     {
         for (const auto &player : serverPlayers)

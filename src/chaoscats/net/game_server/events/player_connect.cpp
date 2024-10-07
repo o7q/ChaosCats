@@ -11,7 +11,7 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
     Player *player = new Player(world, serverGameInfo, gameAssets);
 
     {
-        std::scoped_lock lock(playersMutex);
+        std::lock_guard<std::shared_mutex> playersLock(playersMutex);
         serverPlayers.insert_or_assign(clientId, player);
     }
 
@@ -31,7 +31,7 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
 
     // display all already connected clients to the newly connected client
     {
-        std::lock_guard<std::mutex> playersLock(playersMutex);
+        std::shared_lock<std::shared_mutex> playersLock(playersMutex);
         for (const auto &player : serverPlayers)
         {
             // skip duplicating newly connected client
@@ -50,6 +50,9 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
 
 void GameServer::player_connect_purgeHusks()
 {
+    std::lock_guard<std::shared_mutex> playersLock(playersMutex);
+    std::lock_guard<std::mutex> husksLock(husksMutex);
+
     // purge all players that are considered a 'husk', a serverPlayer with no corresponding client
     if (!husks.empty())
     {
