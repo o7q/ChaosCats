@@ -18,7 +18,8 @@ struct Matrix
 
     T get(int row, int col) const
     {
-        return *(matrix + get1DIndex(row, col));
+        // return *(matrix + get1DIndex(row, col));
+        return matrix[get1DIndex(row, col)];
     }
 
     void set(int row, int col, T value)

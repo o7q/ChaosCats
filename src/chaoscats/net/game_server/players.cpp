@@ -6,9 +6,8 @@ void GameServer::updatePlayers()
     {
         for (const auto &player : serverPlayers)
         {
-            player.second->serverUpdate();
-
             updateProjectiles(player.first, player.second);
+            player.second->serverUpdate();
         }
     }
 }
