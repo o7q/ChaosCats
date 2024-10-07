@@ -25,6 +25,7 @@ ProjectileCollideInfo Projectile::checkWorldCollision(float dt)
             projectileCollideInfo.y = hitPoint.y;
             projectileCollideInfo.projectileSettings = projectileSettings;
             projectileCollideInfo.collideType = CollideType::World;
+            projectileCollideInfo.intersected = true;
 
             hit = true;
 

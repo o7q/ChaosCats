@@ -1,6 +1,6 @@
 #include "draw.hpp"
 
-void drawTexture(sf::RenderWindow &renderWindow, sf::Texture texture, sf::Vector2f position, sf::Vector2f size, float rotation, sf::Vector2i flipVector)
+void drawTexture(sf::RenderWindow &renderWindow, sf::Texture& texture, sf::Vector2f position, sf::Vector2f size, float rotation, sf::Vector2i flipVector)
 {
     sf::Sprite textureSprite;
     textureSprite.setTexture(texture);

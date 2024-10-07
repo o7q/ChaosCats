@@ -16,7 +16,7 @@
 
 class GameServer : public net::ServerInterface<GameMessages>
 {
-public:
+private:
     std::unordered_map<uint32_t, Player *> serverPlayers;
     World *world = nullptr;
     std::vector<uint32_t> husks;
@@ -66,14 +66,20 @@ public:
         }
 
         {
+            std::scoped_lock lock(playersMutex, worldMutex);
+            updateProjectiles();
+        }
+
+        {
             std::scoped_lock lock(playersMutex);
             updatePlayers();
         }
     }
 
     void updatePlayers();
-    void updateProjectiles(uint32_t id, Player *player);
+    void updateProjectiles();
 
+public:
     GameServer(uint16_t nPort, GameAssets &gameAssets) : net::ServerInterface<GameMessages>(nPort), gameAssets(gameAssets)
     {
         world = new World(gameAssets.maps.TEST_MAP, 5);
@@ -111,6 +117,7 @@ public:
         }
     }
 
+private:
     bool onClientConnect(std::shared_ptr<net::Connection<GameMessages>> client) override
     {
         return true;
@@ -133,11 +140,13 @@ public:
 
             std::cout << "lockprep" << std::endl;
 
-            std::scoped_lock lock(playersMutex, husksMutex);
-
-            if (mapContains(serverPlayers, id))
             {
-                husks.push_back(id);
+                std::scoped_lock lock(playersMutex, husksMutex);
+
+                if (mapContains(serverPlayers, id))
+                {
+                    husks.push_back(id);
+                }
             }
 
             std::cout << "lockfinish" << std::endl;
@@ -146,7 +155,10 @@ public:
 
     void onMessage(std::shared_ptr<net::Connection<GameMessages>> client, net::Message<GameMessages> &message) override
     {
-        player_connect_purgeHusks();
+        {
+            std::scoped_lock lock(playersMutex, husksMutex);
+            player_connect_purgeHusks();
+        }
 
         switch (message.header.id)
         {

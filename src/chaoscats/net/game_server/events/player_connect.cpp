@@ -51,7 +51,6 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
 void GameServer::player_connect_purgeHusks()
 {
     // purge all players that are considered a 'husk', a serverPlayer with no corresponding client
-    std::scoped_lock lock(playersMutex, husksMutex);
     if (!husks.empty())
     {
         for (uint32_t husk_id : husks)

@@ -72,6 +72,30 @@ namespace net
             Logger::log(Logger::LogType::Info, "net-server", "Server stopped!");
         }
 
+        // Force server to respond to incoming messages
+        void update(size_t maxMessages = -1, bool shouldWait = false)
+        {
+            if (shouldWait)
+            {
+                m_queueMessagesIn.wait();
+            }
+
+            // Process as many messages as you can up to the value
+            // specified
+            size_t messageCount = 0;
+            while (messageCount < maxMessages && !m_queueMessagesIn.empty())
+            {
+                // Grab the front message
+                auto message = m_queueMessagesIn.pop_front();
+
+                // Pass to message handler
+                onMessage(message.remote, message.message);
+
+                messageCount++;
+            }
+        }
+
+    protected:
         // ASYNC - Instruct asio to wait for connection
         void waitForClientConnection()
         {
@@ -184,29 +208,6 @@ namespace net
             {
                 m_dequeConnections.erase(
                     std::remove(m_dequeConnections.begin(), m_dequeConnections.end(), nullptr), m_dequeConnections.end());
-            }
-        }
-
-        // Force server to respond to incoming messages
-        void update(size_t maxMessages = -1, bool shouldWait = false)
-        {
-            if (shouldWait)
-            {
-                m_queueMessagesIn.wait();
-            }
-
-            // Process as many messages as you can up to the value
-            // specified
-            size_t messageCount = 0;
-            while (messageCount < maxMessages && !m_queueMessagesIn.empty())
-            {
-                // Grab the front message
-                auto message = m_queueMessagesIn.pop_front();
-
-                // Pass to message handler
-                onMessage(message.remote, message.message);
-
-                messageCount++;
             }
         }
 
