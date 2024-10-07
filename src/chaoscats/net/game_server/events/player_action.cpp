@@ -8,10 +8,11 @@ void GameServer::player_action_handleMove(std::shared_ptr<net::Connection<GameMe
     Vector<float> aimPosition;
     message >> id >> aimPosition >> position;
 
-    playersMutex.lock();
-    serverPlayers[id]->setPosition(position.x, position.y);
-    serverPlayers[id]->setAim(aimPosition.x, aimPosition.y);
-    playersMutex.unlock();
+    {
+        std::scoped_lock lock(playersMutex);
+        serverPlayers[id]->setPosition(position.x, position.y);
+        serverPlayers[id]->setAim(aimPosition.x, aimPosition.y);
+    }
 
     net::Message<GameMessages> movePacket;
     movePacket.header.id = GameMessages::Server2C_MovePlayer;
@@ -25,9 +26,10 @@ void GameServer::player_action_handleShoot(std::shared_ptr<net::Connection<GameM
     uint32_t id;
     message >> id;
 
-    playersMutex.lock();
-    serverPlayers[id]->shoot();
-    playersMutex.unlock();
+    {
+        std::scoped_lock lock(playersMutex);
+        serverPlayers[id]->shoot();
+    }
 
     net::Message<GameMessages> shootPacket;
     shootPacket.header.id = GameMessages::Server2C_Shoot;

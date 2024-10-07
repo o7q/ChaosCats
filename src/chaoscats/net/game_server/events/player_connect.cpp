@@ -10,9 +10,10 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
     // add new player to the server player list
     Player *player = new Player(world, serverGameInfo, gameAssets);
 
-    playersMutex.lock();
-    serverPlayers.insert_or_assign(clientId, player);
-    playersMutex.unlock();
+    {
+        std::scoped_lock lock(playersMutex);
+        serverPlayers.insert_or_assign(clientId, player);
+    }
 
     // send new id back to newly connected client
     net::Message<GameMessages> assignIdPacket;
@@ -50,6 +51,7 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
 void GameServer::player_connect_purgeHusks()
 {
     // purge all players that are considered a 'husk', a serverPlayer with no corresponding client
+    std::scoped_lock lock(playersMutex, husksMutex);
     if (!husks.empty())
     {
         for (uint32_t husk_id : husks)
@@ -60,7 +62,6 @@ void GameServer::player_connect_purgeHusks()
 
             if (mapContains(serverPlayers, husk_id))
             {
-                std::lock_guard<std::mutex> playersLock(playersMutex);
                 if (serverPlayers[husk_id] != nullptr)
                 {
                     delete serverPlayers[husk_id];

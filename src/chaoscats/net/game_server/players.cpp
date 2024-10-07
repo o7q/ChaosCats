@@ -6,7 +6,6 @@ void GameServer::updatePlayers()
     {
         for (const auto &player : serverPlayers)
         {
-            updateProjectiles(player.first, player.second);
             player.second->serverUpdate();
         }
     }
@@ -38,12 +37,13 @@ void GameServer::updateProjectiles(uint32_t id, Player *player)
                     bloodParticle.playerCollisionType = PlayerCollisionType::None;
                     bloodParticle.matterType = MatterType::Liquid;
 
-                    worldMutex.lock();
-                    Vector<int> worldLoc = world->getWorldCoords(playerCollisionInfo.x, playerCollisionInfo.y);
-                    net::Message<GameMessages> bloodMessage = world->drawParticles(worldLoc.x, worldLoc.y, bloodParticle, 3, DrawShape::Circle);
-                    worldMutex.unlock();
-                    bloodMessage.header.id = GameMessages::Server2C_ModifyWorld;
-                    sendMessageToAllClients(bloodMessage);
+                    {
+                        std::scoped_lock<std::mutex> lock(worldMutex);
+                        Vector<int> worldLoc = world->getWorldCoords(playerCollisionInfo.x, playerCollisionInfo.y);
+                        net::Message<GameMessages> bloodMessage = world->drawParticles(worldLoc.x, worldLoc.y, bloodParticle, 3, DrawShape::Circle);
+                        bloodMessage.header.id = GameMessages::Server2C_ModifyWorld;
+                        sendMessageToAllClients(bloodMessage);
+                    }
 
                     continue;
                 }
@@ -51,16 +51,17 @@ void GameServer::updateProjectiles(uint32_t id, Player *player)
         }
 
         // handle world
-        Particle particle;
-        ProjectileCollideInfo worldCollisionInfo = projectile.checkWorldCollision(serverGameInfo.time.DELTA_TIME);
-        worldMutex.lock();
-        net::Message<GameMessages> worldModifyMessage = world->drawParticles(worldCollisionInfo.x,
-                                                                             worldCollisionInfo.y,
-                                                                             particle,
-                                                                             worldCollisionInfo.projectileSettings.damageRadius,
-                                                                             DrawShape::Circle);
-        worldMutex.unlock();
-        worldModifyMessage.header.id = GameMessages::Server2C_ModifyWorld;
-        sendMessageToAllClients(worldModifyMessage);
+        {
+            std::scoped_lock lock(worldMutex);
+            Particle particle;
+            ProjectileCollideInfo worldCollisionInfo = projectile.checkWorldCollision(serverGameInfo.time.DELTA_TIME);
+            net::Message<GameMessages> worldModifyMessage = world->drawParticles(worldCollisionInfo.x,
+                                                                                 worldCollisionInfo.y,
+                                                                                 particle,
+                                                                                 worldCollisionInfo.projectileSettings.damageRadius,
+                                                                                 DrawShape::Circle);
+            worldModifyMessage.header.id = GameMessages::Server2C_ModifyWorld;
+            sendMessageToAllClients(worldModifyMessage);
+        }
     }
 }

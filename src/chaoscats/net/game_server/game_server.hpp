@@ -23,7 +23,9 @@ public:
 
     std::atomic<bool> keepTick;
     std::thread tickThread;
+
     std::mutex playersMutex;
+    std::mutex husksMutex;
     std::mutex worldMutex;
 
     GameInfo serverGameInfo;
@@ -58,13 +60,15 @@ public:
 
     void tick()
     {
-        worldMutex.lock();
-        world->update();
-        worldMutex.unlock();
+        {
+            std::scoped_lock lock(worldMutex);
+            world->update();
+        }
 
-        playersMutex.lock();
-        updatePlayers();
-        playersMutex.unlock();
+        {
+            std::scoped_lock lock(playersMutex);
+            updatePlayers();
+        }
     }
 
     void updatePlayers();
@@ -87,15 +91,18 @@ public:
 
         player_connect_purgeHusks();
 
-        for (auto &pair : serverPlayers)
         {
-            if (pair.second != nullptr)
+            std::scoped_lock lock(playersMutex);
+            for (auto &pair : serverPlayers)
             {
-                delete pair.second;
-                pair.second = nullptr;
+                if (pair.second != nullptr)
+                {
+                    delete pair.second;
+                    pair.second = nullptr;
+                }
             }
+            serverPlayers.clear();
         }
-        serverPlayers.clear();
 
         if (world != nullptr)
         {
@@ -119,21 +126,21 @@ public:
 
     void onClientDisconnect(std::shared_ptr<net::Connection<GameMessages>> client) override
     {
-        uint32_t id = client->getID();
-        Logger::log(Logger::LogType::Info, "gameserver", "Client disconnected, purging: " + std::to_string(id));
-
         if (client != nullptr)
         {
+            uint32_t id = client->getID();
+            Logger::log(Logger::LogType::Info, "gameserver", "Client disconnected, purging: " + std::to_string(id));
+
+            std::cout << "lockprep" << std::endl;
+
+            std::scoped_lock lock(playersMutex, husksMutex);
+
             if (mapContains(serverPlayers, id))
             {
-                if (serverPlayers[id] != nullptr)
-                {
-                    delete serverPlayers[id];
-                }
-
-                serverPlayers.erase(id);
                 husks.push_back(id);
             }
+
+            std::cout << "lockfinish" << std::endl;
         }
     }
 

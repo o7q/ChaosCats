@@ -31,7 +31,6 @@ public:
         this->sizeX = sizeX;
         this->sizeY = sizeY;
 
-
         for (int y = 0; y < sizeY; ++y)
         {
             for (int x = 0; x < sizeX; ++x)
@@ -131,9 +130,15 @@ struct PlayerDamageModel
 
     ~PlayerDamageModel()
     {
-        delete head;
-        head = nullptr;
-        delete body;
-        body = nullptr;
+        if (head != nullptr)
+        {
+            delete head;
+            head = nullptr;
+        }
+        if (body != nullptr)
+        {
+            delete body;
+            body = nullptr;
+        }
     }
 };
