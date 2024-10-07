@@ -71,11 +71,15 @@ CurrentScene Scene_Lobby::run()
             if (lobbyScene != nullptr)
             {
                 delete lobbyScene;
+                lobbyScene = nullptr;
             }
             switch (currentLobbyScene)
             {
             case CurrentScene::LobbyArena:
                 lobbyScene = new Scene_LobbyArena(renderWindow, gameInfo, gameAssets, gameClient);
+                break;
+            case CurrentScene::MainMenu:
+                return CurrentScene::MainMenu;
                 break;
             default:
                 break;
@@ -86,7 +90,7 @@ CurrentScene Scene_Lobby::run()
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::G) && gameInfo.window.IS_FOCUSED)
         {
-            terminateConnection();
+            dispose();
             return CurrentScene::MainMenu;
         }
     }

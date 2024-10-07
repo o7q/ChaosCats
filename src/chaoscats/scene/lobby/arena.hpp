@@ -40,10 +40,16 @@ public:
         }
         players.clear();
 
-        delete world;
-        world = nullptr;
-        delete worldCamera;
-        worldCamera = nullptr;
+        if (world != nullptr)
+        {
+            delete world;
+            world = nullptr;
+        }
+        if (worldCamera != nullptr)
+        {
+            delete worldCamera;
+            worldCamera = nullptr;
+        }
     }
 
     CurrentScene run() override;

@@ -14,6 +14,10 @@ CurrentScene Scene_LobbyArena::run()
 
     if (update())
     {
+        if (!client.isConnectedToServer())
+        {
+            return CurrentScene::MainMenu;
+        }
         handleIncomingPackets();
 
         world->update();

@@ -16,7 +16,7 @@ CurrentScene Scene_MainMenu::run()
         drawText(renderWindow, "hello", gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(100, 100), 40);
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::H))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::H) && gameInfo.window.IS_FOCUSED)
     {
         return CurrentScene::Lobby;
     }

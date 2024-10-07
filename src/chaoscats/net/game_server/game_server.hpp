@@ -104,10 +104,13 @@ public:
             serverPlayers.clear();
         }
 
-        if (world != nullptr)
         {
-            delete world;
-            world = nullptr;
+            std::lock_guard worldLock(worldMutex);
+            if (world != nullptr)
+            {
+                delete world;
+                world = nullptr;
+            }
         }
     }
 

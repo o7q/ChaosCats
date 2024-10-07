@@ -25,25 +25,12 @@ public:
     }
     ~Scene_Lobby()
     {
-        if (lobbyScene != nullptr)
-        {
-            delete lobbyScene;
-            lobbyScene = nullptr;
-        }
-    }
-
-    CurrentScene run() override;
-
-    void runServer(uint16_t port);
-
-    void terminateConnection()
-    {
         // disconnect client
         gameClient.disconnect();
 
-        gameServer->stop();
         if (gameServer != nullptr)
         {
+            gameServer->stop();
             // gracefully close server thread
             keepServer.store(false);
 
@@ -55,7 +42,17 @@ public:
             delete gameServer;
             gameServer = nullptr;
         }
+
+        if (lobbyScene != nullptr)
+        {
+            delete lobbyScene;
+            lobbyScene = nullptr;
+        }
     }
+
+    CurrentScene run() override;
+
+    void runServer(uint16_t port);
 
 private:
     const std::vector<std::string> &netArgs;
