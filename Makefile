@@ -53,12 +53,12 @@ WINDOWS_NET_LINK = -lwsock32 \
 EXECUTABLE = ChaosCats
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) -MMD -MP -include "chaoscats/net/framework/net.hpp" -c $< -o $@ $(INCLUDES) -DSFML_STATIC
+	$(CXX) $(CXXFLAGS) -MMD -MP -include "src/chaoscats/net/framework/net.hpp" -c $< -o $@ $(INCLUDES) -DSFML_STATIC
 
 -include $(OBJECTS:.o=.d)
 
 # Windows-specific settings
-compile-windows-static: INCLUDES = $(SFML_INCLUDE_STATIC) $(ASIO_INCLUDE) -include "chaoscats/net/framework/net.hpp"
+compile-windows-static: INCLUDES = $(SFML_INCLUDE_STATIC) $(ASIO_INCLUDE) -include "src/chaoscats/net/framework/net.hpp"
 compile-windows-static: LIBRARIES = $(SFML_LIBRARY_STATIC)
 compile-windows-static: $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(OBJECTS) $(INCLUDES) $(LIBRARIES) -o $(EXECUTABLE)  \
@@ -67,7 +67,7 @@ compile-windows-static: $(OBJECTS)
 	$(WINDOWS_SFML_LINK_STATIC) \
 	$(WINDOWS_NET_LINK)
 
-compile-windows-shared: INCLUDES = $(SFML_INCLUDE_SHARED) $(ASIO_INCLUDE) -include "chaoscats/net/framework/net.hpp"
+compile-windows-shared: INCLUDES = $(SFML_INCLUDE_SHARED) $(ASIO_INCLUDE) -include "src/chaoscats/net/framework/net.hpp"
 compile-windows-shared: LIBRARIES = $(SFML_LIBRARY_SHARED)
 compile-windows-shared: $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(OBJECTS) $(INCLUDES) $(LIBRARIES) -o $(EXECUTABLE)  \
@@ -75,4 +75,4 @@ compile-windows-shared: $(OBJECTS)
 	$(WINDOWS_NET_LINK)
 
 precompile-net-windows:
-	$(CXX) $(CXXFLAGS) -H -x c++-header -o "chaoscats/net/framework/net.hpp.gch" "chaoscats/net/framework/net.hpp" $(ASIO_INCLUDE)
+	$(CXX) $(CXXFLAGS) -H -x c++-header -o "src/chaoscats/net/framework/net.hpp.gch" "src/chaoscats/net/framework/net.hpp" $(ASIO_INCLUDE)
