@@ -3,6 +3,54 @@
 // Client2S_Register
 void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<GameMessages>> &client, net::Message<GameMessages> &message)
 {
+    // send world to newly connected client
+    {
+        std::shared_lock<std::shared_mutex> worldLock(worldMutex);
+
+        Vector<int> worldSize = world->getSize();
+
+        float maxPacketBytes = 1000 / static_cast<float>(sizeof(Particle));
+        int chunkSize = std::sqrt(maxPacketBytes);
+
+        int operations = std::ceil(worldSize.x / static_cast<float>(chunkSize)) * std::ceil(worldSize.y / static_cast<float>(chunkSize));
+
+        net::Message<GameMessages> worldSyncStartPacket;
+        worldSyncStartPacket.header.id = GameMessages::Server2C_SyncWorldStart;
+        worldSyncStartPacket << world->getSize() << world->getPixelSize() << operations;
+        sendMessageToClient(client, worldSyncStartPacket);
+
+        for (int y = 0; y < worldSize.y; y += chunkSize)
+        {
+            for (int x = 0; x < worldSize.x; x += chunkSize)
+            {
+                int buffer_sizeX = (x + chunkSize > worldSize.x) ? (worldSize.x - x) : chunkSize;
+                int buffer_sizeY = (y + chunkSize > worldSize.y) ? (worldSize.y - y) : chunkSize;
+
+                Matrix<Particle> worldBuffer(buffer_sizeY, buffer_sizeX);
+
+                net::Message<GameMessages> bufferMessage;
+                bufferMessage.header.id = GameMessages::Server2C_SyncWorldChunk;
+
+                for (int buffer_y = 0; buffer_y < buffer_sizeY; ++buffer_y)
+                {
+                    for (int buffer_x = 0; buffer_x < buffer_sizeX; ++buffer_x)
+                    {
+                        ParticleData pd;
+                        pd.particle = world->getParticle(x + buffer_x, y + buffer_y);
+                        pd.worldX = x + buffer_x;
+                        pd.worldY = y + buffer_y;
+
+                        bufferMessage << pd;
+                    }
+                }
+
+                bufferMessage << buffer_sizeX * buffer_sizeY;
+
+                sendMessageToClient(client, bufferMessage);
+            }
+        }
+    }
+
     uint32_t clientId = client->getID();
 
     Logger::log(Logger::LogType::Info, "gameserver", "Client reqested register, assigning ID: " + std::to_string(clientId));

@@ -20,7 +20,7 @@ struct EdgeData
     Segment<float> segment;
     int worldX = 0;
     int worldY = 0;
-    
+
     SlopeType slopeType = SlopeType::Horizontal;
     float slope = 0;
     float b = 0;

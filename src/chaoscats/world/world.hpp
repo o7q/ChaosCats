@@ -73,8 +73,11 @@ public:
     }
     ~World()
     {
-        delete[] worldPixels;
-        worldPixels = nullptr;
+        if (worldPixels != nullptr)
+        {
+            delete[] worldPixels;
+            worldPixels = nullptr;
+        }
     }
 
     void createWorldFromMap(Map &map);
@@ -170,6 +173,11 @@ public:
         }
     }
 
+    bool isInitialized() const
+    {
+        return initialized;
+    }
+
     const std::vector<EdgeData> &getCollisionMesh() const
     {
         return collisionMesh;
@@ -178,6 +186,20 @@ public:
     Vector<int> getSize() const
     {
         return Vector<int>(width, height);
+    }
+
+    void check_s2c_progress()
+    {
+        ++s2c_buffer_progress;
+        if (s2c_buffer_progress == s2c_buffer_count)
+        {
+            initialized = true;
+        }
+    }
+
+    void set_s2c_buffer_count(int value)
+    {
+        this->s2c_buffer_count = value;
     }
 
 private:
@@ -192,6 +214,11 @@ private:
 
     int width, height;
     int pixelSize;
+
+    bool initialized = false;
+
+    int s2c_buffer_progress = 0;
+    int s2c_buffer_count = 0;
 
     void update_particles();
     void p_sand(Particle, int, int, BoundRules);

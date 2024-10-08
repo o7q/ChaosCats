@@ -15,6 +15,7 @@ void Scene_LobbyArena::server_player_action_handleMove(net::Message<GameMessages
     }
 }
 
+// Server2C_PlayerShoot
 void Scene_LobbyArena::server_player_action_handleShoot(net::Message<GameMessages> &message)
 {
     uint32_t id;
@@ -26,13 +27,7 @@ void Scene_LobbyArena::server_player_action_handleShoot(net::Message<GameMessage
     }
 }
 
-
-// Server2C_ModifyWorld
-void Scene_LobbyArena::server_world_action_handleModifyWorld(net::Message<GameMessages> &message)
-{
-    world->updateFromMessage(message);
-}
-
+// Server2C_DamagePlayer
 void Scene_LobbyArena::server_player_action_handleDamage(net::Message<GameMessages> &message)
 {
     uint32_t id;

@@ -32,7 +32,7 @@ void GameServer::player_action_handleShoot(std::shared_ptr<net::Connection<GameM
     }
 
     net::Message<GameMessages> shootPacket;
-    shootPacket.header.id = GameMessages::Server2C_Shoot;
+    shootPacket.header.id = GameMessages::Server2C_PlayerShoot;
     shootPacket << id;
     sendMessageToAllClients(shootPacket, client);
 }

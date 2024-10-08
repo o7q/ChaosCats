@@ -106,7 +106,7 @@ protected:
                     server_player_action_handleDamage(message);
                 }
                 break;
-                case GameMessages::Server2C_Shoot:
+                case GameMessages::Server2C_PlayerShoot:
                 {
                     server_player_action_handleShoot(message);
                 }
@@ -114,6 +114,16 @@ protected:
                 case GameMessages::Server2C_ModifyWorld:
                 {
                     server_world_action_handleModifyWorld(message);
+                }
+                break;
+                case GameMessages::Server2C_SyncWorldStart:
+                {
+                    server_world_handleSyncWorldStart(message);
+                }
+                break;
+                case GameMessages::Server2C_SyncWorldChunk:
+                {
+                    server_world_handleSyncWorldChunk(message);
                 }
                 break;
                 default:
@@ -131,7 +141,10 @@ protected:
     void server_player_action_handleMove(net::Message<GameMessages> &message);
     void server_player_action_handleShoot(net::Message<GameMessages> &message);
     void server_player_action_handleDamage(net::Message<GameMessages> &message);
+
     void server_world_action_handleModifyWorld(net::Message<GameMessages> &message);
+    void server_world_handleSyncWorldStart(net::Message<GameMessages> &message);
+    void server_world_handleSyncWorldChunk(net::Message<GameMessages> &message);
 
     void client_player_action_handleMove();
     void client_player_action_handleShoot();

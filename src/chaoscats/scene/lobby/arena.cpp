@@ -9,7 +9,7 @@ CurrentScene Scene_LobbyArena::run()
         Logger::log(Logger::LogType::Info, "lobby", "Initializing lobby arena");
 
         worldCamera = new WorldCamera();
-        world = new World(gameAssets.maps.TEST_MAP, 5);
+        // world = new World(gameAssets.maps.TEST_MAP, 5);
     }
 
     if (update())
@@ -19,6 +19,15 @@ CurrentScene Scene_LobbyArena::run()
             return CurrentScene::MainMenu;
         }
         handleIncomingPackets();
+
+        if (world == nullptr)
+        {
+            return CurrentScene::LobbyArena;
+        }
+        if (!world->isInitialized())
+        {
+            return CurrentScene::LobbyArena;
+        }
 
         world->update(gameInfo.time.DELTA_TIME);
         world->render(worldCamera, renderWindow, gameInfo.window.WIDTH, gameInfo.window.HEIGHT);

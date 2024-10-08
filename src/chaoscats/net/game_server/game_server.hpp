@@ -161,12 +161,12 @@ private:
             player_connect_handleRegister(client, message);
         }
         break;
-        case GameMessages::Client2S_Move:
+        case GameMessages::Client2S_PlayerMove:
         {
             player_action_handleMove(client, message);
         }
         break;
-        case GameMessages::Client2S_Shoot:
+        case GameMessages::Client2S_PlayerShoot:
         {
             player_action_handleShoot(client, message);
         }
