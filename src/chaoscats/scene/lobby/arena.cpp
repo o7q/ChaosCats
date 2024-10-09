@@ -1,6 +1,7 @@
 #include "arena.hpp"
 
 #include "../../net/data/world.hpp"
+#include "../../animated_sprite/animated_sprite.hpp"
 
 CurrentScene Scene_LobbyArena::run()
 {
@@ -9,7 +10,6 @@ CurrentScene Scene_LobbyArena::run()
         Logger::log(Logger::LogType::Info, "lobby", "Initializing lobby arena");
 
         worldCamera = new WorldCamera();
-        // world = new World(gameAssets.maps.TEST_MAP, 5);
     }
 
     if (update())
@@ -27,6 +27,31 @@ CurrentScene Scene_LobbyArena::run()
         if (!world->isInitialized())
         {
             return CurrentScene::LobbyArena;
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+        {
+            worldCamera->translate(-5.0f, 0);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+        {
+            worldCamera->translate(5.0f, 0);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+        {
+            worldCamera->translate(0, -5.0f);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+        {
+            worldCamera->translate(0, 5.0f);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+        {
+            worldCamera->zoom(1.01f);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+        {
+            worldCamera->zoom(0.99f);
         }
 
         world->update(gameInfo.time.DELTA_TIME);
@@ -94,15 +119,14 @@ CurrentScene Scene_LobbyArena::run()
                     }
                 }
 
-                player.second->render(renderWindow);
+                player.second->render(renderWindow, worldCamera);
             }
         }
 
         std::string positionInfo = "PX: " +
                                    std::to_string(worldCamera->getTranslateX()) +
                                    "   PY: " + std::to_string(worldCamera->getTranslateY()) +
-                                   "   /   ZX: " + std::to_string(worldCamera->getZoomX()) +
-                                   "   ZY: " + std::to_string(worldCamera->getZoomY());
+                                   "   /   Z: " + std::to_string(worldCamera->getZoom());
         drawText(renderWindow, positionInfo, gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(0, 720 - 30), 15);
 
         ++packetSendCounter;

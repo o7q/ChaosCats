@@ -8,25 +8,7 @@
 
 struct Map
 {
-    sf::Image map_color;
-    sf::Image map_material_mask;
-    unsigned int width = 0;
-    unsigned int height = 0;
-    bool validated = false;
-    // TODO: add calculated hash for security
-};
-
-struct MapStorage
-{
-    Map TEST_MAP;
-
-    MapStorage()
-    {
-        loadMap(TEST_MAP, "assets/maps/test_map");
-    };
-
-private:
-    void loadMap(Map &map, const std::string &path)
+    void load(const std::string &path)
     {
         Logger::log(Logger::LogType::Info, "loadMap", "Loading: " + path);
 
@@ -58,14 +40,30 @@ private:
             return;
         }
 
-        map.map_color = map_color_temp;
-        map.map_material_mask = map_material_mask_temp;
+        map_color = map_color_temp;
+        map_material_mask = map_material_mask_temp;
 
-        map.width = map_color_size.x;
-        map.height = map_color_size.y;
+        width = map_color_size.x;
+        height = map_color_size.y;
 
-        map.validated = true;
+        validated = true;
 
         Logger::log(Logger::LogType::Info, "loadMap", "Successfully compiled: " + path);
     }
+
+    sf::Image map_color;
+    sf::Image map_material_mask;
+    unsigned int width = 0;
+    unsigned int height = 0;
+    bool validated = false;
+};
+
+struct MapStorage
+{
+    Map TEST_MAP;
+
+    MapStorage()
+    {
+        TEST_MAP.load("assets/maps/test_map");
+    };
 };

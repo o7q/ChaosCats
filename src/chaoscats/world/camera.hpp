@@ -15,25 +15,14 @@ public:
         offsetY = y;
     }
 
-    void zoom(float x, float y)
+    void zoom(float value)
     {
-        // Calculate the center before zooming
-        float beforeX, beforeY;
-        screenToWorld(640, 360, beforeX, beforeY);
-
-        scaleX *= x;
-        scaleY *= y;
-
-        float afterX, afterY;
-        screenToWorld(640, 360, afterX, afterY);
-        offsetX += (beforeX - afterX);
-        offsetY += (beforeY - afterY);
+        scale *= value;
     }
 
-    void setZoom(float x, float y)
+    void setZoom(float value)
     {
-        scaleX = x;
-        scaleY = y;
+        scale = value;
     }
 
     int getTranslateX()
@@ -46,32 +35,26 @@ public:
         return offsetY;
     }
 
-    float getZoomX()
+    float getZoom()
     {
-        return scaleX;
+        return scale;
     }
 
-    float getZoomY()
-    {
-        return scaleY;
-    }
+    // void worldToScreen(float worldX, float worldY, int &screenX, int &screenY)
+    // {
+    //     screenX = static_cast<int>((worldX - offsetX) * scaleX);
+    //     screenY = static_cast<int>((worldY - offsetY) * scaleY);
+    // }
 
-    void worldToScreen(float worldX, float worldY, int &screenX, int &screenY)
-    {
-        screenX = static_cast<int>((worldX - offsetX) * scaleX);
-        screenY = static_cast<int>((worldY - offsetY) * scaleY);
-    }
-
-    void screenToWorld(int screenX, int screenY, float &worldX, float &worldY)
-    {
-        worldX = static_cast<float>(screenX) / scaleX + offsetX;
-        worldY = static_cast<float>(screenY) / scaleY + offsetY;
-    }
+    // void screenToWorld(int screenX, int screenY, float &worldX, float &worldY)
+    // {
+    //     worldX = static_cast<float>(screenX) / scaleX + offsetX;
+    //     worldY = static_cast<float>(screenY) / scaleY + offsetY;
+    // }
 
 private:
     int offsetX = 0;
     int offsetY = 0;
 
-    float scaleX = 1.0f;
-    float scaleY = 1.0f;
+    float scale = 1.0f;
 };

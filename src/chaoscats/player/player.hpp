@@ -22,17 +22,17 @@ public:
                                                                              gameAssets(gameAssets)
     {
         sf::Vector2u headTextureSize = gameAssets.textures.PLAYER_HEAD_TEXTURE.getSize();
-        sf::Vector2f sf_head_size = imageAspect(gameAssets.textures.PLAYER_HEAD_TEXTURE, sf::Vector2f(headTextureSize.x * scale, -1));
+        sf::Vector2f sf_head_size = imageAspect(headTextureSize, sf::Vector2f(headTextureSize.x * scale, -1));
         Vector<float> head_size = Vector<float>(sf_head_size.x, sf_head_size.y);
         head_hitbox = Rect<float>(0, 0, head_size.x, head_size.y);
 
         sf::Vector2u bodyTextureSize = gameAssets.textures.PLAYER_BODY_TEXTURE.getSize();
-        sf::Vector2f sf_body_size = imageAspect(gameAssets.textures.PLAYER_BODY_TEXTURE, sf::Vector2f(bodyTextureSize.x * scale, -1));
+        sf::Vector2f sf_body_size = imageAspect(bodyTextureSize, sf::Vector2f(bodyTextureSize.x * scale, -1));
         Vector<float> body_size = Vector<float>(sf_body_size.x, sf_body_size.y);
         body_hitbox = Rect<float>(0, 0, body_size.x, body_size.y);
 
         sf::Vector2u legTextureSize = gameAssets.textures.PLAYER_LEG_TEXTURE.getSize();
-        sf::Vector2f sf_leg_size = imageAspect(gameAssets.textures.PLAYER_LEG_TEXTURE, sf::Vector2f(legTextureSize.x * scale, -1));
+        sf::Vector2f sf_leg_size = imageAspect(legTextureSize, sf::Vector2f(legTextureSize.x * scale, -1));
         Vector<float> leftLeg_size = Vector<float>(sf_leg_size.x, sf_leg_size.y);
         leftLeg_hitbox = Rect<float>(0, 0, leftLeg_size.x, leftLeg_size.y);
         Vector<float> rightLeg_size = Vector<float>(sf_leg_size.x, sf_leg_size.y);
@@ -131,7 +131,7 @@ public:
         return aimPosition;
     }
 
-    void render(sf::RenderWindow &renderWindow);
+    void render(sf::RenderWindow &renderWindow, WorldCamera* camera);
 
     Weapon *getActiveWeapon()
     {

@@ -9,7 +9,7 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
 
         Vector<int> worldSize = world->getSize();
 
-        float maxPacketBytes = 1000 / static_cast<float>(sizeof(Particle));
+        float maxPacketBytes = 1000 / static_cast<float>(sizeof(ParticleData));
         int chunkSize = std::sqrt(maxPacketBytes);
 
         int operations = std::ceil(worldSize.x / static_cast<float>(chunkSize)) * std::ceil(worldSize.y / static_cast<float>(chunkSize));

@@ -1,11 +1,17 @@
 #include "player.hpp"
 
-void Player::render(sf::RenderWindow &renderWindow)
+void Player::render(sf::RenderWindow &renderWindow, WorldCamera *camera)
 {
 
     // draw head
-    drawTexture(renderWindow, damageModel.head->getTexture(), sf::Vector2f(head_hitbox.getPosition().x - scale / 2, head_hitbox.getPosition().y - scale / 2), sf::Vector2f(head_hitbox.size.x, head_hitbox.size.y));
-
+    drawTexture(
+        renderWindow,
+        damageModel.head->getTexture(),
+        sf::Vector2f(head_hitbox.getPosition().x - scale / 2, head_hitbox.getPosition().y - scale / 2),
+        sf::Vector2f(head_hitbox.size.x, head_hitbox.size.y),
+        0,
+        sf::Vector2i(1, 1),
+        camera);
     // draw body
     drawTexture(renderWindow, damageModel.body->getTexture(), sf::Vector2f(body_hitbox.getPosition().x - scale / 2, body_hitbox.getPosition().y - scale / 2), sf::Vector2f(body_hitbox.size.x, body_hitbox.size.y));
 

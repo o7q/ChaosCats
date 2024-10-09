@@ -16,9 +16,19 @@ struct Matrix
         delete[] matrix;
     }
 
+    void init(T value)
+    {
+        for (int row = 0; row < rowSize; ++row)
+        {
+            for (int col = 0; col < colSize; ++col)
+            {
+                set(row, col, value);
+            }
+        }
+    }
+
     T get(int row, int col) const
     {
-        // return *(matrix + get1DIndex(row, col));
         return matrix[get1DIndex(row, col)];
     }
 

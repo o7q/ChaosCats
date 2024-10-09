@@ -97,14 +97,14 @@ public:
         worldTexture.update(worldPixels);
 
         shader.setUniform("resolution", sf::Vector2f(width, height));
-        shader.setUniform("translation", sf::Vector2f(0, 0));
-        shader.setUniform("zoom", 1.0f);
+        shader.setUniform("translation", sf::Vector2f(camera->getTranslateX(), camera->getTranslateY()));
+        shader.setUniform("zoom", camera->getZoom());
 
         renderWindow.draw(quad, &shader);
 
         for (EdgeData edge : collisionMesh)
         {
-            drawSegment(renderWindow, edge.segment, sf::Color(150, 150, 150, 180));
+            drawSegment(renderWindow, edge.segment, sf::Color(150, 150, 150, 180), camera);
         }
     }
 

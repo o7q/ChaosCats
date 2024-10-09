@@ -24,6 +24,8 @@ struct TextureStorage
     sf::Texture WEAPON_SHOTGUN_TEXTURE;
     sf::Texture WEAPON_SHOTGUN_POINTS_TEXTURE;
 
+    sf::Texture ANIMATED_SPRITE_TENNIS;
+
     TextureStorage()
     {
         loadTexture(PLAYER_HEAD_TEXTURE, "assets/textures/player/head/player_head.png");
@@ -41,6 +43,8 @@ struct TextureStorage
 
         loadTexture(WEAPON_SHOTGUN_TEXTURE, "assets/textures/weapons/shotgun/shotgun.png");
         loadTexture(WEAPON_SHOTGUN_POINTS_TEXTURE, "assets/textures/weapons/shotgun/shotgun_points.png");
+
+        loadTexture(ANIMATED_SPRITE_TENNIS, "assets/animations/tennis.png");
     };
 
 private:

@@ -1,10 +1,12 @@
 #pragma once
 
 #include <iostream>
+#include <cmath>
 
 #include <SFML/Graphics.hpp>
 
 #include "../math/geometry/geometry_common.hpp"
+#include "../world/camera.hpp"
 
 enum class DrawMode
 {
@@ -43,7 +45,7 @@ void drawRect(
 }
 
 template <typename T>
-void drawSegment(sf::RenderWindow &renderWindow, Segment<T> segment, sf::Color color = sf::Color(255, 255, 255, 255))
+void drawSegment(sf::RenderWindow &renderWindow, Segment<T> segment, sf::Color color = sf::Color(255, 255, 255, 255), WorldCamera *camera = nullptr)
 {
     sf::Vertex line[2];
     line[0].position = sf::Vector2f(segment.p1.x, segment.p1.y);
@@ -66,6 +68,6 @@ void drawPoint(sf::RenderWindow &renderWindow, Vector<T> point, sf::Color color 
     renderWindow.draw(circle);
 }
 
-void drawTexture(sf::RenderWindow &renderWindow, sf::Texture &texture, sf::Vector2f position, sf::Vector2f size, float rotation = 0.0f, sf::Vector2i flipVector = sf::Vector2i(1, 1));
+void drawTexture(sf::RenderWindow &renderWindow, const sf::Texture &texture, sf::Vector2f position, sf::Vector2f size, float rotation = 0.0f, sf::Vector2i flipVector = sf::Vector2i(1, 1), WorldCamera *camera = nullptr);
 void drawText(sf::RenderWindow &renderWindow, const std::string &textString, sf::Font &font, sf::Vector2f position, int characterSize = 24, sf::Color color = sf::Color(255, 255, 255, 255));
-sf::Vector2f imageAspect(sf::Texture &texture, sf::Vector2f size);
+sf::Vector2f imageAspect(const sf::Vector2u &textureSize, sf::Vector2f size);

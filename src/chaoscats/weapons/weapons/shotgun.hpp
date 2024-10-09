@@ -21,7 +21,7 @@ public:
         int scale = 3;
         sf::Vector2u textureSize = gameAssets.textures.WEAPON_SHOTGUN_TEXTURE.getSize();
 
-        sf::Vector2f aspect = imageAspect(gameAssets.textures.WEAPON_SHOTGUN_TEXTURE, sf::Vector2f(textureSize.x * scale, -1));
+        sf::Vector2f aspect = imageAspect(textureSize, sf::Vector2f(textureSize.x * scale, -1));
 
         sf::Image gunPointsImage = gameAssets.textures.WEAPON_SHOTGUN_POINTS_TEXTURE.copyToImage();
 

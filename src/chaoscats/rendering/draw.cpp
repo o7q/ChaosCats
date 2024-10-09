@@ -1,14 +1,13 @@
 #include "draw.hpp"
 
-void drawTexture(sf::RenderWindow &renderWindow, sf::Texture& texture, sf::Vector2f position, sf::Vector2f size, float rotation, sf::Vector2i flipVector)
+void drawTexture(sf::RenderWindow &renderWindow, const sf::Texture &texture, sf::Vector2f position, sf::Vector2f size, float rotation, sf::Vector2i flipVector, WorldCamera *camera)
 {
     sf::Sprite textureSprite;
     textureSprite.setTexture(texture);
     textureSprite.setRotation(rotation);
 
     sf::Vector2u textureSize = texture.getSize();
-
-    sf::Vector2f newSize = imageAspect(texture, size);
+    sf::Vector2f newSize = imageAspect(textureSize, size);
 
     textureSprite.setOrigin(textureSize.x / 2, textureSize.y / 2);
     textureSprite.setPosition(position.x, position.y);
@@ -20,7 +19,7 @@ void drawTexture(sf::RenderWindow &renderWindow, sf::Texture& texture, sf::Vecto
 void drawText(sf::RenderWindow &renderWindow, const std::string &textString, sf::Font &font, sf::Vector2f position, int characterSize, sf::Color color)
 {
     sf::Text text;
-    
+
     text.setString(textString);
     text.setFont(font);
     text.setPosition(position);
@@ -30,9 +29,8 @@ void drawText(sf::RenderWindow &renderWindow, const std::string &textString, sf:
     renderWindow.draw(text);
 }
 
-sf::Vector2f imageAspect(sf::Texture &texture, sf::Vector2f size)
+sf::Vector2f imageAspect(const sf::Vector2u &textureSize, sf::Vector2f size)
 {
-    sf::Vector2u textureSize = texture.getSize();
     float aspect = textureSize.y / static_cast<float>(textureSize.x);
 
     bool autoHeight = size.y <= 0;
