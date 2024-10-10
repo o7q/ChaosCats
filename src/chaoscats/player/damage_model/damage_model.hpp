@@ -35,14 +35,24 @@ public:
         {
             for (int x = 0; x < sizeX; ++x)
             {
+                // init default values
                 damageIndexes.set(y, x, 0);
+
                 int alpha = goreLayers[0].getPixel(x, y).a == 0 ? 0 : 1;
                 binaryHitbox.set(y, x, alpha);
             }
         }
 
-        modelImage.create(sizeX, sizeY);
+        modelPixels = new sf::Uint8[sizeX * sizeY * 4];
         modelTexture.loadFromImage(goreLayers[0]);
+    }
+    ~DamageModel()
+    {
+        if (modelPixels != nullptr)
+        {
+            delete[] modelPixels;
+            modelPixels = nullptr;
+        }
     }
 
     void damage(int locationX, int locationY, int radius)
@@ -58,11 +68,16 @@ public:
             {
                 int goreIndex = damageIndexes.get(y, x);
                 sf::Color gorePixel = goreLayers[goreIndex].getPixel(x, y);
-                modelImage.setPixel(x, y, gorePixel);
+
+                int index = (y * sizeX + x) * 4;
+                modelPixels[index + 0] = gorePixel.r;
+                modelPixels[index + 1] = gorePixel.g;
+                modelPixels[index + 2] = gorePixel.b;
+                modelPixels[index + 3] = gorePixel.a;
             }
         }
 
-        modelTexture.loadFromImage(modelImage);
+        modelTexture.update(modelPixels);
     }
 
     void update(int playerX, int playerY, int playerScale)
@@ -84,12 +99,17 @@ private:
     int sizeX;
     int sizeY;
 
+    // indicies for damage levels, higher levels = deeper gore texture
     Matrix<int> damageIndexes;
+    // hitbox positions for marching squares
     Matrix<int> binaryHitbox;
+
+    // the hitbox itself
     std::vector<DamageModelEdgeData> damageHitbox;
+    // each gore layer
     std::vector<sf::Image> goreLayers;
 
-    sf::Image modelImage;
+    sf::Uint8 *modelPixels = nullptr;
     sf::Texture modelTexture;
 
     void updateHitbox(int playerX, int playerY, int playerScale);
