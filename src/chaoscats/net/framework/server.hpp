@@ -42,7 +42,7 @@ namespace net
             catch (std::exception &e)
             {
                 // Something prohibited the server from listening
-                std::cerr << "[SERVER] Exception: " << e.what() << std::endl;
+                Logger::log(Logger::LogType::Error, "net-server", "Exception: " + std::string(e.what()));
                 return false;
             }
 

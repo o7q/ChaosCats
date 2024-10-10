@@ -27,6 +27,11 @@ GameWindow::GameWindow(const std::string &name, int width, int height, const std
             switch (event.type)
             {
             case sf::Event::Closed:
+                if (scene != nullptr)
+                {
+                    delete scene;
+                    scene = nullptr;
+                }
                 renderWindow.close();
                 break;
             case sf::Event::GainedFocus:

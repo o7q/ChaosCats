@@ -40,7 +40,7 @@ namespace net
             }
             catch (std::exception &e)
             {
-                std::cerr << "[CLIENT] Exception: " << e.what() << "\n";
+                Logger::log(Logger::LogType::Error, "net-client", "Exception: " + std::string(e.what()));
                 return false;
             }
             return true;

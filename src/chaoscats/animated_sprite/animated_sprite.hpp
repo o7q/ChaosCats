@@ -8,8 +8,9 @@
 #include "../utils/logger.hpp"
 #include "../rendering/draw.hpp"
 
-struct AnimatedSprite
+class AnimatedSprite
 {
+public:
     AnimatedSprite(sf::Texture &frameSheet, unsigned int framesX, unsigned int framesY, unsigned int frameCount)
     {
         this->framesX = framesX;

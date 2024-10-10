@@ -5,5 +5,5 @@
 - Add button class system
 - Finish basic lobby system
 - Get basic multiplayer to work with above additions
-- Finish camera system
 - Make window resize properly
+- Finish camera system
