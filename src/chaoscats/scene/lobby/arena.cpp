@@ -3,13 +3,13 @@
 #include "../../net/data/world.hpp"
 #include "../../animated_sprite/animated_sprite.hpp"
 
+int rot = 0;
+
 CurrentScene Scene_LobbyArena::run()
 {
     if (init())
     {
         Logger::log(Logger::LogType::Info, "lobby", "Initializing lobby arena");
-
-        worldCamera = new WorldCamera();
     }
 
     if (update())
@@ -31,31 +31,31 @@ CurrentScene Scene_LobbyArena::run()
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         {
-            worldCamera->translate(-5.0f, 0);
+            camera.addPosition(-5.0f, 0);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
-            worldCamera->translate(5.0f, 0);
+            camera.addPosition(5.0f, 0);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
         {
-            worldCamera->translate(0, -5.0f);
+            camera.addPosition(0, -5.0f);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
         {
-            worldCamera->translate(0, 5.0f);
+            camera.addPosition(0, 5.0f);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
         {
-            worldCamera->zoom(1.01f);
+            camera.addZoom(1.01f);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
         {
-            worldCamera->zoom(0.99f);
+            camera.addZoom(0.99f);
         }
 
         world->update(gameInfo.time.DELTA_TIME);
-        world->render(worldCamera, renderWindow, gameInfo.window.WIDTH, gameInfo.window.HEIGHT);
+        world->render(renderWindow, &camera);
 
         // packet limiter, only allows packets to send at 'packetSendRate'
         if (packetSendCounter > gameInfo.time.FRAMERATE / packetSendRate)
@@ -119,18 +119,25 @@ CurrentScene Scene_LobbyArena::run()
                     }
                 }
 
-                player.second->render(renderWindow, worldCamera);
+                player.second->render(renderWindow, &camera);
             }
         }
 
-        std::string positionInfo = "PX: " +
-                                   std::to_string(worldCamera->getTranslateX()) +
-                                   "   PY: " + std::to_string(worldCamera->getTranslateY()) +
-                                   "   /   Z: " + std::to_string(worldCamera->getZoom());
-        drawText(renderWindow, positionInfo, gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(0, 720 - 30), 15);
+        // std::string positionInfo = "PX: " +
+        //                            std::to_string(camera.getX()) +
+        //                            "   PY: " + std::to_string(camera.getY()) +
+        //                            "   /   Z: " + std::to_string(camera.getZoom());
+        // drawText(renderWindow, positionInfo, gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(0, 720 - 30), 15);
+
+        // drawRect(renderWindow, Rect<float>(0, 0, 100, 100), &camera, sf::Color(255, 255, 255, 255), DrawMode::Solid, rot);
+        drawTexture(renderWindow, gameAssets.textures.PLAYER_HEAD_TEXTURE, sf::Vector2f(0, 0), sf::Vector2f(100, 100), &camera, rot);
+
+
 
         ++packetSendCounter;
         packetCanSend = false;
+
+        ++rot;
     }
 
     return CurrentScene::LobbyArena;

@@ -9,7 +9,7 @@
 
 #include "../../player/player.hpp"
 #include "../../world/world.hpp"
-#include "../../world/camera.hpp"
+#include "../../camera/camera.hpp"
 
 #include "../../net/game_client/game_client.hpp"
 
@@ -45,11 +45,6 @@ public:
             delete world;
             world = nullptr;
         }
-        if (worldCamera != nullptr)
-        {
-            delete worldCamera;
-            worldCamera = nullptr;
-        }
     }
 
     CurrentScene run() override;
@@ -57,7 +52,7 @@ public:
 private:
     GameClient &client;
 
-    WorldCamera *worldCamera = nullptr;
+    Camera camera;
     World *world = nullptr;
 
     std::unordered_map<uint32_t, Player *> players;

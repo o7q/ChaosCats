@@ -5,7 +5,6 @@
 #include "../../math/geometry/geometry_common.hpp"
 
 #include "../../world/world.hpp"
-#include "../../world/camera.hpp"
 
 class Scene_MainMenu : public Scene
 {

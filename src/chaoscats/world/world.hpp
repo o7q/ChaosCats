@@ -3,7 +3,6 @@
 #include <iostream>
 
 #include "particle.hpp"
-#include "camera.hpp"
 
 #include "../math/geometry/geometry_common.hpp"
 #include "../math/matrix.hpp"
@@ -92,20 +91,11 @@ public:
         updateCollisionMesh(collisionMesh, particles, PlayerCollisionType::Solid, pixelSize);
     }
 
-    void render(WorldCamera *camera, sf::RenderWindow &renderWindow, int width, int height)
+    void render(sf::RenderWindow &renderWindow, Camera* camera = nullptr)
     {
         worldTexture.update(worldPixels);
 
-        shader.setUniform("resolution", sf::Vector2f(width, height));
-        shader.setUniform("translation", sf::Vector2f(camera->getTranslateX(), camera->getTranslateY()));
-        shader.setUniform("zoom", camera->getZoom());
-
-        renderWindow.draw(quad, &shader);
-
-        for (EdgeData edge : collisionMesh)
-        {
-            drawSegment(renderWindow, edge.segment, sf::Color(150, 150, 150, 180), camera);
-        }
+        drawTexture(renderWindow, worldTexture, sf::Vector2f(1280 / 2.0f, 720 / 2.0f), sf::Vector2f(width * pixelSize, -1), camera);
     }
 
     void setParticle(int x, int y, Particle particle)

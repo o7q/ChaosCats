@@ -118,7 +118,7 @@ public:
         rotation_degrees = degreesFromPoints(playerX, playerY, aimX, aimY);
     }
 
-    void render(sf::RenderWindow &renderWindow, float x, float y, float aimX, float aimY) override
+    void render(sf::RenderWindow &renderWindow, Camera *camera, float x, float y, float aimX, float aimY) override
     {
         weaponPositionOffset.x = std::fabs(weaponPositionOffset.x);
         weaponPositionOffset.y = std::fabs(weaponPositionOffset.y);
@@ -140,6 +140,7 @@ public:
                     sf::Vector2f(x + weaponPositionOffset.x,
                                  y + weaponPositionOffset.y),
                     sf::Vector2f(weaponSize.x, weaponSize.y),
+                    camera,
                     rotation_degrees,
                     rotateVector);
     }

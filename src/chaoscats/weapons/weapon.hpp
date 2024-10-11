@@ -41,7 +41,7 @@ public:
 
     }
 
-    virtual void render(sf::RenderWindow &renderWindow, float playerX, float playerY, float aimX, float aimY)
+    virtual void render(sf::RenderWindow &renderWindow, Camera* camera, float playerX, float playerY, float aimX, float aimY)
     {
     }
 

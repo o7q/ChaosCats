@@ -48,7 +48,7 @@ public:
         ++frameCounter;
     }
 
-    void render(sf::RenderWindow &renderWindow, sf::Vector2f position, sf::Vector2f size, float rotation = 0.0f, sf::Vector2i flipVector = sf::Vector2i(1, 1), WorldCamera *camera = nullptr)
+    void render(sf::RenderWindow &renderWindow, sf::Vector2f position, sf::Vector2f size, float rotation = 0.0f, sf::Vector2i flipVector = sf::Vector2i(1, 1), Camera *camera = nullptr)
     {
         sf::Sprite renderSprite = animatedSprite;
         renderSprite.setRotation(rotation);

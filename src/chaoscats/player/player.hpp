@@ -131,7 +131,7 @@ public:
         return aimPosition;
     }
 
-    void render(sf::RenderWindow &renderWindow, WorldCamera* camera);
+    void render(sf::RenderWindow &renderWindow, Camera *camera);
 
     Weapon *getActiveWeapon()
     {
@@ -193,7 +193,7 @@ protected:
     Vector<float> bottomCollisionPoint;
     Vector<float> topCollisionPoint;
 
-    bool renderHitboxes = false;
+    bool renderHitboxes = true;
 
     int scale = 3;
     float playerSpeed = 6.0f;

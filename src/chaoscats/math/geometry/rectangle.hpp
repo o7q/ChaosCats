@@ -29,7 +29,7 @@ struct Rect
         updatePoints();
     }
 
-    Vector<T> getPosition()
+    Vector<T> getPosition() const
     {
         return position;
     }
