@@ -22,6 +22,15 @@ enum class MatterType
 enum class PlayerCollisionType
 {
     Solid,
+    Liquid,
+
+    None
+};
+
+enum class PlayerMovementDampingType
+{
+    Solid,
+    Water,
 
     None
 };
@@ -31,6 +40,7 @@ struct Particle
     PhysicsType physicsType = PhysicsType::None;
     MatterType matterType = MatterType::None;
     PlayerCollisionType playerCollisionType = PlayerCollisionType::None;
+    PlayerMovementDampingType playerMovementDampingType = PlayerMovementDampingType::None;
     bool unbreakable = false;
     float liquidSaturation = 0.0f;
 

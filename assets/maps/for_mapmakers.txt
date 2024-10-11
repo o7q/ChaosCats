@@ -1,9 +1,11 @@
 To make a map, simply draw the map in any image editor of your choice.
 To specify the materials of the map, create a second image of the same dimensions, this second image will act as a mask for the first image, each pixel of the mask will specify the type of material for the pixel of the original image. Use the lookup table below to determine the color of each pixel for the mask.
 
+MATERIAL                   COLOR
+
                            R   G   B   A
 AIR                      : 0   0   0   0
-NO_GRAVITY (unbreakable) : 0   0   0  255
+NO_GRAVITY (unbreakable) : 0   0   0   255
 NO_GRAVITY               : 32  32  32  255
 SAND                     : 255 255 0   255
 WATER                    : 0   0   255 255

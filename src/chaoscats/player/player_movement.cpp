@@ -19,42 +19,78 @@ void Player::handleMovement()
         playerSpeed = 6.0f;
     }
 
-    Particle groundParticle = world->getParticleFromWindowCoords(bottomCollisionPoint.x, bottomCollisionPoint.y + 5);
-    Particle subGroundParticle = world->getParticleFromWindowCoords(bottomCollisionPoint.x, bottomCollisionPoint.y + 10);
+    Particle groundParticle = world->getParticleFromWindowCoords(bottomCollisionPoint.x, bottomCollisionPoint.y + 1);
+    Particle bodyParticle = world->getParticleFromWindowCoords(bottomCollisionPoint.x, bottomCollisionPoint.y - 15);
+
+    float damping = 1.0f;
+
+    switch (bodyParticle.playerMovementDampingType)
+    {
+    case PlayerMovementDampingType::Water:
+    {
+        damping = 2.0f;
+    }
+    break;
+    case PlayerMovementDampingType::Solid:
+    {
+        damping = 10.0f;
+    }
+    break;
+    default:
+        break;
+    }
 
     switch (groundParticle.playerCollisionType)
     {
     case PlayerCollisionType::None:
-        if (velocity.y < 10.0f)
+    case PlayerCollisionType::Liquid:
+    {
+        // the maxiumum downwards velocity before gravity is stopped being applied to the player
+        if (velocity.y < 10.0f / damping)
         {
-            velocity.y += 1.0f * gameInfo.time.DELTA_TIME;
+            velocity.y += (1.0f / damping) * gameInfo.time.DELTA_TIME;
         }
-        break;
+    }
+    break;
     case PlayerCollisionType::Solid:
+    {
         if (!jumped)
         {
             velocity.y = 0.0f;
         }
+    }
+    break;
+    default:
         break;
     }
 
-    bool onGround = subGroundParticle.playerCollisionType == PlayerCollisionType::Solid;
+    bool bottomTouchingSubstance = false;
+    for (int i = -5; i < 10; ++i)
+    {
+        Particle groundTestParticle = world->getParticleFromWindowCoords(bottomCollisionPoint.x, bottomCollisionPoint.y + i);
+        if (groundTestParticle.playerCollisionType == PlayerCollisionType::Solid ||
+            groundTestParticle.playerCollisionType == PlayerCollisionType::Liquid)
+        {
+            bottomTouchingSubstance = true;
+            break;
+        }
+    }
 
     velocity.x = 0;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && gameInfo.window.IS_FOCUSED)
     {
-        velocity.x = -playerSpeed;
+        velocity.x = -playerSpeed / damping;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && gameInfo.window.IS_FOCUSED)
     {
-        velocity.x = playerSpeed;
+        velocity.x = playerSpeed / damping;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameInfo.window.IS_FOCUSED)
     {
-        if (onGround && !jumped)
+        if ((bottomTouchingSubstance && !jumped) || bodyParticle.playerCollisionType == PlayerCollisionType::Liquid)
         {
-            velocity.y = -15.0f;
+            velocity.y = -15.0f / damping;
             jumped = true;
         }
     }

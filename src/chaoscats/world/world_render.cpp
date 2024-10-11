@@ -10,7 +10,7 @@ void World::render(sf::RenderWindow &renderWindow, Camera *camera)
 {
     worldTexture.update(worldPixels);
 
-    drawTexture(renderWindow, worldTexture, sf::Vector2f(1280 / 2.0f, 720 / 2.0f), sf::Vector2f(width * pixelSize, -1), camera);
+    drawTexture(renderWindow, worldTexture, sf::Vector2f((width * pixelSize) / 2, (height * pixelSize) / 2), sf::Vector2f(width * pixelSize, height * pixelSize), camera);
 
     for (EdgeData edge : collisionMesh)
     {

@@ -22,6 +22,7 @@ void World::createWorldFromMap(Map &map)
                 particle.physicsType = PhysicsType::None;
                 particle.matterType = MatterType::Solid;
                 particle.playerCollisionType = PlayerCollisionType::Solid;
+                particle.playerMovementDampingType = PlayerMovementDampingType::Solid;
                 particle.unbreakable = true;
             }
             // NO_GRAVITY
@@ -30,6 +31,7 @@ void World::createWorldFromMap(Map &map)
                 particle.physicsType = PhysicsType::None;
                 particle.matterType = MatterType::Solid;
                 particle.playerCollisionType = PlayerCollisionType::Solid;
+                particle.playerMovementDampingType = PlayerMovementDampingType::Solid;
             }
             // SAND
             else if (material_mask_color == sf::Color(255, 255, 0, 255))
@@ -37,13 +39,15 @@ void World::createWorldFromMap(Map &map)
                 particle.physicsType = PhysicsType::Sand;
                 particle.matterType = MatterType::Solid;
                 particle.playerCollisionType = PlayerCollisionType::Solid;
+                particle.playerMovementDampingType = PlayerMovementDampingType::Solid;
             }
             // WATER
             else if (material_mask_color == sf::Color(0, 0, 255, 255))
             {
                 particle.physicsType = PhysicsType::Water;
                 particle.matterType = MatterType::Liquid;
-                particle.playerCollisionType = PlayerCollisionType::None;
+                particle.playerCollisionType = PlayerCollisionType::Liquid;
+                particle.playerMovementDampingType = PlayerMovementDampingType::Water;
             }
 
             setParticle(x, y, particle);
