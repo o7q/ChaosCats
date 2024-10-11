@@ -25,9 +25,9 @@ void drawRect(
     sf::Vector2f position(rectangle.getPosition().x, rectangle.getPosition().y);
     sf::Vector2f size(rectangle.size.x, rectangle.size.y);
 
-    std::pair<sf::Vector2f, sf::Vector2f> transformedSprite = transformSprite(renderWindow.getSize(), position, size, camera);
+    std::pair<sf::Vector2f, sf::Vector2f> transformedSprite = transformSprite(position, size, camera, renderWindow.getSize());
 
-    rectShape.setOrigin(rectangle.half_size.x, rectangle.half_size.y);
+    rectShape.setOrigin(transformedSprite.second.x / 2.0f, transformedSprite.second.x / 2.0f);
     rectShape.setPosition(transformedSprite.first.x, transformedSprite.first.y);
     rectShape.setSize(sf::Vector2f(transformedSprite.second.x, transformedSprite.second.y));
     rectShape.setRotation(rotation);

@@ -34,6 +34,12 @@ GameWindow::GameWindow(const std::string &name, int width, int height, const std
                 }
                 renderWindow.close();
                 break;
+            case sf::Event::Resized:
+            {
+                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
+                renderWindow.setView(sf::View(visibleArea));
+            }
+            break;
             case sf::Event::GainedFocus:
                 gameInfo.window.IS_FOCUSED = true;
                 break;

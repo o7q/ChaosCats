@@ -5,11 +5,15 @@
 
 int rot = 0;
 
+AnimatedSprite* animatedSprite = nullptr;
+
 CurrentScene Scene_LobbyArena::run()
 {
     if (init())
     {
         Logger::log(Logger::LogType::Info, "lobby", "Initializing lobby arena");
+
+        animatedSprite = new AnimatedSprite(gameAssets.textures.ANIMATED_SPRITE_TENNIS, 5, 4, 20);
     }
 
     if (update())
@@ -31,31 +35,47 @@ CurrentScene Scene_LobbyArena::run()
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         {
-            camera.addPosition(-5.0f, 0);
+            camera.position_move(-5.0f, 0);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
-            camera.addPosition(5.0f, 0);
+            camera.position_move(5.0f, 0);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
         {
-            camera.addPosition(0, -5.0f);
+            camera.position_move(0, -5.0f);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
         {
-            camera.addPosition(0, 5.0f);
+            camera.position_move(0, 5.0f);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
         {
-            camera.addZoom(1.01f);
+            camera.zoom_move(1.01f);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
         {
-            camera.addZoom(0.99f);
+            camera.zoom_move(0.99f);
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1))
+        {
+            camera.position_setGoal(0, 0, 0.05f);
+            camera.zoom_setGoal(1.0f, 0.05f);
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2))
+        {
+            camera.position_setGoal(players[localId]->getPosition().x - gameInfo.window.WIDTH / 2, players[localId]->getPosition().y - gameInfo.window.HEIGHT / 2, 0.05f);
+            camera.zoom_setGoal(2.0f, 0.05f);
         }
 
         world->update(gameInfo.time.DELTA_TIME);
         world->render(renderWindow, &camera);
+        camera.update(gameInfo.time.DELTA_TIME);
+
+        animatedSprite->play(24, gameInfo.time.FRAMERATE);
+        animatedSprite->render(renderWindow, sf::Vector2f(200, 200), sf::Vector2f(1000, -1), &camera);
 
         // packet limiter, only allows packets to send at 'packetSendRate'
         if (packetSendCounter > gameInfo.time.FRAMERATE / packetSendRate)
@@ -129,10 +149,8 @@ CurrentScene Scene_LobbyArena::run()
         //                            "   /   Z: " + std::to_string(camera.getZoom());
         // drawText(renderWindow, positionInfo, gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(0, 720 - 30), 15);
 
-        // drawRect(renderWindow, Rect<float>(0, 0, 100, 100), &camera, sf::Color(255, 255, 255, 255), DrawMode::Solid, rot);
-        drawTexture(renderWindow, gameAssets.textures.PLAYER_HEAD_TEXTURE, sf::Vector2f(0, 0), sf::Vector2f(100, 100), &camera, rot);
-
-
+        drawRect(renderWindow, Rect<float>(0, 0, 100, 100), &camera, sf::Color(255, 255, 255, 255), DrawMode::Solid, rot);
+        // drawTexture(renderWindow, gameAssets.textures.PLAYER_HEAD_TEXTURE, sf::Vector2f(0, 0), sf::Vector2f(100, 100), &camera, rot);
 
         ++packetSendCounter;
         packetCanSend = false;

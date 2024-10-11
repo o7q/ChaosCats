@@ -12,15 +12,27 @@ void drawTexture(
     sf::Sprite textureSprite;
     textureSprite.setTexture(texture);
 
-    sf::Vector2u textureSize = texture.getSize();
-    sf::Vector2f newSize = imageAspect(textureSize, size);
+    drawSprite(renderWindow, textureSprite, position, size, camera, rotation, flipVector);
+}
 
-    std::pair<sf::Vector2f, sf::Vector2f> transformedSprite = transformSprite(renderWindow.getSize(), position, newSize, camera);
+void drawSprite(
+    sf::RenderWindow &renderWindow,
+    sf::Sprite sprite,
+    const sf::Vector2f &position,
+    const sf::Vector2f &size,
+    const Camera *camera,
+    const float &rotation,
+    const sf::Vector2i &flipVector)
+{
+    sf::Vector2u spriteSize = sprite.getTexture()->getSize();
+    sf::Vector2f newSize = imageResize(spriteSize, size);
 
-    textureSprite.setOrigin(textureSize.x / 2, textureSize.y / 2);
-    textureSprite.setPosition(transformedSprite.first.x, transformedSprite.first.y);
-    textureSprite.setScale(transformedSprite.second.x / textureSize.x * flipVector.x, transformedSprite.second.y / textureSize.y * flipVector.y);
-    textureSprite.setRotation(rotation);
+    std::pair<sf::Vector2f, sf::Vector2f> transformedSprite = transformSprite(position, newSize, camera, renderWindow.getSize());
 
-    renderWindow.draw(textureSprite);
+    sprite.setOrigin(spriteSize.x / 2, spriteSize.y / 2);
+    sprite.setPosition(transformedSprite.first.x, transformedSprite.first.y);
+    sprite.setScale(transformedSprite.second.x / spriteSize.x * flipVector.x, transformedSprite.second.y / spriteSize.y * flipVector.y);
+    sprite.setRotation(rotation);
+
+    renderWindow.draw(sprite);
 }
