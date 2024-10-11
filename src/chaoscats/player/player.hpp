@@ -120,6 +120,11 @@ public:
         return position;
     }
 
+    Vector<float> getSize() const
+    {
+        return player_collisionBox.size;
+    }
+
     void setAim(float x, float y)
     {
         aimPosition.x = x;
@@ -131,7 +136,7 @@ public:
         return aimPosition;
     }
 
-    void render(sf::RenderWindow &renderWindow, Camera *camera);
+    void render(sf::RenderWindow &renderWindow, Camera *camera, const std::string& name);
 
     Weapon *getActiveWeapon()
     {

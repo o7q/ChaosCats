@@ -44,88 +44,24 @@ enum class DrawShape
 class World
 {
 public:
-    World(Map &map, int pixelSize = 10) : particles(map.height, map.width)
-    {
-        this->width = map.width;
-        this->height = map.height;
-        this->pixelSize = pixelSize;
-
-        initWorldTexture();
-
-        createWorldFromMap(map);
-    }
-    World(int width, int height, int pixelSize = 10) : particles(height, width)
-    {
-        this->width = width;
-        this->height = height;
-        this->pixelSize = pixelSize;
-
-        initWorldTexture();
-
-        for (int y = 0; y < height; ++y)
-        {
-            for (int x = 0; x < width; ++x)
-            {
-                removeParticle(x, y);
-            }
-        }
-    }
-    ~World()
-    {
-        if (worldPixels != nullptr)
-        {
-            delete[] worldPixels;
-            worldPixels = nullptr;
-        }
-    }
+    World(Map &map, int pixelSize = 10);
+    World(int width, int height, int pixelSize = 10);
+    ~World();
 
     void createWorldFromMap(Map &map);
     void initWorldTexture();
 
-    void update(float dt)
-    {
-        for (int i = 0; i < static_cast<int>(std::ceil(dt)); ++i)
-        {
-            update_particles();
-        }
-        updateCollisionMesh(collisionMesh, particles, PlayerCollisionType::Solid, pixelSize);
-    }
+    void update(float dt);
 
-    void render(sf::RenderWindow &renderWindow, Camera* camera = nullptr)
-    {
-        worldTexture.update(worldPixels);
+    void render(sf::RenderWindow &renderWindow, Camera *camera = nullptr);
 
-        drawTexture(renderWindow, worldTexture, sf::Vector2f(1280 / 2.0f, 720 / 2.0f), sf::Vector2f(width * pixelSize, -1), camera);
-    }
-
-    void setParticle(int x, int y, Particle particle)
-    {
-        particles.set(y, x, particle);
-
-        int index = (y * width + x) * 4;
-
-        worldPixels[index + 0] = particle.color.r;
-        worldPixels[index + 1] = particle.color.g;
-        worldPixels[index + 2] = particle.color.b;
-        worldPixels[index + 3] = particle.color.a;
-    }
-
-    void removeParticle(int x, int y)
-    {
-        setParticle(x, y, Particle());
-    }
+    void setParticle(int x, int y, Particle particle);
+    void removeParticle(int x, int y);
 
     net::Message<GameMessages> drawParticles(int loc_x, int loc_y, Particle particle, int radius = 5, DrawShape drawShape = DrawShape::Circle);
 
-    Particle getParticle(int x, int y) const
-    {
-        if (particles.inBounds(y, x))
-        {
-            return particles.get(y, x);
-        }
-
-        return Particle();
-    }
+    Particle getParticle(int x, int y) const;
+    Particle getParticleFromWindowCoords(int x, int y) const;
 
     Vector<int> getWorldCoords(int worldX, int worldY) const
     {
@@ -134,38 +70,9 @@ public:
         return Vector<int>(x, y);
     }
 
-    Particle getParticleFromWindowCoords(int x, int y) const
-    {
-        Vector<int> worldCoords = getWorldCoords(x, y);
-        if (particles.inBounds(worldCoords.y, worldCoords.x))
-        {
-            return particles.get(worldCoords.y, worldCoords.x);
-        }
-
-        return Particle();
-    }
-
     int getPixelSize() const
     {
         return pixelSize;
-    }
-
-    void updateFromMessage(net::Message<GameMessages> &message)
-    {
-        size_t size;
-        message >> size;
-
-        for (size_t i = 0; i < size; ++i)
-        {
-            ParticleData particleData;
-            message >> particleData;
-            setParticle(particleData.worldX, particleData.worldY, particleData.particle);
-        }
-    }
-
-    bool isInitialized() const
-    {
-        return initialized;
     }
 
     const std::vector<EdgeData> &getCollisionMesh() const
@@ -178,19 +85,15 @@ public:
         return Vector<int>(width, height);
     }
 
-    void check_s2c_progress()
-    {
-        ++s2c_buffer_progress;
-        if (s2c_buffer_progress == s2c_buffer_count)
-        {
-            initialized = true;
-        }
-    }
+    // net
+    void updateFromMessage(net::Message<GameMessages> &message);
 
-    void set_s2c_buffer_count(int value)
-    {
-        this->s2c_buffer_count = value;
-    }
+    // s2c: server to client
+    // these functions are used when reconstructing the world from packets
+    bool is_s2c_initialized() const;
+    void check_s2c_progress();
+    void set_s2c_buffer_count(int value);
+    //
 
 private:
     Matrix<Particle> particles;
@@ -205,8 +108,7 @@ private:
     int width, height;
     int pixelSize;
 
-    bool initialized = false;
-
+    bool s2c_initialized = false;
     int s2c_buffer_progress = 0;
     int s2c_buffer_count = 0;
 

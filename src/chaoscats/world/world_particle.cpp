@@ -1,5 +1,43 @@
 #include "world.hpp"
 
+void World::setParticle(int x, int y, Particle particle)
+{
+    particles.set(y, x, particle);
+
+    int index = (y * width + x) * 4;
+
+    worldPixels[index + 0] = particle.color.r;
+    worldPixels[index + 1] = particle.color.g;
+    worldPixels[index + 2] = particle.color.b;
+    worldPixels[index + 3] = particle.color.a;
+}
+
+void World::removeParticle(int x, int y)
+{
+    setParticle(x, y, Particle());
+}
+
+Particle World::getParticle(int x, int y) const
+{
+    if (particles.inBounds(y, x))
+    {
+        return particles.get(y, x);
+    }
+
+    return Particle();
+}
+
+Particle World::getParticleFromWindowCoords(int x, int y) const
+{
+    Vector<int> worldCoords = getWorldCoords(x, y);
+    if (particles.inBounds(worldCoords.y, worldCoords.x))
+    {
+        return particles.get(worldCoords.y, worldCoords.x);
+    }
+
+    return Particle();
+}
+
 net::Message<GameMessages> World::drawParticles(int loc_x, int loc_y, Particle particle, int radius, DrawShape drawShape)
 {
     std::vector<ParticleData> updatedParticles;

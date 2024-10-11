@@ -5,7 +5,7 @@
 
 int rot = 0;
 
-AnimatedSprite* animatedSprite = nullptr;
+AnimatedSprite *animatedSprite = nullptr;
 
 CurrentScene Scene_LobbyArena::run()
 {
@@ -28,45 +28,48 @@ CurrentScene Scene_LobbyArena::run()
         {
             return CurrentScene::LobbyArena;
         }
-        if (!world->isInitialized())
+        if (!world->is_s2c_initialized())
         {
             return CurrentScene::LobbyArena;
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && gameInfo.window.IS_FOCUSED)
         {
             camera.position_move(-5.0f, 0);
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && gameInfo.window.IS_FOCUSED)
         {
             camera.position_move(5.0f, 0);
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && gameInfo.window.IS_FOCUSED)
         {
             camera.position_move(0, -5.0f);
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && gameInfo.window.IS_FOCUSED)
         {
             camera.position_move(0, 5.0f);
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) && gameInfo.window.IS_FOCUSED)
         {
             camera.zoom_move(1.01f);
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::X) && gameInfo.window.IS_FOCUSED)
         {
             camera.zoom_move(0.99f);
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) && gameInfo.window.IS_FOCUSED)
         {
             camera.position_setGoal(0, 0, 0.05f);
             camera.zoom_setGoal(1.0f, 0.05f);
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) && gameInfo.window.IS_FOCUSED)
         {
-            camera.position_setGoal(players[localId]->getPosition().x - gameInfo.window.WIDTH / 2, players[localId]->getPosition().y - gameInfo.window.HEIGHT / 2, 0.05f);
+            camera.position_setGoal(
+                players[localId]->getPosition().x - gameInfo.window.WIDTH / 2 - players[localId]->getSize().x / 2,
+                players[localId]->getPosition().y - gameInfo.window.HEIGHT / 2 - players[localId]->getSize().y / 2,
+                0.05f);
             camera.zoom_setGoal(2.0f, 0.05f);
         }
 
@@ -76,6 +79,8 @@ CurrentScene Scene_LobbyArena::run()
 
         animatedSprite->play(24, gameInfo.time.FRAMERATE);
         animatedSprite->render(renderWindow, sf::Vector2f(200, 200), sf::Vector2f(1000, -1), &camera);
+
+        drawText(renderWindow, "hello", gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(200, 200), 20, &camera, sf::Color(255, 255, 255, 255));
 
         // packet limiter, only allows packets to send at 'packetSendRate'
         if (packetSendCounter > gameInfo.time.FRAMERATE / packetSendRate)
@@ -139,18 +144,15 @@ CurrentScene Scene_LobbyArena::run()
                     }
                 }
 
-                player.second->render(renderWindow, &camera);
+                player.second->render(renderWindow, &camera, "Player" + std::to_string(player.first));
             }
         }
 
-        // std::string positionInfo = "PX: " +
-        //                            std::to_string(camera.getX()) +
-        //                            "   PY: " + std::to_string(camera.getY()) +
-        //                            "   /   Z: " + std::to_string(camera.getZoom());
-        // drawText(renderWindow, positionInfo, gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(0, 720 - 30), 15);
-
-        drawRect(renderWindow, Rect<float>(0, 0, 100, 100), &camera, sf::Color(255, 255, 255, 255), DrawMode::Solid, rot);
-        // drawTexture(renderWindow, gameAssets.textures.PLAYER_HEAD_TEXTURE, sf::Vector2f(0, 0), sf::Vector2f(100, 100), &camera, rot);
+        std::string positionInfo = "PX: " +
+                                   std::to_string(camera.getX()) +
+                                   "   PY: " + std::to_string(camera.getY()) +
+                                   "   /   Z: " + std::to_string(camera.getZoom());
+        drawText(renderWindow, positionInfo, gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(0, 720 - 30), 15, nullptr, sf::Color(255, 255, 0, 255));
 
         ++packetSendCounter;
         packetCanSend = false;

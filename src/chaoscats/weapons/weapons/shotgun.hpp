@@ -132,7 +132,7 @@ public:
 
         for (Projectile &projectile : projectiles)
         {
-            projectile.render(renderWindow);
+            projectile.render(renderWindow, camera);
         }
 
         drawTexture(renderWindow,

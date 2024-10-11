@@ -45,14 +45,10 @@ sf::Vector2f transformSize(
     const float &resize_scale,
     const float &aspect_scale)
 {
-    float camera_x = 0.0f;
-    float camera_y = 0.0f;
     float camera_zoom = 1.0f;
 
     if (camera != nullptr)
     {
-        camera_x = camera->getX();
-        camera_y = camera->getY();
         camera_zoom = camera->getZoom();
     }
 
@@ -71,18 +67,7 @@ std::pair<sf::Vector2f, sf::Vector2f> transformSprite(
 {
     float resize_scale = calculateResizeScale(windowSize);
     float aspect_scale = calculateAspectScale(windowSize);
-
-    float camera_x = 0.0f;
-    float camera_y = 0.0f;
-    float camera_zoom = 1.0f;
-
-    if (camera != nullptr)
-    {
-        camera_x = camera->getX();
-        camera_y = camera->getY();
-        camera_zoom = camera->getZoom();
-    }
-
+    
     sf::Vector2f newPosition = transformPoint(position, camera, windowSize, resize_scale, aspect_scale);
     sf::Vector2f newScale = transformSize(size, camera, resize_scale, aspect_scale);
 
