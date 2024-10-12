@@ -1,5 +1,9 @@
 #pragma once
 
+#include <vector>
+#include "../math/geometry/vector.hpp"
+#include "../game_info/game_info.hpp"
+
 class Camera
 {
 public:
@@ -15,6 +19,8 @@ public:
     float getZoom() const;
 
     void update(float dt);
+
+    void focus_positions(std::vector<Vector<float>> positions, GameInfo::WindowInfo &windowInfo);
 
 private:
     void update_position(float dt);

@@ -9,6 +9,8 @@
 #include "../../math/trig.hpp"
 #include "../weapon.hpp"
 
+#include "../../camera/camera.hpp"
+
 class Shotgun : public Weapon
 {
 public:

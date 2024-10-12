@@ -75,7 +75,6 @@ CurrentScene Scene_LobbyArena::run()
 
         world->update(gameInfo.time.DELTA_TIME);
         world->render(renderWindow, gameInfo.window, &camera);
-        camera.update(gameInfo.time.DELTA_TIME);
 
         animatedSprite->play(24, gameInfo.time.FRAMERATE);
         animatedSprite->render(renderWindow, gameInfo.window, sf::Vector2f(200, 200), sf::Vector2f(1000, -1), &camera);
@@ -119,6 +118,8 @@ CurrentScene Scene_LobbyArena::run()
             }
         }
 
+        std::vector<Vector<float>> positions;
+
         if (!players.empty())
         {
             for (const auto &player : players)
@@ -144,9 +145,14 @@ CurrentScene Scene_LobbyArena::run()
                     }
                 }
 
+                positions.push_back(player.second->getPosition());
+
                 player.second->render(renderWindow, &camera, "Player" + std::to_string(player.first));
             }
         }
+
+        camera.update(gameInfo.time.DELTA_TIME);
+        camera.focus_positions(positions, gameInfo.window);
 
         std::string positionInfo = "PX: " +
                                    std::to_string(camera.getX()) +
