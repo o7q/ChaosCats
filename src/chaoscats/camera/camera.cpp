@@ -106,7 +106,7 @@ void Camera::update_zoom(float dt)
     }
 }
 
-void Camera::focus_positions(std::vector<Vector<float>> positions, GameInfo::WindowInfo &windowInfo)
+void Camera::focus_positions(std::vector<Vector<float>> &positions, GameInfo::WindowInfo &windowInfo)
 {
     constexpr float FLOAT_MIN = std::numeric_limits<float>::min();
     constexpr float FLOAT_MAX = std::numeric_limits<float>::max();
@@ -126,6 +126,7 @@ void Camera::focus_positions(std::vector<Vector<float>> positions, GameInfo::Win
 
     float padding = 200.0f;
 
+    // calcuate midpoint
     float x_mid = (max_x - padding / 2.0f + min_x + padding / 2.0f) / 2.0f - (windowInfo.WIDTH - padding) / 2.0f;
     float y_mid = (max_y - padding / 2.0f + min_y + padding / 2.0f) / 2.0f - (windowInfo.HEIGHT - padding) / 2.0f;
 
@@ -135,5 +136,5 @@ void Camera::focus_positions(std::vector<Vector<float>> positions, GameInfo::Win
     float scale = std::min(x_scale, y_scale);
 
     position_setGoal(x_mid, y_mid, 0.15f);
-    zoom_setGoal(scale / 1.3f, 0.15f);
+    zoom_setGoal(scale / windowInfo.RESIZE_SCALE, 0.15f);
 }

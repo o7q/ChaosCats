@@ -20,7 +20,7 @@ public:
 
     void update(float dt);
 
-    void focus_positions(std::vector<Vector<float>> positions, GameInfo::WindowInfo &windowInfo);
+    void focus_positions(std::vector<Vector<float>> &positions, GameInfo::WindowInfo &windowInfo);
 
 private:
     void update_position(float dt);
