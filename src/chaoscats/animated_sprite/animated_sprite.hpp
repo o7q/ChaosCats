@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "../camera/camera.hpp"
+#include "../game_info/game_info.hpp"
 
 class AnimatedSprite
 {
@@ -12,11 +13,12 @@ public:
     void play(int framerate, int gameFramerate);
     void render(
         sf::RenderWindow &renderWindow,
-        sf::Vector2f position,
-        sf::Vector2f size,
-        Camera *camera = nullptr,
-        float rotation = 0.0f,
-        sf::Vector2i flipVector = sf::Vector2i(1, 1));
+        const GameInfo::WindowInfo &windowInfo,
+        const sf::Vector2f &position,
+        const sf::Vector2f &size,
+        const Camera *camera = nullptr,
+        const float &rotation = 0.0f,
+        const sf::Vector2i &flipVector = sf::Vector2i(1, 1));
 
 private:
     sf::Texture frameSheet;

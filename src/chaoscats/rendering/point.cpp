@@ -2,12 +2,13 @@
 
 void drawPoint(
     sf::RenderWindow &renderWindow,
-    const Vector<float>& point,
+    const GameInfo::WindowInfo &windowInfo,
+    const Vector<float> &point,
     const Camera *camera,
     const sf::Color &color,
-    const float& size)
+    const float &size)
 {
-    std::pair<sf::Vector2f, sf::Vector2f> transformedSprite = transformSprite(sf::Vector2f(point.x, point.y), sf::Vector2f(size, size), camera, renderWindow.getSize());
+    std::pair<sf::Vector2f, sf::Vector2f> transformedSprite = sprite_worldToScreen(sf::Vector2f(point.x, point.y), sf::Vector2f(size, size), camera, windowInfo);
 
     sf::CircleShape circleShape(transformedSprite.second.x);
 

@@ -1,7 +1,7 @@
 #include "player.hpp"
 
 // this function only runs for the local player (client-side)
-void Player::clientUpdate()
+void Player::clientUpdate(Camera& camera)
 {
     handleMovement();
     handleCollision();
@@ -9,7 +9,8 @@ void Player::clientUpdate()
     setPosition(position.x, position.y);
     if (gameInfo.window.IS_FOCUSED)
     {
-        setAim(gameInfo.input.MOUSE_POS.x, gameInfo.input.MOUSE_POS.y);
+        sf::Vector2f worldMouse = point_screenToWorld(sf::Vector2f(gameInfo.input.MOUSE_POS.x, gameInfo.input.MOUSE_POS.y), &camera, gameInfo.window);
+        setAim(worldMouse.x, worldMouse.y);
     }
 
     damageModel.head->update(position.x, position.y - head_hitbox.half_size.y - leftLeg_hitbox.half_size.y, scale);

@@ -53,7 +53,7 @@ public:
 
     void update(float dt);
 
-    void render(sf::RenderWindow &renderWindow, Camera *camera = nullptr);
+    void render(sf::RenderWindow &renderWindow, GameInfo::WindowInfo& windowInfo, Camera *camera = nullptr);
 
     void setParticle(int x, int y, Particle particle);
     void removeParticle(int x, int y);

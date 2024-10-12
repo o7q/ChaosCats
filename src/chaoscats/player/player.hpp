@@ -14,6 +14,8 @@
 
 #include "damage_model/damage_model.hpp"
 
+#include "../camera/camera.hpp"
+
 class Player
 {
 public:
@@ -33,7 +35,7 @@ public:
     void handleCollision();
 
     // this function only runs for the local player (client-side)
-    void clientUpdate();
+    void clientUpdate(Camera& camera);
 
     // this function only runs for server replicated clients
     void replicatedClientUpdate();

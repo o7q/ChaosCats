@@ -89,12 +89,12 @@ public:
     virtual ProjectileCollideInfo checkWorldCollision(float dt);
     virtual ProjectileCollideInfo checkPlayerCollision(float dt, PlayerDamageModel &playerHitbox);
 
-    virtual void render(sf::RenderWindow &renderWindow, Camera* camera)
+    virtual void render(sf::RenderWindow &renderWindow, GameInfo& gameInfo, Camera *camera)
     {
         float rotation = degreesFromPoints(startPosition.x, startPosition.y, startPosition.x + slope.x, startPosition.y + slope.y);
 
         Rect<float> rect(position.x, position.y, 10, 5);
-        drawRect(renderWindow, rect, camera, sf::Color(255, 220, 200, 255), DrawMode::Solid, rotation);
+        drawRect(renderWindow, gameInfo.window, rect, camera, sf::Color(255, 220, 200, 255), DrawMode::Solid, rotation);
     }
 
     virtual bool hasHit() const

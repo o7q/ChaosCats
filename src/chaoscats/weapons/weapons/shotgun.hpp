@@ -132,10 +132,11 @@ public:
 
         for (Projectile &projectile : projectiles)
         {
-            projectile.render(renderWindow, camera);
+            projectile.render(renderWindow, gameInfo, camera);
         }
 
         drawTexture(renderWindow,
+                    gameInfo.window,
                     gameAssets.textures.WEAPON_SHOTGUN_TEXTURE,
                     sf::Vector2f(x + weaponPositionOffset.x,
                                  y + weaponPositionOffset.y),

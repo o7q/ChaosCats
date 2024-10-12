@@ -2,6 +2,7 @@
 
 void drawRect(
     sf::RenderWindow &renderWindow,
+    const GameInfo::WindowInfo &windowInfo,
     const Rect<float> &rectangle,
     const Camera *camera,
     const sf::Color &color,
@@ -25,7 +26,7 @@ void drawRect(
     sf::Vector2f position(rectangle.getPosition().x, rectangle.getPosition().y);
     sf::Vector2f size(rectangle.size.x, rectangle.size.y);
 
-    std::pair<sf::Vector2f, sf::Vector2f> transformedSprite = transformSprite(position, size, camera, renderWindow.getSize());
+    std::pair<sf::Vector2f, sf::Vector2f> transformedSprite = sprite_worldToScreen(position, size, camera, windowInfo);
 
     rectShape.setOrigin(transformedSprite.second.x / 2.0f, transformedSprite.second.x / 2.0f);
     rectShape.setPosition(transformedSprite.first.x, transformedSprite.first.y);

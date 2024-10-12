@@ -1,10 +1,11 @@
 #include "player.hpp"
 
-void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::string& name)
+void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::string &name)
 {
     // draw head
     drawTexture(
         renderWindow,
+        gameInfo.window,
         damageModel.head->getTexture(),
         sf::Vector2f(head_hitbox.getPosition().x - scale / 2,
                      head_hitbox.getPosition().y - scale / 2),
@@ -13,7 +14,9 @@ void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::s
         camera);
     // draw body
     drawTexture(
-        renderWindow, damageModel.body->getTexture(),
+        renderWindow,
+        gameInfo.window,
+        damageModel.body->getTexture(),
         sf::Vector2f(body_hitbox.getPosition().x - scale / 2,
                      body_hitbox.getPosition().y - scale / 2),
         sf::Vector2f(body_hitbox.size.x,
@@ -22,6 +25,7 @@ void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::s
 
     // draw legs
     drawTexture(renderWindow,
+                gameInfo.window,
                 gameAssets.textures.PLAYER_LEG_TEXTURE,
                 sf::Vector2f(leftLeg_hitbox.getPosition().x - scale,
                              leftLeg_hitbox.getPosition().y),
@@ -29,6 +33,7 @@ void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::s
                              leftLeg_hitbox.size.y),
                 camera);
     drawTexture(renderWindow,
+                gameInfo.window,
                 gameAssets.textures.PLAYER_LEG_TEXTURE,
                 sf::Vector2f(rightLeg_hitbox.getPosition().x + scale,
                              rightLeg_hitbox.getPosition().y),
@@ -41,6 +46,7 @@ void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::s
     std::pair<Vector<float>, Vector<float>> handPlacements = weapon->getHandPlacementPoints(position.x, position.y);
 
     drawTexture(renderWindow,
+                gameInfo.window,
                 gameAssets.textures.PLAYER_HAND_TEXTURE,
                 sf::Vector2f(handPlacements.second.x,
                              handPlacements.second.y),
@@ -53,6 +59,7 @@ void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::s
                    aimPosition.x,
                    aimPosition.y);
     drawTexture(renderWindow,
+                gameInfo.window,
                 gameAssets.textures.PLAYER_HAND_TEXTURE,
                 sf::Vector2f(handPlacements.first.x,
                              handPlacements.first.y),
@@ -62,32 +69,32 @@ void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::s
     if (renderHitboxes)
     {
         // bounding boxes
-        drawRect(renderWindow, body_hitbox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
+        drawRect(renderWindow, gameInfo.window, body_hitbox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
 
-        drawRect(renderWindow, head_hitbox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
+        drawRect(renderWindow, gameInfo.window, head_hitbox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
 
-        drawRect(renderWindow, leftLeg_hitbox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
-        drawRect(renderWindow, rightLeg_hitbox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
+        drawRect(renderWindow, gameInfo.window, leftLeg_hitbox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
+        drawRect(renderWindow, gameInfo.window, rightLeg_hitbox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
         //
 
         // collision box
-        drawRect(renderWindow, player_collisionBox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
-        drawPoint(renderWindow, bottomCollisionPoint, camera, sf::Color(255, 0, 0, 255));
-        drawPoint(renderWindow, topCollisionPoint, camera, sf::Color(255, 0, 0, 255));
+        drawRect(renderWindow, gameInfo.window, player_collisionBox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
+        drawPoint(renderWindow, gameInfo.window, bottomCollisionPoint, camera, sf::Color(255, 0, 0, 255));
+        drawPoint(renderWindow, gameInfo.window, topCollisionPoint, camera, sf::Color(255, 0, 0, 255));
         //
 
         // dynamic hit box
         for (DamageModelEdgeData dmed : damageModel.head->getDamageHitbox())
         {
-            drawSegment(renderWindow, dmed.segment, camera, sf::Color(0, 255, 255, 255));
+            drawSegment(renderWindow, gameInfo.window, dmed.segment, camera, sf::Color(0, 255, 255, 255));
         }
 
         for (DamageModelEdgeData dmed : damageModel.body->getDamageHitbox())
         {
-            drawSegment(renderWindow, dmed.segment, camera, sf::Color(0, 255, 255, 255));
+            drawSegment(renderWindow, gameInfo.window, dmed.segment, camera, sf::Color(0, 255, 255, 255));
         }
         //
     }
 
-    drawText(renderWindow, name, gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(topCollisionPoint.x - head_hitbox.half_size.x, topCollisionPoint.y - 30), 10, camera, sf::Color(100, 255, 0, 255));
+    drawText(renderWindow, gameInfo.window, name, gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(topCollisionPoint.x - head_hitbox.half_size.x, topCollisionPoint.y - 30), 10, camera, sf::Color(100, 255, 0, 255));
 }

@@ -1,12 +1,13 @@
 #pragma once
 
 #include <chrono>
+#include <utility>
 
 #include <SFML/Graphics.hpp>
 
-struct GameInfo
+class GameInfo
 {
-private:
+public:
     struct TimeInfo
     {
         int FRAMERATE = 0;
@@ -23,7 +24,16 @@ private:
 
         bool IS_FOCUSED = true;
 
+        float RESIZE_SCALE = 1.0f;
+        float ASPECT_SCALE = 1.0f;
+        float RESIZE_OFFSET_X = 0.0f;
+        float RESIZE_OFFSET_Y = 0.0f;
+
         void refresh(sf::RenderWindow &renderWindow);
+
+        float calculateResizeScale(const sf::Vector2u &windowSize);
+        float calculateAspectScale(const sf::Vector2u &windowSize);
+        std::pair<float, float> calculateResizeOffset(const sf::Vector2u &windowSize);
     };
 
     struct InputInfo

@@ -6,14 +6,14 @@ void World::initWorldTexture()
     worldTexture.create(width, height);
 }
 
-void World::render(sf::RenderWindow &renderWindow, Camera *camera)
+void World::render(sf::RenderWindow &renderWindow, GameInfo::WindowInfo& windowInfo, Camera *camera)
 {
     worldTexture.update(worldPixels);
 
-    drawTexture(renderWindow, worldTexture, sf::Vector2f((width * pixelSize) / 2, (height * pixelSize) / 2), sf::Vector2f(width * pixelSize, height * pixelSize), camera);
+    drawTexture(renderWindow, windowInfo, worldTexture, sf::Vector2f((width * pixelSize) / 2, (height * pixelSize) / 2), sf::Vector2f(width * pixelSize, height * pixelSize), camera);
 
     for (EdgeData edge : collisionMesh)
     {
-        drawSegment(renderWindow, edge.segment, camera, sf::Color(150, 150, 150, 180));
+        drawSegment(renderWindow, windowInfo, edge.segment, camera, sf::Color(150, 150, 150, 180));
     }
 }

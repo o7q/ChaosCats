@@ -8,6 +8,7 @@
 
 #include "../camera/camera.hpp"
 #include "../math/geometry/geometry_common.hpp"
+#include "../game_info/game_info.hpp"
 
 enum class DrawMode
 {
@@ -18,33 +19,32 @@ enum class DrawMode
 // utils
 sf::Vector2f imageResize(const sf::Vector2u &imageSize, const sf::Vector2f &size);
 
-float calculateResizeScale(const sf::Vector2u &windowSize);
-
-float calculateAspectScale(const sf::Vector2u &windowSize);
-
-sf::Vector2f transformPoint(
+sf::Vector2f point_worldToScreen(
     const sf::Vector2f &point,
     const Camera *camera,
-    const sf::Vector2u &windowSize,
-    const float &resize_scale,
-    const float &aspect_scale);
+    const GameInfo::WindowInfo &windowInfo);
 
-sf::Vector2f transformSize(
+sf::Vector2f point_screenToWorld(
+    const sf::Vector2f &point,
+    const Camera *camera,
+    const GameInfo::WindowInfo &windowInfo);
+
+sf::Vector2f size_worldToScreen(
     const sf::Vector2f &size,
     const Camera *camera,
-    const float &resize_scale,
-    const float &aspect_scale);
+    const GameInfo::WindowInfo &windowInfo);
 
-std::pair<sf::Vector2f, sf::Vector2f> transformSprite(
+std::pair<sf::Vector2f, sf::Vector2f> sprite_worldToScreen(
     const sf::Vector2f &position,
     const sf::Vector2f &size,
     const Camera *camera,
-    const sf::Vector2u &windowSize);
+    const GameInfo::WindowInfo &windowInfo);
 //
 
 // sprite
 void drawSprite(
     sf::RenderWindow &renderWindow,
+    const GameInfo::WindowInfo &windowInfo,
     sf::Sprite sprite,
     const sf::Vector2f &position,
     const sf::Vector2f &size,
@@ -56,6 +56,7 @@ void drawSprite(
 // texture
 void drawTexture(
     sf::RenderWindow &renderWindow,
+    const GameInfo::WindowInfo &windowInfo,
     const sf::Texture &texture,
     const sf::Vector2f &position,
     const sf::Vector2f &size,
@@ -67,6 +68,7 @@ void drawTexture(
 // text
 void drawText(
     sf::RenderWindow &renderWindow,
+    const GameInfo::WindowInfo &windowInfo,
     const std::string &textString,
     const sf::Font &font,
     const sf::Vector2f &position,
@@ -78,6 +80,7 @@ void drawText(
 // rectangle
 void drawRect(
     sf::RenderWindow &renderWindow,
+    const GameInfo::WindowInfo &windowInfo,
     const Rect<float> &rectangle,
     const Camera *camera = nullptr,
     const sf::Color &color = sf::Color(255, 255, 255, 255),
@@ -88,6 +91,7 @@ void drawRect(
 // point
 void drawPoint(
     sf::RenderWindow &renderWindow,
+    const GameInfo::WindowInfo &windowInfo,
     const Vector<float> &point,
     const Camera *camera = nullptr,
     const sf::Color &color = sf::Color(255, 255, 255, 255),
@@ -97,6 +101,7 @@ void drawPoint(
 // segment
 void drawSegment(
     sf::RenderWindow &renderWindow,
+    const GameInfo::WindowInfo &windowInfo,
     const Segment<float> &segment,
     const Camera *camera = nullptr,
     const sf::Color &color = sf::Color(255, 255, 255, 255));
