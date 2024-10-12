@@ -30,11 +30,11 @@ private:
     float y = 0;
     float x_goal = 0.0f;
     float y_goal = 0.0f;
+    float position_goal_speed = 0.05f;
     bool position_has_goal = false;
 
     float zoom = 1.0f;
     float zoom_goal = 1.0f;
+    float zoom_goal_speed = 0.05f;
     bool zoom_has_goal = false;
-
-    float goal_speed = 0.05f;
 };

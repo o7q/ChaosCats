@@ -26,7 +26,7 @@ void Camera::position_setGoal(float x_goal, float y_goal, float goal_speed)
 {
     this->x_goal = x_goal;
     this->y_goal = y_goal;
-    this->goal_speed = goal_speed;
+    this->position_goal_speed = goal_speed;
     this->position_has_goal = true;
 }
 
@@ -55,7 +55,7 @@ void Camera::zoom_set(float zoom)
 void Camera::zoom_setGoal(float zoom_goal, float goal_speed)
 {
     this->zoom_goal = zoom_goal;
-    this->goal_speed = goal_speed;
+    this->zoom_goal_speed = goal_speed;
     this->zoom_has_goal = true;
 }
 
@@ -77,8 +77,8 @@ void Camera::update_position(float dt)
         return;
     }
 
-    x = lerp(x, x_goal, goal_speed * dt);
-    y = lerp(y, y_goal, goal_speed * dt);
+    x = lerp(x, x_goal, position_goal_speed * dt);
+    y = lerp(y, y_goal, position_goal_speed * dt);
 
     if (std::fabs(x - x_goal) < 1.0f)
     {
@@ -98,7 +98,7 @@ void Camera::update_zoom(float dt)
         return;
     }
 
-    zoom = lerp(zoom, zoom_goal, goal_speed * dt);
+    zoom = lerp(zoom, zoom_goal, zoom_goal_speed * dt);
 
     if (std::fabs(zoom - zoom_goal) < 0.01f)
     {
@@ -124,20 +124,16 @@ void Camera::focus_positions(std::vector<Vector<float>> positions, GameInfo::Win
         max_y = std::max(position.y, max_y);
     }
 
-    float mid_x = (max_x + min_x) / 2.0f - windowInfo.WIDTH / 2.0f;
-    float mid_y = (max_y + min_y) / 2.0f - windowInfo.HEIGHT / 2.0f;
+    float padding = 200.0f;
 
-    sf::Vector2f screen = point_worldToScreen(sf::Vector2f(max_x + min_x, max_y + min_y), this, windowInfo);
+    float x_mid = (max_x - padding / 2.0f + min_x + padding / 2.0f) / 2.0f - (windowInfo.WIDTH - padding) / 2.0f;
+    float y_mid = (max_y - padding / 2.0f + min_y + padding / 2.0f) / 2.0f - (windowInfo.HEIGHT - padding) / 2.0f;
 
-    float xfabs = std::fabs(screen.x / windowInfo.WIDTH);
-    float yfabs = std::fabs(screen.y / windowInfo.HEIGHT);
+    float x_scale = std::min(1.0f, (windowInfo.WIDTH - padding) / std::fabs(max_x - padding / 2.0f - min_x + padding / 2.0f));
+    float y_scale = std::min(1.0f, (windowInfo.HEIGHT - padding) / std::fabs(max_y - padding / 2.0f - min_y + padding / 2.0f));
 
-    float dist = std::sqrt(xfabs * xfabs + yfabs * yfabs);
+    float scale = std::min(x_scale, y_scale);
 
-    float invscale = 1.0f / dist;
-
-    float scale = std::clamp(invscale, 0.1f, 2.0f);
-
-    position_setGoal(mid_x, mid_y, 0.05f);
-    zoom_setGoal(scale, 0.05f);
+    position_setGoal(x_mid, y_mid, 0.15f);
+    zoom_setGoal(scale / 1.3f, 0.15f);
 }
