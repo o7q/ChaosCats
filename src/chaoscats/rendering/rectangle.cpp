@@ -28,7 +28,7 @@ void drawRect(
 
     std::pair<sf::Vector2f, sf::Vector2f> transformedSprite = sprite_worldToScreen(position, size, camera, windowInfo);
 
-    rectShape.setOrigin(transformedSprite.second.x / 2.0f, transformedSprite.second.x / 2.0f);
+    rectShape.setOrigin(transformedSprite.second.x / 2.0f, transformedSprite.second.y / 2.0f);
     rectShape.setPosition(transformedSprite.first.x, transformedSprite.first.y);
     rectShape.setSize(sf::Vector2f(transformedSprite.second.x, transformedSprite.second.y));
     rectShape.setRotation(rotation);

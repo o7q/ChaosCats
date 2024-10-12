@@ -152,7 +152,7 @@ CurrentScene Scene_LobbyArena::run()
         }
 
         camera.update(gameInfo.time.DELTA_TIME);
-        camera.focus_positions(positions, gameInfo.window);
+        // camera.focus_positions(positions, gameInfo.window);
 
         std::string positionInfo = "PX: " +
                                    std::to_string(camera.getX()) +

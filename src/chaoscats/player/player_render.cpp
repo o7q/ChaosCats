@@ -83,6 +83,8 @@ void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::s
         drawPoint(renderWindow, gameInfo.window, topCollisionPoint, camera, sf::Color(255, 0, 0, 255));
         //
 
+        drawPoint(renderWindow, gameInfo.window, Vector<float>(player_collisionBox.getPosition().x, player_collisionBox.getPosition().y), camera, sf::Color(0, 255, 0, 255));
+
         // dynamic hit box
         for (DamageModelEdgeData dmed : damageModel.head->getDamageHitbox())
         {

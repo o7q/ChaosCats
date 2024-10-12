@@ -1,9 +1,12 @@
-#include "collision.hpp"
-
 #include <iostream>
 #include <cmath>
 
-bool handleBottomCollision(Vector<float> &position, Vector<float> &velocity, Rect<float> collisionBox, EdgeData edge, Vector<float> bottom, float dt)
+#include "../../math/intersection.hpp"
+#include "../../world/collision_mesh/collision_mesh.hpp"
+
+#include "../player.hpp"
+
+bool Player::handleBottomCollision(Vector<float> &position, Vector<float> &velocity, Rect<float> collisionBox, EdgeData edge, Vector<float> bottom, float dt)
 {
     Vector<float> playerFuturePos;
     playerFuturePos.x = bottom.x + velocity.x * dt;
@@ -54,7 +57,7 @@ bool handleBottomCollision(Vector<float> &position, Vector<float> &velocity, Rec
     return false;
 }
 
-bool handleTopCollision(Vector<float> &position, Vector<float> &velocity, Rect<float> collisionBox, EdgeData edge, Vector<float> top, float dt)
+bool Player::handleTopCollision(Vector<float> &position, Vector<float> &velocity, Rect<float> collisionBox, EdgeData edge, Vector<float> top, float dt)
 {
     Vector<float> playerFuturePos;
     playerFuturePos.x = top.x + velocity.x * dt;

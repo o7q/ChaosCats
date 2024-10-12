@@ -7,7 +7,7 @@
 #include "../weapons/weapons/shotgun.hpp"
 
 #include "../world/world.hpp"
-#include "../world/collision/collision.hpp"
+#include "../math/intersection.hpp"
 
 #include "../math/geometry/geometry_common.hpp"
 #include "../rendering/draw.hpp"
@@ -35,7 +35,7 @@ public:
     void handleCollision();
 
     // this function only runs for the local player (client-side)
-    void clientUpdate(Camera& camera);
+    void clientUpdate(Camera &camera);
 
     // this function only runs for server replicated clients
     void replicatedClientUpdate();
@@ -71,7 +71,7 @@ public:
         return aimPosition;
     }
 
-    void render(sf::RenderWindow &renderWindow, Camera *camera, const std::string& name);
+    void render(sf::RenderWindow &renderWindow, Camera *camera, const std::string &name);
 
     Weapon *getActiveWeapon()
     {
@@ -138,4 +138,8 @@ protected:
     int scale = 3;
     float playerSpeed = 6.0f;
     bool jumped = false;
+
+private:
+    bool handleBottomCollision(Vector<float> &position, Vector<float> &velocity, Rect<float> collisionBox, EdgeData edge, Vector<float> bottom, float dt);
+    bool handleTopCollision(Vector<float> &position, Vector<float> &velocity, Rect<float> collisionBox, EdgeData edge, Vector<float> top, float dt);
 };

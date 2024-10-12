@@ -1,8 +1,19 @@
-#include "collision.hpp"
+#pragma once
+
+#include "geometry/geometry_common.hpp"
+
+struct SS_IntersectData
+{
+    float intersected = false;
+    float uA = 0;
+    float uB = 0;
+    float x = 0;
+    float y = 0;
+};
 
 // segment/segment intersection
 // from: https://www.jeffreythompson.org/collision-detection/line-line.php
-SS_IntersectData segmentSegment(Segment<float> a, Segment<float> b)
+inline SS_IntersectData segmentSegment(Segment<float> a, Segment<float> b)
 {
     float x1 = a.p1.x;
     float x2 = a.p2.x;

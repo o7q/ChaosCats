@@ -12,7 +12,7 @@
 #include "../../math/trig.hpp"
 
 #include "../../world/world.hpp"
-#include "../../world/collision/collision.hpp"
+#include "../../math/intersection.hpp"
 #include "../../math/geometry/geometry_common.hpp"
 
 #include "../../player/damage_model/damage_model.hpp"

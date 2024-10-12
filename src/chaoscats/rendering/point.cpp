@@ -8,7 +8,7 @@ void drawPoint(
     const sf::Color &color,
     const float &size)
 {
-    std::pair<sf::Vector2f, sf::Vector2f> transformedSprite = sprite_worldToScreen(sf::Vector2f(point.x, point.y), sf::Vector2f(size, size), camera, windowInfo);
+    std::pair<sf::Vector2f, sf::Vector2f> transformedSprite = sprite_worldToScreen(sf::Vector2f(point.x - size / 2.0f, point.y - size / 2.0f), sf::Vector2f(size, size), camera, windowInfo);
 
     sf::CircleShape circleShape(transformedSprite.second.x);
 

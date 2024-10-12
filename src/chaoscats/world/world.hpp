@@ -9,7 +9,7 @@
 #include "../rendering/draw.hpp"
 #include "../math/random.hpp"
 
-#include "collision/collision_mesh.hpp"
+#include "collision_mesh/collision_mesh.hpp"
 
 #include "../game_info/game_info.hpp"
 
