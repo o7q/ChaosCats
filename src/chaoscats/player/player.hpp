@@ -4,17 +4,16 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "../weapons/weapons/shotgun.hpp"
-
 #include "../world/world.hpp"
-#include "../math/intersection.hpp"
-
-#include "../math/geometry/geometry_common.hpp"
+#include "../camera/camera.hpp"
 #include "../rendering/draw.hpp"
 
 #include "damage_model/damage_model.hpp"
 
-#include "../camera/camera.hpp"
+#include "../weapons/weapons/shotgun.hpp"
+
+#include "../math/intersection.hpp"
+#include "../math/geometry/geometry_common.hpp"
 
 class Player
 {
@@ -35,7 +34,7 @@ public:
     void handleCollision();
 
     // this function only runs for the local player (client-side)
-    void clientUpdate(Camera &camera);
+    void clientUpdate(Camera camera);
 
     // this function only runs for server replicated clients
     void replicatedClientUpdate();
@@ -130,16 +129,10 @@ protected:
 
     Rect<float> player_collisionBox;
 
-    Vector<float> bottomCollisionPoint;
-    Vector<float> topCollisionPoint;
+    Segment<float> collisionSegment;
 
     bool renderHitboxes = true;
 
     int scale = 3;
-    float playerSpeed = 6.0f;
     bool jumped = false;
-
-private:
-    bool handleBottomCollision(Vector<float> &position, Vector<float> &velocity, Rect<float> collisionBox, EdgeData edge, Vector<float> bottom, float dt);
-    bool handleTopCollision(Vector<float> &position, Vector<float> &velocity, Rect<float> collisionBox, EdgeData edge, Vector<float> top, float dt);
 };

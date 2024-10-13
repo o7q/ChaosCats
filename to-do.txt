@@ -1,7 +1,6 @@
 - Add coyote time to player movement
+- Implement directional player animation
 - Implement player leg animation
 - Add sound system
 - Add visual effects
-- Add button class system
-- Finish basic lobby system
-- Get basic multiplayer to work with above additions
+- Implement basic lobby system

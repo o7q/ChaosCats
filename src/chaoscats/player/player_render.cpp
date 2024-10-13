@@ -42,7 +42,7 @@ void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::s
                 camera);
     //
 
-    // // draw hands
+    // draw hands
     std::pair<Vector<float>, Vector<float>> handPlacements = weapon->getHandPlacementPoints(position.x, position.y);
 
     drawTexture(renderWindow,
@@ -79,11 +79,10 @@ void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::s
 
         // collision box
         drawRect(renderWindow, gameInfo.window, player_collisionBox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
-        drawPoint(renderWindow, gameInfo.window, bottomCollisionPoint, camera, sf::Color(255, 0, 0, 255));
-        drawPoint(renderWindow, gameInfo.window, topCollisionPoint, camera, sf::Color(255, 0, 0, 255));
+        drawPoint(renderWindow, gameInfo.window, collisionSegment.p1, camera, sf::Color(255, 0, 0, 255));
+        drawPoint(renderWindow, gameInfo.window, collisionSegment.p2, camera, sf::Color(255, 0, 0, 255));
+        drawSegment(renderWindow, gameInfo.window, collisionSegment, camera, sf::Color(255, 0, 0, 255));
         //
-
-        drawPoint(renderWindow, gameInfo.window, Vector<float>(player_collisionBox.getPosition().x, player_collisionBox.getPosition().y), camera, sf::Color(0, 255, 0, 255));
 
         // dynamic hit box
         for (DamageModelEdgeData dmed : damageModel.head->getDamageHitbox())
@@ -98,5 +97,5 @@ void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::s
         //
     }
 
-    drawText(renderWindow, gameInfo.window, name, gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(topCollisionPoint.x - head_hitbox.half_size.x, topCollisionPoint.y - 30), 10, camera, sf::Color(100, 255, 0, 255));
+    drawText(renderWindow, gameInfo.window, name, gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(collisionSegment.p1.x - head_hitbox.half_size.x, collisionSegment.p1.y - 30), 10, camera, sf::Color(100, 255, 0, 255));
 }

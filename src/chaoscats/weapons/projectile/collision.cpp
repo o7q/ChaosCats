@@ -1,7 +1,5 @@
 #include "projectile.hpp"
 
-#include <utility>
-
 ProjectileCollideInfo Projectile::checkWorldCollision(float dt)
 {
     // get future position

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <random>
 #include <iostream>
+#include <random>
 
 #include "../utils/logger.hpp"
 

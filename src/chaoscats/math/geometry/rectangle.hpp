@@ -1,7 +1,7 @@
 #pragma once
 
-#include "segment.hpp"
 #include "vector.hpp"
+#include "segment.hpp"
 
 template <typename T>
 struct Rect

@@ -2,25 +2,21 @@
 
 void Player::handleMovement()
 {
+    float speed = 6.0f;
+    // increase player speed when the sprint key is held
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
     {
-        playerSpeed = 16.0f;
-    }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
-    {
-        playerSpeed = 0.1f;
+        speed = 16.0f;
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt))
     {
-        playerSpeed = 40.0f;
-    }
-    else
-    {
-        playerSpeed = 6.0f;
+        speed = 40.0f;
     }
 
-    Particle groundParticle = world->getParticleFromWindowCoords(bottomCollisionPoint.x, bottomCollisionPoint.y + 1);
-    Particle bodyParticle = world->getParticleFromWindowCoords(bottomCollisionPoint.x, bottomCollisionPoint.y - 15);
+    // ground particle is the particle directly below the player's feet
+    // bodyParticle is the particle located near the center of the player's body
+    Particle groundParticle = world->getParticleFromWindowCoords(collisionSegment.p2.x, collisionSegment.p2.y + 1);
+    Particle bodyParticle = world->getParticleFromWindowCoords(collisionSegment.p2.x, collisionSegment.p2.y - 15);
 
     float damping = 1.0f;
 
@@ -33,7 +29,7 @@ void Player::handleMovement()
     break;
     case PlayerMovementDampingType::Solid:
     {
-        damping = 10.0f;
+        damping = 100.0f;
     }
     break;
     default:
@@ -52,14 +48,6 @@ void Player::handleMovement()
         }
     }
     break;
-    case PlayerCollisionType::Solid:
-    {
-        if (!jumped)
-        {
-            velocity.y = 0.0f;
-        }
-    }
-    break;
     default:
         break;
     }
@@ -67,7 +55,7 @@ void Player::handleMovement()
     bool bottomTouchingSubstance = false;
     for (int i = -5; i < 10; ++i)
     {
-        Particle groundTestParticle = world->getParticleFromWindowCoords(bottomCollisionPoint.x, bottomCollisionPoint.y + i);
+        Particle groundTestParticle = world->getParticleFromWindowCoords(collisionSegment.p2.x, collisionSegment.p2.y + i);
         if (groundTestParticle.playerCollisionType == PlayerCollisionType::Solid ||
             groundTestParticle.playerCollisionType == PlayerCollisionType::Liquid)
         {
@@ -80,11 +68,11 @@ void Player::handleMovement()
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && gameInfo.window.IS_FOCUSED)
     {
-        velocity.x = -playerSpeed / damping;
+        velocity.x = -speed / damping;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && gameInfo.window.IS_FOCUSED)
     {
-        velocity.x = playerSpeed / damping;
+        velocity.x = speed / damping;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameInfo.window.IS_FOCUSED)
     {
@@ -113,9 +101,14 @@ void Player::setPosition(float x, float y)
 
     player_collisionBox.setPosition(position.x, position.y);
 
-    bottomCollisionPoint.x = player_collisionBox.getPosition().x;
-    bottomCollisionPoint.y = player_collisionBox.getPosition().y + player_collisionBox.half_size.y;
+    Vector<float> bottomCollisionPoint(
+        player_collisionBox.getPosition().x,
+        player_collisionBox.getPosition().y + player_collisionBox.half_size.y);
 
-    topCollisionPoint.x = player_collisionBox.getPosition().x;
-    topCollisionPoint.y = player_collisionBox.getPosition().y - player_collisionBox.half_size.y;
+    Vector<float> topCollisionPoint(
+        player_collisionBox.getPosition().x,
+        player_collisionBox.getPosition().y - player_collisionBox.half_size.y);
+
+    collisionSegment.p1 = topCollisionPoint;
+    collisionSegment.p2 = bottomCollisionPoint;
 }

@@ -74,7 +74,7 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
     // the client sends a request to the server, and the server will allow the client to display the newly created client
     net::Message<GameMessages> addNewPlayerPacket;
     addNewPlayerPacket.header.id = GameMessages::Server2C_AddPlayer;
-    addNewPlayerPacket << Vector<float>(0, 0) << clientId;
+    addNewPlayerPacket << Vector<float>(50, 50) << clientId;
     sendMessageToAllClients(addNewPlayerPacket);
 
     // display all already connected clients to the newly connected client

@@ -41,6 +41,9 @@ Player::Player(const World *world, GameInfo &gameInfo, GameAssets &gameAssets) :
 }
 Player::~Player()
 {
-    delete weapon;
-    weapon = nullptr;
+    if (weapon != nullptr)
+    {
+        delete weapon;
+        weapon = nullptr;
+    }
 }

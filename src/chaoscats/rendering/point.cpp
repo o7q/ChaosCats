@@ -12,6 +12,7 @@ void drawPoint(
 
     sf::CircleShape circleShape(transformedSprite.second.x);
 
+    circleShape.setPointCount(10);
     circleShape.setOrigin(transformedSprite.second.x / 2.0f, transformedSprite.second.x / 2.0f);
     circleShape.setPosition(transformedSprite.first.x, transformedSprite.first.y);
     circleShape.setFillColor(color);

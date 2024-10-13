@@ -15,8 +15,6 @@ void Scene_LobbyArena::server_world_handleSyncWorldStart(net::Message<GameMessag
 
     world = new World(worldSize.x, worldSize.y, pixelSize);
     world->set_s2c_buffer_count(operations);
-
-    std::cout << worldSize.x << " " << worldSize.y << " " << pixelSize << std::endl;
 }
 
 // Server2C_SyncWorldChunk

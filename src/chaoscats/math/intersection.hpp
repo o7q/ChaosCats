@@ -39,3 +39,20 @@ inline SS_IntersectData segmentSegment(Segment<float> a, Segment<float> b)
 
     return intersect_data;
 }
+
+// point in poly detection
+// from: https://stackoverflow.com/a/218081
+inline bool pointInPoly(Vector<float> point, std::vector<Segment<float>> &poly, Vector<float> origin)
+{
+    int intersects = 0;
+    const Segment<float> testSegment(origin, point);
+    for (const Segment<float> &segment : poly)
+    {
+        if (segmentSegment(segment, testSegment).intersected)
+        {
+            ++intersects;
+        }
+    }
+
+    return intersects % 2 == 1;
+}

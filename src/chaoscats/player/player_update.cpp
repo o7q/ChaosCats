@@ -1,7 +1,7 @@
 #include "player.hpp"
 
 // this function only runs for the local player (client-side)
-void Player::clientUpdate(Camera& camera)
+void Player::clientUpdate(Camera camera)
 {
     handleMovement();
     handleCollision();
