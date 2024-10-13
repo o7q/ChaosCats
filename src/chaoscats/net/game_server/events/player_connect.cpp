@@ -9,11 +9,19 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
 
         Vector<int> worldSize = world->getSize();
 
+        // this algorithm splits the world into NxN chunks that are sent to the client
+
+        // calculate the max chunk size, 1000 shall be the MTU/max tcp packet size
+        // this is actually the area of the chunk size as well
         float maxPacketBytes = 1000 / static_cast<float>(sizeof(ParticleData));
+        // sqrt the value/area to get the width of the square
         int chunkSize = std::sqrt(maxPacketBytes);
 
+        // calculate the amount of operations required for the world to be reconstructed
+        // this value is sent to the client, so the client knows when the world is reconstructed, or can know when the world is nearly constructed
         int operations = std::ceil(worldSize.x / static_cast<float>(chunkSize)) * std::ceil(worldSize.y / static_cast<float>(chunkSize));
 
+        // send the initial header packet to inform the client of the incoming world
         net::Message<GameMessages> worldSyncStartPacket;
         worldSyncStartPacket.header.id = GameMessages::Server2C_SyncWorldStart;
         worldSyncStartPacket << world->getSize() << world->getPixelSize() << operations;
@@ -23,6 +31,8 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
         {
             for (int x = 0; x < worldSize.x; x += chunkSize)
             {
+                // calculate the value of the buffers
+                // the buffer will dynamically shrink as it gets to the edge of the world to prevent an overflow
                 int buffer_sizeX = (x + chunkSize > worldSize.x) ? (worldSize.x - x) : chunkSize;
                 int buffer_sizeY = (y + chunkSize > worldSize.y) ? (worldSize.y - y) : chunkSize;
 
@@ -31,6 +41,7 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
                 net::Message<GameMessages> bufferMessage;
                 bufferMessage.header.id = GameMessages::Server2C_SyncWorldChunk;
 
+                // loop through the buffer and assign it world particles
                 for (int buffer_y = 0; buffer_y < buffer_sizeY; ++buffer_y)
                 {
                     for (int buffer_x = 0; buffer_x < buffer_sizeX; ++buffer_x)
@@ -40,10 +51,12 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
                         pd.worldX = x + buffer_x;
                         pd.worldY = y + buffer_y;
 
+                        // pack buffer
                         bufferMessage << pd;
                     }
                 }
 
+                // pack the buffer size as well, so the client knows how to handle the buffer
                 bufferMessage << buffer_sizeX * buffer_sizeY;
 
                 sendMessageToClient(client, bufferMessage);
@@ -98,31 +111,40 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
 
 void GameServer::player_connect_purgeHusks()
 {
-    std::lock_guard<std::shared_mutex> playersLock(playersMutex);
-    std::lock_guard<std::mutex> husksLock(husksMutex);
+    std::vector<uint32_t> husksToRemove;
 
-    // purge all players that are considered a 'husk', a serverPlayer with no corresponding client
-    if (!husks.empty())
     {
-        for (uint32_t husk_id : husks)
+        std::lock(playersMutex, husksMutex);
+        std::lock_guard<std::shared_mutex> playersLock(playersMutex, std::adopt_lock);
+        std::lock_guard<std::mutex> husksLock(husksMutex, std::adopt_lock);
+
+        // purge all players that are considered a 'husk', a serverPlayer with no corresponding client
+        if (!husks.empty())
         {
-            net::Message<GameMessages> removePlayerMessage;
-            removePlayerMessage.header.id = GameMessages::Server2C_RemovePlayer;
-            removePlayerMessage << husk_id;
-
-            if (mapContains(serverPlayers, husk_id))
+            for (uint32_t husk_id : husks)
             {
-                if (serverPlayers[husk_id] != nullptr)
+                if (mapContains(serverPlayers, husk_id))
                 {
-                    delete serverPlayers[husk_id];
+                    if (serverPlayers[husk_id] != nullptr)
+                    {
+                        delete serverPlayers[husk_id];
+                    }
+
+                    serverPlayers.erase(husk_id);
                 }
-
-                serverPlayers.erase(husk_id);
+                husksToRemove.push_back(husk_id);
             }
-
-            Logger::log(Logger::LogType::Info, "gameserver", "Removing: " + std::to_string(husk_id) + " from clients");
-            sendMessageToAllClients(removePlayerMessage);
+            husks.clear();
         }
-        husks.clear();
+    }
+
+    for (uint32_t &husk_id : husksToRemove)
+    {
+        net::Message<GameMessages> removePlayerMessage;
+        removePlayerMessage.header.id = GameMessages::Server2C_RemovePlayer;
+        removePlayerMessage << husk_id;
+
+        Logger::log(Logger::LogType::Info, "gameserver", "Removing: " + std::to_string(husk_id) + " from clients");
+        sendMessageToAllClients(removePlayerMessage);
     }
 }

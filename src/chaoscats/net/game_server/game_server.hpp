@@ -115,77 +115,10 @@ public:
     }
 
 private:
-    bool onClientConnect(std::shared_ptr<net::Connection<GameMessages>> client) override
-    {
-        return true;
-    }
-
-    void onClientValidated(std::shared_ptr<net::Connection<GameMessages>> client) override
-    {
-        Logger::log(Logger::LogType::Info, "gameserver", "Client validated, informing client");
-        net::Message<GameMessages> validatedMessage;
-        validatedMessage.header.id = GameMessages::Server2C_Validated;
-        sendMessageToClient(client, validatedMessage);
-    }
-
-    void onClientDisconnect(std::shared_ptr<net::Connection<GameMessages>> client) override
-    {
-        if (client != nullptr)
-        {
-            uint32_t id = client->getID();
-            Logger::log(Logger::LogType::Info, "gameserver", "Client disconnected, purging: " + std::to_string(id));
-
-            std::cout << "lockprep" << std::endl;
-
-            {
-                std::shared_lock<std::shared_mutex> playersLock(playersMutex);
-                if (mapContains(serverPlayers, id))
-                {
-                    std::lock_guard<std::mutex> husksLock(husksMutex);
-                    husks.push_back(id);
-                }
-            }
-
-            std::cout << "lockfinish" << std::endl;
-        }
-    }
-
-    void onMessage(std::shared_ptr<net::Connection<GameMessages>> client, net::Message<GameMessages> &message) override
-    {
-        player_connect_purgeHusks();
-
-        switch (message.header.id)
-        {
-        case GameMessages::Client2S_Register:
-        {
-            player_connect_handleRegister(client, message);
-        }
-        break;
-        case GameMessages::Client2S_PlayerMove:
-        {
-            player_action_handleMove(client, message);
-        }
-        break;
-        case GameMessages::Client2S_PlayerShoot:
-        {
-            player_action_handleShoot(client, message);
-        }
-        break;
-        default:
-            break;
-        }
-    }
-
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
+    bool onClientConnect(std::shared_ptr<net::Connection<GameMessages>> client) override;
+    void onClientValidated(std::shared_ptr<net::Connection<GameMessages>> client) override;
+    void onClientDisconnect(std::shared_ptr<net::Connection<GameMessages>> client) override;
+    void onMessage(std::shared_ptr<net::Connection<GameMessages>> client, net::Message<GameMessages> &message) override;
 
     void player_connect_purgeHusks();
     void player_connect_handleRegister(std::shared_ptr<net::Connection<GameMessages>> &client, net::Message<GameMessages> &message);
