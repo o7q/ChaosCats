@@ -2,13 +2,18 @@
 
 #include <cmath>
 
-#include "geometry/geometry_common.hpp"
+#include "types/types_common.hpp"
 #include "constants.hpp"
 
 inline float radiansToDegrees(float radians)
 {
     float degrees = (180.0f / PI) * radians;
     return std::fmod(degrees + 360.0f, 360.0f);
+}
+
+inline float degreesToRadians(float degrees)
+{
+    return degrees * (PI / 180.0f);
 }
 
 inline Vector<float> rotatePoint(Vector<float> point, float angle)

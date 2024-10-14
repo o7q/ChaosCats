@@ -3,6 +3,8 @@
 #include <iostream>
 #include <vector>
 
+#include "vector.hpp"
+
 template <typename T>
 struct Segment
 {

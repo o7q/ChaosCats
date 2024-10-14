@@ -38,31 +38,14 @@ public:
 
     virtual void update(float playerX, float playerY, float aimX, float aimY)
     {
-
     }
 
-    virtual void render(sf::RenderWindow &renderWindow, Camera* camera, float playerX, float playerY, float aimX, float aimY)
+    virtual void render(sf::RenderWindow &renderWindow, Camera *camera, float playerX, float playerY, float aimX, float aimY)
     {
     }
 
-    virtual std::pair<Vector<float>, Vector<float>> getHandPlacementPoints(float x, float y)
-    {
-        Vector<float> handPosition1 = rotatePoint(Vector<float>(
-                                                      handMountPosition1.x * scale - weaponSize.x / 2,
-                                                      handMountPosition1.y * scale - weaponSize.y / 2),
-                                                  rotation_radians);
-        Vector<float> handPosition2 = rotatePoint(Vector<float>(
-                                                      handMountPosition2.x * scale - weaponSize.x / 2,
-                                                      handMountPosition2.y * scale - weaponSize.y / 2),
-                                                  rotation_radians);
-
-        handPosition1.x += x + weaponPositionOffset.x;
-        handPosition1.y += y + weaponPositionOffset.y;
-        handPosition2.x += x + weaponPositionOffset.x;
-        handPosition2.y += y + weaponPositionOffset.y;
-
-        return std::pair<Vector<float>, Vector<float>>(handPosition1, handPosition2);
-    }
+    virtual void initHandPlacementPoint(sf::Texture &weaponTexture, sf::Texture &weaponPointsTexture);
+    virtual std::pair<Vector<float>, Vector<float>> getHandPlacementPoints(float x, float y);
 
     virtual std::vector<Projectile> &getActiveProjectiles()
     {
@@ -80,7 +63,7 @@ protected:
     Vector<int> handMountPosition2;
     Vector<int> muzzlePosition;
 
-    const float scale = 4.0f;
+    float scale = 3.0f;
     Vector<float> weaponSize;
     Vector<float> weaponPositionOffset;
 
@@ -91,4 +74,6 @@ protected:
     float playerY = 0;
     float aimX = 0;
     float aimY = 0;
+
+    int bulletSprayIndex = 0;
 };

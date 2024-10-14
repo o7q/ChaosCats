@@ -7,7 +7,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "../camera/camera.hpp"
-#include "../math/geometry/geometry_common.hpp"
+#include "../math/types/types_common.hpp"
 #include "../game_info/game_info.hpp"
 
 enum class DrawMode

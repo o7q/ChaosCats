@@ -2,7 +2,7 @@
 
 #include "../scene.hpp"
 #include "../../rendering/draw.hpp"
-#include "../../math/geometry/geometry_common.hpp"
+#include "../../math/types/types_common.hpp"
 
 #include "../../world/world.hpp"
 

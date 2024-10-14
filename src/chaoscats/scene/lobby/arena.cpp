@@ -101,7 +101,10 @@ CurrentScene Scene_LobbyArena::run()
 
                 for (auto &player : players)
                 {
-                    projectile.checkPlayerCollision(gameInfo.time.DELTA_TIME, player.second->getDamageModel());
+                    if (player.first != localId)
+                    {
+                        projectile.checkPlayerCollision(gameInfo.time.DELTA_TIME, player.second->getDamageModel());
+                    }
                 }
             }
 

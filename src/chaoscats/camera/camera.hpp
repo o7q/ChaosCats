@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "../math/geometry/vector.hpp"
+#include "../math/types/vector.hpp"
 #include "../game_info/game_info.hpp"
 
 class Camera

@@ -18,8 +18,8 @@ void Player::handleMovement()
     Particle groundParticle = world->getParticleFromWindowCoords(collisionSegment.p2.x, collisionSegment.p2.y + 1);
     Particle bodyParticle = world->getParticleFromWindowCoords(collisionSegment.p2.x, collisionSegment.p2.y - 15);
 
+    // calculate damping value, used to slow player for certain scenarios
     float damping = 1.0f;
-
     switch (bodyParticle.playerMovementDampingType)
     {
     case PlayerMovementDampingType::Water:
@@ -35,15 +35,20 @@ void Player::handleMovement()
     default:
         break;
     }
+    //
 
+    // apply gravity to the player
     switch (groundParticle.playerCollisionType)
     {
     case PlayerCollisionType::None:
     case PlayerCollisionType::Liquid:
     {
         // the maxiumum downwards velocity before gravity is stopped being applied to the player
+        // if velocity.y > 0.0f, the player is moving down, because coordinates originate from the top-left of the screen
         if (velocity.y < 10.0f / damping)
         {
+            // add 1.0f to velocity, divide it by the damping value to make the player fall slower
+            // and multiply it by delta time of course :3
             velocity.y += (1.0f / damping) * gameInfo.time.DELTA_TIME;
         }
     }
@@ -51,19 +56,23 @@ void Player::handleMovement()
     default:
         break;
     }
+    //
 
-    bool bottomTouchingSubstance = false;
-    for (int i = -5; i < 10; ++i)
+    // determine if the player is within a close range of the ground at foot-level
+    // used for determining if the player can jump
+    bool standingOnGround = false;
+    for (int i = -2; i < 10; ++i)
     {
         Particle groundTestParticle = world->getParticleFromWindowCoords(collisionSegment.p2.x, collisionSegment.p2.y + i);
-        if (groundTestParticle.playerCollisionType == PlayerCollisionType::Solid ||
-            groundTestParticle.playerCollisionType == PlayerCollisionType::Liquid)
+        if (groundTestParticle.playerCollisionType == PlayerCollisionType::Solid)
         {
-            bottomTouchingSubstance = true;
+            standingOnGround = true;
             break;
         }
     }
+    //
 
+    // start player x velocity at 0
     velocity.x = 0;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && gameInfo.window.IS_FOCUSED)
@@ -76,11 +85,18 @@ void Player::handleMovement()
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameInfo.window.IS_FOCUSED)
     {
-        if ((bottomTouchingSubstance && !jumped) || bodyParticle.playerCollisionType == PlayerCollisionType::Liquid)
+        // let the player jump if they are standing on the ground, and haven't jumped
+        // OR
+        // if the player is swimming in liquid
+        if (
+            (standingOnGround && !jumped) ||
+            bodyParticle.playerCollisionType == PlayerCollisionType::Liquid)
         {
+            // overwrite the player's velocity to -15.0f divided by the damping value
             velocity.y = -15.0f / damping;
             jumped = true;
         }
+        //
     }
     else
     {

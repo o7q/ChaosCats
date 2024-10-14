@@ -1,6 +1,6 @@
 #pragma once
 
-#include "geometry/geometry_common.hpp"
+#include "types/types_common.hpp"
 
 struct SS_IntersectData
 {

@@ -13,7 +13,7 @@
 #include "../weapons/weapons/shotgun.hpp"
 
 #include "../math/intersection.hpp"
-#include "../math/geometry/geometry_common.hpp"
+#include "../math/types/types_common.hpp"
 
 class Player
 {

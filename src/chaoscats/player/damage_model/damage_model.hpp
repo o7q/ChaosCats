@@ -6,7 +6,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "../../math/geometry/geometry_common.hpp"
+#include "../../math/types/types_common.hpp"
 #include "../../math/matrix.hpp"
 #include "../../math/random.hpp"
 

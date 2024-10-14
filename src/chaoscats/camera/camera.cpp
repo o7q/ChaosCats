@@ -5,7 +5,7 @@
 
 #include "camera.hpp"
 #include "../math/number.hpp"
-#include "../math/geometry/geometry_common.hpp"
+#include "../math/types/vector.hpp"
 #include "../rendering/draw.hpp"
 
 void Camera::position_move(float x, float y)
