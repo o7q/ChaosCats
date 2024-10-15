@@ -44,8 +44,8 @@ enum class DrawShape
 class World
 {
 public:
-    World(Map &map, int pixelSize = 10);
-    World(int width, int height, int pixelSize = 10);
+    World(Map &map, int pixelSize = 10, bool serverWorld = false);
+    World(int width, int height, int pixelSize = 10, bool serverWorld = false);
     ~World();
 
     void createWorldFromMap(Map &map);
@@ -115,4 +115,6 @@ private:
     void update_particles();
     void p_sand(Particle, int, int, BoundRules);
     void p_water(Particle, int, int, BoundRules);
+
+    bool serverWorld = false;
 };

@@ -1,21 +1,23 @@
 #include "world.hpp"
 
-World::World(Map &map, int pixelSize) : particles(map.height, map.width)
+World::World(Map &map, int pixelSize, bool serverWorld) : particles(map.height, map.width)
 {
     this->width = map.width;
     this->height = map.height;
     this->pixelSize = pixelSize;
+    this->serverWorld = serverWorld;
 
     initWorldTexture();
 
     createWorldFromMap(map);
 }
 
-World::World(int width, int height, int pixelSize) : particles(height, width)
+World::World(int width, int height, int pixelSize, bool serverWorld) : particles(height, width)
 {
     this->width = width;
     this->height = height;
     this->pixelSize = pixelSize;
+    this->serverWorld = serverWorld;
 
     initWorldTexture();
 

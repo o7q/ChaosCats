@@ -2,7 +2,7 @@
 
 GameServer::GameServer(uint16_t nPort, GameAssets &gameAssets) : net::ServerInterface<GameMessages>(nPort), gameAssets(gameAssets)
 {
-    world = new World(gameAssets.maps.TEST_MAP, 5);
+    world = new World(gameAssets.maps.TEST_MAP, 5, true);
 
     keepTick.store(true);
     tickThread = std::thread(&GameServer::start_tick, this);
