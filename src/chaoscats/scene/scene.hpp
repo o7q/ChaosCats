@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "../game_assets/game_assets.hpp"
-#include "../game_info/game_info.hpp"
+#include "../game_state/game_state.hpp"
 
 enum class CurrentScene
 {
@@ -17,7 +17,7 @@ enum class CurrentScene
 class Scene
 {
 public:
-    Scene(sf::RenderWindow &renderWindow, GameInfo &gameInfo, GameAssets &gameAssets) : renderWindow(renderWindow), gameInfo(gameInfo), gameAssets(gameAssets) {}
+    Scene(sf::RenderWindow &renderWindow, GameState &gameState, GameAssets &gameAssets) : renderWindow(renderWindow), gameState(gameState), gameAssets(gameAssets) {}
     virtual ~Scene()
     {
     }
@@ -42,7 +42,7 @@ protected:
     }
 
     sf::RenderWindow &renderWindow;
-    GameInfo &gameInfo;
+    GameState &gameState;
     GameAssets &gameAssets;
 
     bool doInit = true;

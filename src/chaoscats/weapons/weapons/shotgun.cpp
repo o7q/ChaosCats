@@ -60,7 +60,7 @@ void Shotgun::update(float playerX, float playerY, float aimX, float aimY)
 {
     for (Projectile &projectile : projectiles)
     {
-        projectile.update(gameInfo.time.DELTA_TIME);
+        projectile.update(gameState.time.DELTA_TIME);
     }
 
     projectiles.erase(
@@ -89,11 +89,11 @@ void Shotgun::render(sf::RenderWindow &renderWindow, Camera *camera, float x, fl
 
     for (Projectile &projectile : projectiles)
     {
-        projectile.render(renderWindow, gameInfo, camera);
+        projectile.render(renderWindow, gameState, camera);
     }
 
     drawTexture(renderWindow,
-                gameInfo.window,
+                gameState.window,
                 gameAssets.textures.WEAPON_SHOTGUN_TEXTURE,
                 sf::Vector2f(x + weaponPositionOffset.x,
                              y + weaponPositionOffset.y),

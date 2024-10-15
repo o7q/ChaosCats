@@ -76,7 +76,7 @@ CurrentScene Scene_Lobby::run()
             switch (currentLobbyScene)
             {
             case CurrentScene::LobbyArena:
-                lobbyScene = new Scene_LobbyArena(renderWindow, gameInfo, gameAssets, gameClient);
+                lobbyScene = new Scene_LobbyArena(renderWindow, gameState, gameAssets, gameClient);
                 break;
             case CurrentScene::MainMenu:
                 return CurrentScene::MainMenu;
@@ -88,7 +88,7 @@ CurrentScene Scene_Lobby::run()
 
         previousLobbyScene = currentLobbyScene;
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::G) && gameInfo.window.IS_FOCUSED)
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::G) && gameState.window.IS_FOCUSED)
         {
             dispose();
             return CurrentScene::MainMenu;

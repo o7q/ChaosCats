@@ -9,7 +9,7 @@
 class Scene_MainMenu : public Scene
 {
 public:
-    Scene_MainMenu(sf::RenderWindow &renderWindow, GameInfo &gameInfo, GameAssets &gameAssets) : Scene(renderWindow, gameInfo, gameAssets) {}
+    Scene_MainMenu(sf::RenderWindow &renderWindow, GameState &gameState, GameAssets &gameAssets) : Scene(renderWindow, gameState, gameAssets) {}
     ~Scene_MainMenu()
     {
     }

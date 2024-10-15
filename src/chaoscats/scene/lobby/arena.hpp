@@ -19,10 +19,10 @@ class Scene_LobbyArena : public Scene
 {
 public:
     Scene_LobbyArena(sf::RenderWindow &renderWindow,
-                     GameInfo &gameInfo,
+                     GameState &gameState,
                      GameAssets &gameAssets,
                      GameClient &client) : Scene(renderWindow,
-                                                 gameInfo,
+                                                 gameState,
                                                  gameAssets),
                                            client(client)
     {

@@ -1,5 +1,7 @@
 #include "../game_server.hpp"
 
+#include "../../data/player.hpp"
+
 // Client2S_Register
 void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<GameMessages>> &client, net::Message<GameMessages> &message)
 {
@@ -69,7 +71,7 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
     Logger::log(Logger::LogType::Info, "gameserver", "Client reqested register, assigning ID: " + std::to_string(clientId));
 
     // add new player to the server player list
-    Player *player = new Player(world, serverGameInfo, gameAssets);
+    Player *player = new Player(world, serverGameState, gameAssets);
 
     {
         std::lock_guard<std::shared_mutex> playersLock(playersMutex);
@@ -87,7 +89,10 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
     // the client sends a request to the server, and the server will allow the client to display the newly created client
     net::Message<GameMessages> addNewPlayerPacket;
     addNewPlayerPacket.header.id = GameMessages::Server2C_AddPlayer;
-    addNewPlayerPacket << Vector<float>(50, 50) << clientId;
+    PlayerData pd;
+    pd.positionX = 50;
+    pd.positionY = 50;
+    addNewPlayerPacket << pd << clientId;
     sendMessageToAllClients(addNewPlayerPacket);
 
     // display all already connected clients to the newly connected client
@@ -101,9 +106,14 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
                 continue;
             }
 
+            PlayerData newPlayerData;
+            newPlayerData.health = player.second->getHealth();
+            newPlayerData.positionX = player.second->getPosition().x;
+            newPlayerData.positionY = player.second->getPosition().y;
+
             net::Message<GameMessages> addPastPlayersPacket;
             addPastPlayersPacket.header.id = GameMessages::Server2C_AddPlayer;
-            addPastPlayersPacket << player.second->getPosition() << player.first;
+            addPastPlayersPacket << newPlayerData << player.first;
             sendMessageToClient(client, addPastPlayersPacket);
         }
     }

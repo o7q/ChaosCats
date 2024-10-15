@@ -27,12 +27,12 @@ void Projectile::update(float dt)
     position.y += velocity.y * dt;
 }
 
-void Projectile::render(sf::RenderWindow &renderWindow, GameInfo &gameInfo, Camera *camera)
+void Projectile::render(sf::RenderWindow &renderWindow, GameState &gameState, Camera *camera)
 {
     float rotation = degreesFromPoints(startPosition.x, startPosition.y, startPosition.x + slope.x, startPosition.y + slope.y);
 
     Rect<float> rect(position.x, position.y, 5, 3);
-    drawRect(renderWindow, gameInfo.window, rect, camera, sf::Color(255, 220, 200, 255), DrawMode::Solid, rotation);
+    drawRect(renderWindow, gameState.window, rect, camera, sf::Color(255, 220, 200, 255), DrawMode::Solid, rotation);
 }
 
 bool Projectile::hasHit() const

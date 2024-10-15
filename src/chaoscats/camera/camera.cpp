@@ -1,9 +1,10 @@
+#include "camera.hpp"
+
 #include <cmath>
 #include <limits>
 
 #include <SFML/Graphics.hpp>
 
-#include "camera.hpp"
 #include "../math/number.hpp"
 #include "../math/types/vector.hpp"
 #include "../rendering/draw.hpp"
@@ -106,7 +107,7 @@ void Camera::update_zoom(float dt)
     }
 }
 
-void Camera::focus_positions(std::vector<Vector<float>> &positions, GameInfo::WindowInfo &windowInfo)
+void Camera::focus_positions(std::vector<Vector<float>> &positions, GameState::WindowState &windowState)
 {
     constexpr float FLOAT_MIN = std::numeric_limits<float>::min();
     constexpr float FLOAT_MAX = std::numeric_limits<float>::max();
@@ -127,14 +128,14 @@ void Camera::focus_positions(std::vector<Vector<float>> &positions, GameInfo::Wi
     float padding = 200.0f;
 
     // calcuate midpoint
-    float x_mid = (max_x - padding / 2.0f + min_x + padding / 2.0f) / 2.0f - (windowInfo.WIDTH - padding) / 2.0f;
-    float y_mid = (max_y - padding / 2.0f + min_y + padding / 2.0f) / 2.0f - (windowInfo.HEIGHT - padding) / 2.0f;
+    float x_mid = (max_x - padding / 2.0f + min_x + padding / 2.0f) / 2.0f - (windowState.WIDTH - padding) / 2.0f;
+    float y_mid = (max_y - padding / 2.0f + min_y + padding / 2.0f) / 2.0f - (windowState.HEIGHT - padding) / 2.0f;
 
-    float x_scale = std::min(1.0f, (windowInfo.WIDTH - padding) / std::fabs(max_x - padding / 2.0f - min_x + padding / 2.0f));
-    float y_scale = std::min(1.0f, (windowInfo.HEIGHT - padding) / std::fabs(max_y - padding / 2.0f - min_y + padding / 2.0f));
+    float x_scale = std::min(1.0f, (windowState.WIDTH - padding) / std::fabs(max_x - padding / 2.0f - min_x + padding / 2.0f));
+    float y_scale = std::min(1.0f, (windowState.HEIGHT - padding) / std::fabs(max_y - padding / 2.0f - min_y + padding / 2.0f));
 
     float scale = std::min(x_scale, y_scale);
 
     position_setGoal(x_mid, y_mid, 0.15f);
-    zoom_setGoal(scale / windowInfo.RESIZE_SCALE, 0.15f);
+    zoom_setGoal(scale / windowState.RESIZE_SCALE, 0.15f);
 }

@@ -13,7 +13,7 @@
 #include "../data/world.hpp"
 #include "../../utils/map.hpp"
 #include "../../player/player.hpp"
-#include "../../game_info/game_info.hpp"
+#include "../../game_state/game_state.hpp"
 
 class GameServer : public net::ServerInterface<GameMessages>
 {
@@ -33,7 +33,7 @@ private:
     std::atomic<bool> keepTick;
     std::thread tickThread;
 
-    GameInfo serverGameInfo;
+    GameState serverGameState;
 
     GameAssets &gameAssets;
 

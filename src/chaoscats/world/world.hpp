@@ -11,7 +11,7 @@
 
 #include "collision_mesh/collision_mesh.hpp"
 
-#include "../game_info/game_info.hpp"
+#include "../game_state/game_state.hpp"
 
 #include "../game_assets/maps.hpp"
 
@@ -53,7 +53,7 @@ public:
 
     void update(float dt);
 
-    void render(sf::RenderWindow &renderWindow, GameInfo::WindowInfo& windowInfo, Camera *camera = nullptr);
+    void render(sf::RenderWindow &renderWindow, GameState::WindowState& windowState, Camera *camera = nullptr);
 
     void setParticle(int x, int y, Particle particle);
     void removeParticle(int x, int y);

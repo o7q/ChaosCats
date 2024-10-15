@@ -20,7 +20,7 @@ void GameServer::start_tick()
 
         std::chrono::high_resolution_clock::time_point tick_end = std::chrono::high_resolution_clock::now();
 
-        serverGameInfo.time.refresh(tick_start, tick_end);
+        serverGameState.time.refresh(tick_start, tick_end);
     }
 }
 
@@ -28,7 +28,7 @@ void GameServer::tick()
 {
     {
         std::lock_guard worldLock(worldMutex);
-        world->update(serverGameInfo.time.DELTA_TIME);
+        world->update(serverGameState.time.DELTA_TIME);
     }
 
     updateProjectiles();

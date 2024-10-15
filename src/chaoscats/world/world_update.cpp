@@ -2,7 +2,8 @@
 
 void World::update(float dt)
 {
-    for (int i = 0; i < static_cast<int>(std::ceil(dt)); ++i)
+    float speed = 1.0f / dt;
+    for (float i = 0.0f; i < 1.0f; i += speed)
     {
         update_particles();
     }

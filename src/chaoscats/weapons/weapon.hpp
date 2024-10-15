@@ -9,7 +9,7 @@
 #include "projectile/projectile.hpp"
 
 #include "../rendering/draw.hpp"
-#include "../game_info/game_info.hpp"
+#include "../game_state/game_state.hpp"
 
 #include "../math/constants.hpp"
 
@@ -21,9 +21,9 @@ class Weapon
 {
 public:
     Weapon(const World *world,
-           GameInfo &gameInfo,
+           GameState &gameState,
            GameAssets &gameAssets) : world(world),
-                                     gameInfo(gameInfo),
+                                     gameState(gameState),
                                      gameAssets(gameAssets)
     {
     }
@@ -54,7 +54,7 @@ public:
 
 protected:
     const World *world;
-    GameInfo &gameInfo;
+    GameState &gameState;
     GameAssets &gameAssets;
 
     std::vector<Projectile> projectiles;

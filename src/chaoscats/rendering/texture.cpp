@@ -2,7 +2,7 @@
 
 void drawTexture(
     sf::RenderWindow &renderWindow,
-    const GameInfo::WindowInfo &windowInfo,
+    const GameState::WindowState &windowState,
     const sf::Texture &texture,
     const sf::Vector2f &position,
     const sf::Vector2f &size,
@@ -13,12 +13,12 @@ void drawTexture(
     sf::Sprite textureSprite;
     textureSprite.setTexture(texture);
 
-    drawSprite(renderWindow, windowInfo, textureSprite, position, size, camera, rotation, flipVector);
+    drawSprite(renderWindow, windowState, textureSprite, position, size, camera, rotation, flipVector);
 }
 
 void drawSprite(
     sf::RenderWindow &renderWindow,
-    const GameInfo::WindowInfo &windowInfo,
+    const GameState::WindowState &windowState,
     sf::Sprite sprite,
     const sf::Vector2f &position,
     const sf::Vector2f &size,
@@ -29,7 +29,7 @@ void drawSprite(
     sf::Vector2u spriteSize = sprite.getTexture()->getSize();
     sf::Vector2f newSize = imageResize(spriteSize, size);
 
-    std::pair<sf::Vector2f, sf::Vector2f> transformedSprite = sprite_worldToScreen(position, newSize, camera, windowInfo);
+    std::pair<sf::Vector2f, sf::Vector2f> transformedSprite = sprite_worldToScreen(position, newSize, camera, windowState);
 
     sprite.setOrigin(spriteSize.x / 2, spriteSize.y / 2);
     sprite.setPosition(transformedSprite.first.x, transformedSprite.first.y);

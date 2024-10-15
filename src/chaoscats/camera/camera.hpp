@@ -2,7 +2,7 @@
 
 #include <vector>
 #include "../math/types/vector.hpp"
-#include "../game_info/game_info.hpp"
+#include "../game_state/game_state.hpp"
 
 class Camera
 {
@@ -20,7 +20,7 @@ public:
 
     void update(float dt);
 
-    void focus_positions(std::vector<Vector<float>> &positions, GameInfo::WindowInfo &windowInfo);
+    void focus_positions(std::vector<Vector<float>> &positions, GameState::WindowState &windowState);
 
 private:
     void update_position(float dt);

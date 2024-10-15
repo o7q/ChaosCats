@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "../camera/camera.hpp"
-#include "../game_info/game_info.hpp"
+#include "../game_state/game_state.hpp"
 
 class AnimatedSprite
 {
@@ -13,7 +13,7 @@ public:
     void play(int framerate, int gameFramerate);
     void render(
         sf::RenderWindow &renderWindow,
-        const GameInfo::WindowInfo &windowInfo,
+        const GameState::WindowState &windowState,
         const sf::Vector2f &position,
         const sf::Vector2f &size,
         const Camera *camera = nullptr,

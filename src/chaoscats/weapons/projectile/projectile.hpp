@@ -6,7 +6,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "../../rendering/draw.hpp"
-#include "../../game_info/game_info.hpp"
+#include "../../game_state/game_state.hpp"
 
 #include "../../math/constants.hpp"
 #include "../../math/angle.hpp"
@@ -70,7 +70,7 @@ public:
     }
 
     virtual void update(float dt);
-    virtual void render(sf::RenderWindow &renderWindow, GameInfo &gameInfo, Camera *camera);
+    virtual void render(sf::RenderWindow &renderWindow, GameState &gameState, Camera *camera);
 
     virtual bool hasHit() const;
     virtual bool outOfBounds() const;

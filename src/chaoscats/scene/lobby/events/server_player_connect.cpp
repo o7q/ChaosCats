@@ -1,5 +1,7 @@
 #include "../arena.hpp"
 
+#include "../../../net/data/player.hpp"
+
 // Server2C_Validated
 void Scene_LobbyArena::server_player_connect_handleValidate(net::Message<GameMessages> &message)
 {
@@ -19,12 +21,10 @@ void Scene_LobbyArena::server_player_connect_handleAssignID(net::Message<GameMes
 void Scene_LobbyArena::server_player_connect_handleAdd(net::Message<GameMessages> &message)
 {
     uint32_t id;
-    Vector<float> position;
-    message >> id >> position;
+    PlayerData playerData;
+    message >> id >> playerData;
 
-    Player *player = new Player(world, gameInfo, gameAssets);
-
-    player->setPosition(position.x, position.y);
+    Player *player = new Player(playerData, world, gameState, gameAssets);
 
     players.insert_or_assign(id, player);
 

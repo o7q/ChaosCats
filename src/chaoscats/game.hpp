@@ -11,7 +11,7 @@
 
 #include "game_assets/game_assets.hpp"
 
-#include "game_info/game_info.hpp"
+#include "game_state/game_state.hpp"
 
 class GameWindow
 {
@@ -22,7 +22,7 @@ private:
     void update();
 
     sf::RenderWindow renderWindow;
-    GameInfo gameInfo;
+    GameState gameState;
 
     // this is all of the games assets, this one line automatically loads all game assets
     GameAssets gameAssets;

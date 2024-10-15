@@ -1,8 +1,8 @@
-#include "game_info.hpp"
+#include "game_state.hpp"
 
 #include <SFML/Graphics.hpp>
 
-void GameInfo::WindowInfo::refresh(sf::RenderWindow &renderWindow)
+void GameState::WindowState::refresh(sf::RenderWindow &renderWindow)
 {
     sf::Vector2u windowSize = renderWindow.getSize();
 
@@ -17,7 +17,7 @@ void GameInfo::WindowInfo::refresh(sf::RenderWindow &renderWindow)
     RESIZE_OFFSET_Y = resizeOffset.second;
 }
 
-float GameInfo::WindowInfo::calculateResizeScale(const sf::Vector2u &windowSize)
+float GameState::WindowState::calculateResizeScale(const sf::Vector2u &windowSize)
 {
     constexpr float base_window_x = 1280.0f;
     constexpr float base_window_y = 720.0f;
@@ -29,7 +29,7 @@ float GameInfo::WindowInfo::calculateResizeScale(const sf::Vector2u &windowSize)
     return resize_scale;
 }
 
-float GameInfo::WindowInfo::calculateAspectScale(const sf::Vector2u &windowSize)
+float GameState::WindowState::calculateAspectScale(const sf::Vector2u &windowSize)
 {
     constexpr float base_window_x = 1280.0f;
     constexpr float base_window_y = 720.0f;
@@ -53,7 +53,7 @@ float GameInfo::WindowInfo::calculateAspectScale(const sf::Vector2u &windowSize)
     return aspect_scale;
 }
 
-std::pair<float, float> GameInfo::WindowInfo::calculateResizeOffset(const sf::Vector2u &windowSize)
+std::pair<float, float> GameState::WindowState::calculateResizeOffset(const sf::Vector2u &windowSize)
 {
     constexpr float base_window_x = 1280.0f;
     constexpr float base_window_y = 720.0f;

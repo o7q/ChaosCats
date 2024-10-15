@@ -1,3 +1,4 @@
+- Fix world simulate speed with deltatime
 - Add coyote time to player movement
 - Implement directional player animation
 - Implement player leg animation

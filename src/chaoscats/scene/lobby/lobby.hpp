@@ -16,8 +16,11 @@
 class Scene_Lobby : public Scene
 {
 public:
-    Scene_Lobby(sf::RenderWindow &renderWindow, GameInfo &gameInfo, GameAssets &gameAssets, const std::vector<std::string> &netArgs) : Scene(renderWindow, gameInfo, gameAssets),
-                                                                                                                                       netArgs(netArgs)
+    Scene_Lobby(sf::RenderWindow &renderWindow,
+                GameState &gameState,
+                GameAssets &gameAssets,
+                const std::vector<std::string> &netArgs) : Scene(renderWindow, gameState, gameAssets),
+                                                           netArgs(netArgs)
     {
         keepServer.store(false);
         // serverStarted.store(false);

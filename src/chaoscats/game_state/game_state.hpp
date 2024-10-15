@@ -5,18 +5,23 @@
 
 #include <SFML/Graphics.hpp>
 
-class GameInfo
+class GameState
 {
 public:
-    struct TimeInfo
+    struct TimeState
     {
         int FRAMERATE = 0;
         float DELTA_TIME = 0;
 
         void refresh(std::chrono::high_resolution_clock::time_point frame_start, std::chrono::high_resolution_clock::time_point frame_end);
+
+        void setGameSpeed(float speed);
+
+    private:
+        float timeModifier = 1.0f;
     };
 
-    struct WindowInfo
+    struct WindowState
     {
         float ASPECT = 1.0f;
         unsigned int WIDTH = 1;
@@ -36,7 +41,7 @@ public:
         std::pair<float, float> calculateResizeOffset(const sf::Vector2u &windowSize);
     };
 
-    struct InputInfo
+    struct InputState
     {
         bool MOUSE_LMB_CLICKED = false;
         bool MOUSE_LMB_DOWN = false;
@@ -49,7 +54,7 @@ public:
     };
 
 public:
-    TimeInfo time;
-    WindowInfo window;
-    InputInfo input;
+    TimeState time;
+    WindowState window;
+    InputState input;
 };

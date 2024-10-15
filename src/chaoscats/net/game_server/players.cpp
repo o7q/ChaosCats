@@ -28,7 +28,7 @@ void GameServer::updateProjectiles()
                 {
                     for (Projectile &projectile : projectiles)
                     {
-                        ProjectileCollideInfo pci = projectile.checkPlayerCollision(serverGameInfo.time.DELTA_TIME, otherPlayer.second->getDamageModel());
+                        ProjectileCollideInfo pci = projectile.checkPlayerCollision(serverGameState.time.DELTA_TIME, otherPlayer.second->getDamageModel());
 
                         if (pci.intersected)
                         {
@@ -55,7 +55,7 @@ void GameServer::updateProjectiles()
 
             for (Projectile &projectile : projectiles)
             {
-                ProjectileCollideInfo worldCollisionInfo = projectile.checkWorldCollision(serverGameInfo.time.DELTA_TIME);
+                ProjectileCollideInfo worldCollisionInfo = projectile.checkWorldCollision(serverGameState.time.DELTA_TIME);
                 if (worldCollisionInfo.intersected)
                 {
                     Particle particle;

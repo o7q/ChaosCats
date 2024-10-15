@@ -3,13 +3,18 @@
 // this function only runs for the local player (client-side)
 void Player::clientUpdate(Camera camera)
 {
+    if (isDead())
+    {
+        return;
+    }
+
     handleMovement();
     handleCollision();
 
     setPosition(position.x, position.y);
-    if (gameInfo.window.IS_FOCUSED)
+    if (gameState.window.IS_FOCUSED)
     {
-        sf::Vector2f worldMouse = point_screenToWorld(sf::Vector2f(gameInfo.input.MOUSE_POS.x, gameInfo.input.MOUSE_POS.y), &camera, gameInfo.window);
+        sf::Vector2f worldMouse = point_screenToWorld(sf::Vector2f(gameState.input.MOUSE_POS.x, gameState.input.MOUSE_POS.y), &camera, gameState.window);
         setAim(worldMouse.x, worldMouse.y);
     }
 
@@ -22,6 +27,11 @@ void Player::clientUpdate(Camera camera)
 // this function only runs for server replicated clients
 void Player::replicatedClientUpdate()
 {
+    if (isDead())
+    {
+        return;
+    }
+
     damageModel.head->update(position.x, position.y - head_hitbox.half_size.y - leftLeg_hitbox.half_size.y, scale);
     damageModel.body->update(position.x, position.y + leftLeg_hitbox.half_size.y, scale);
     weapon->update(position.x, position.y, aimPosition.x, aimPosition.y);
@@ -30,6 +40,11 @@ void Player::replicatedClientUpdate()
 // this function only runs on the server
 void Player::serverUpdate()
 {
+    if (isDead())
+    {
+        return;
+    }
+
     damageModel.head->update(position.x, position.y - head_hitbox.half_size.y - leftLeg_hitbox.half_size.y, scale);
     damageModel.body->update(position.x, position.y + leftLeg_hitbox.half_size.y, scale);
     weapon->update(position.x, position.y, aimPosition.x, aimPosition.y);

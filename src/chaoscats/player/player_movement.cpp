@@ -49,7 +49,7 @@ void Player::handleMovement()
         {
             // add 1.0f to velocity, divide it by the damping value to make the player fall slower
             // and multiply it by delta time of course :3
-            velocity.y += (1.0f / damping) * gameInfo.time.DELTA_TIME;
+            velocity.y += (1.0f / damping) * gameState.time.DELTA_TIME;
         }
     }
     break;
@@ -75,15 +75,15 @@ void Player::handleMovement()
     // start player x velocity at 0
     velocity.x = 0;
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && gameInfo.window.IS_FOCUSED)
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && gameState.window.IS_FOCUSED)
     {
         velocity.x = -speed / damping;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && gameInfo.window.IS_FOCUSED)
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && gameState.window.IS_FOCUSED)
     {
         velocity.x = speed / damping;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameInfo.window.IS_FOCUSED)
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameState.window.IS_FOCUSED)
     {
         // let the player jump if they are standing on the ground, and haven't jumped
         // OR

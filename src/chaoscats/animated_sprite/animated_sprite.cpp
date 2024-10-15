@@ -45,12 +45,12 @@ void AnimatedSprite::play(int framerate, int gameFramerate)
 
 void AnimatedSprite::render(
     sf::RenderWindow &renderWindow,
-    const GameInfo::WindowInfo &windowInfo,
+    const GameState::WindowState &windowState,
     const sf::Vector2f &position,
     const sf::Vector2f &size,
     const Camera *camera,
     const float &rotation,
     const sf::Vector2i &flipVector)
 {
-    drawSprite(renderWindow, windowInfo, animatedSprite, position, size, camera, rotation, flipVector);
+    drawSprite(renderWindow, windowState, animatedSprite, position, size, camera, rotation, flipVector);
 }

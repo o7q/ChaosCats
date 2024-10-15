@@ -58,28 +58,46 @@ ProjectileCollideInfo Projectile::checkPlayerCollision(float dt, PlayerDamageMod
 
             hit = true;
 
-            return projectileCollideInfo;
-        }
-    }
+            float x_diff = intersectData.x - startPosition.x;
+            float y_diff = intersectData.y - startPosition.y;
 
-    for (DamageModelEdgeData edge : playerHitbox.body->getDamageHitbox())
-    {
-        SS_IntersectData intersectData = segmentSegment(futureVelocity, edge.segment);
-        if (intersectData.intersected)
-        {
-            ProjectileCollideInfo projectileCollideInfo;
+            float distance = std::sqrt(x_diff * x_diff + y_diff * y_diff);
 
-            projectileCollideInfo.x = intersectData.x;
-            projectileCollideInfo.y = intersectData.y;
-            projectileCollideInfo.projectileSettings = projectileSettings;
-            projectileCollideInfo.collideType = CollideType::PlayerBody;
-            projectileCollideInfo.intersected = true;
+            float new_damage = projectileSettings.playerDamage * (1000.0f / (distance + 1));
 
-            hit = true;
+            projectileCollideInfo.projectileSettings.playerDamage = new_damage;
 
             return projectileCollideInfo;
         }
     }
+
+    // for (DamageModelEdgeData edge : playerHitbox.body->getDamageHitbox())
+    // {
+    //     SS_IntersectData intersectData = segmentSegment(futureVelocity, edge.segment);
+    //     if (intersectData.intersected)
+    //     {
+    //         ProjectileCollideInfo projectileCollideInfo;
+
+    //         projectileCollideInfo.x = intersectData.x;
+    //         projectileCollideInfo.y = intersectData.y;
+    //         projectileCollideInfo.projectileSettings = projectileSettings;
+    //         projectileCollideInfo.collideType = CollideType::PlayerBody;
+    //         projectileCollideInfo.intersected = true;
+
+    //         hit = true;
+
+    //         float x_diff = position.x - startPosition.x;
+    //         float y_diff = position.y - startPosition.y;
+
+    //         float distance = std::sqrt(x_diff * x_diff + y_diff * y_diff);
+
+    //         float new_damage = projectileSettings.playerDamage * (10.0f / (distance + 1));
+
+    //         projectileCollideInfo.projectileSettings.playerDamage = new_damage;
+
+    //         return projectileCollideInfo;
+    //     }
+    // }
 
     return ProjectileCollideInfo();
 }

@@ -15,9 +15,9 @@ class Shotgun : public Weapon
 {
 public:
     Shotgun(const World *world,
-            GameInfo &gameInfo,
+            GameState &gameState,
             GameAssets &gameAssets) : Weapon(world,
-                                             gameInfo,
+                                             gameState,
                                              gameAssets)
     {
         scale = 3.0f;

@@ -2,7 +2,7 @@
 
 void drawText(
     sf::RenderWindow &renderWindow,
-    const GameInfo::WindowInfo &windowInfo,
+    const GameState::WindowState &windowState,
     const std::string &textString,
     const sf::Font &font,
     const sf::Vector2f &position,
@@ -12,7 +12,7 @@ void drawText(
 {
     sf::Text text;
 
-    std::pair<sf::Vector2f, sf::Vector2f> transformedSprite = sprite_worldToScreen(position, sf::Vector2f(characterSize * textString.size(), characterSize), camera, windowInfo);
+    std::pair<sf::Vector2f, sf::Vector2f> transformedSprite = sprite_worldToScreen(position, sf::Vector2f(characterSize * textString.size(), characterSize), camera, windowState);
 
     text.setString(textString);
     text.setFont(font);
