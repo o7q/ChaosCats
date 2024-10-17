@@ -1,5 +1,7 @@
 #include "player.hpp"
 
+#include <cmath>
+
 void Player::handleMovement()
 {
     float speed = 6.0f;
@@ -72,16 +74,30 @@ void Player::handleMovement()
     }
     //
 
-    // start player x velocity at 0
-    velocity.x = 0;
+    if (enableXAirVelocity)
+    {
+        velocity.x *= 0.95f / damping;
+
+        if (std::fabs(velocity.x) < 1.0f)
+        {
+            velocity.x = 0;
+            enableXAirVelocity = false;
+        }
+    }
+    else
+    {
+        velocity.x = 0;
+    }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && gameState.window.IS_FOCUSED)
     {
         velocity.x = -speed / damping;
+        enableXAirVelocity = false;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && gameState.window.IS_FOCUSED)
     {
         velocity.x = speed / damping;
+        enableXAirVelocity = false;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameState.window.IS_FOCUSED)
     {

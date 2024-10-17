@@ -5,7 +5,8 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "../math/number.hpp"
+#include "../math/random.hpp"
+
 #include "../math/types/vector.hpp"
 #include "../rendering/draw.hpp"
 
@@ -65,48 +66,6 @@ float Camera::getZoom() const
     return zoom;
 }
 
-void Camera::update(float dt)
-{
-    update_position(dt);
-    update_zoom(dt);
-}
-
-void Camera::update_position(float dt)
-{
-    if (!position_has_goal)
-    {
-        return;
-    }
-
-    x = lerp(x, x_goal, position_goal_speed * dt);
-    y = lerp(y, y_goal, position_goal_speed * dt);
-
-    if (std::fabs(x - x_goal) < 1.0f)
-    {
-        x = x_goal;
-    }
-
-    if (std::fabs(y - y_goal) < 1.0f)
-    {
-        y = y_goal;
-    }
-}
-
-void Camera::update_zoom(float dt)
-{
-    if (!zoom_has_goal)
-    {
-        return;
-    }
-
-    zoom = lerp(zoom, zoom_goal, zoom_goal_speed * dt);
-
-    if (std::fabs(zoom - zoom_goal) < 0.01f)
-    {
-        zoom = zoom_goal;
-    }
-}
-
 void Camera::focus_positions(std::vector<Vector<float>> &positions, GameState::WindowState &windowState)
 {
     constexpr float FLOAT_MIN = std::numeric_limits<float>::min();
@@ -138,4 +97,35 @@ void Camera::focus_positions(std::vector<Vector<float>> &positions, GameState::W
 
     position_setGoal(x_mid, y_mid, 0.15f);
     zoom_setGoal(scale / windowState.RESIZE_SCALE, 0.15f);
+}
+
+void Camera::jerk(float amount)
+{
+    float jerk_x = x + Random::genFloat(-amount / 2.0f, amount / 2.0f);
+    float jerk_y = y + Random::genFloat(-amount / 2.0f, amount / 2.0f);
+
+    position_set(jerk_x, jerk_y);
+}
+
+void Camera::jerk_directional(float direction_x, float direction_y)
+{
+    float jerk_x = x + direction_x;
+    float jerk_y = y + direction_y;
+
+    position_set(jerk_x, jerk_y);
+}
+
+void Camera::shake(float amount, float length)
+{
+    this->shake_amount = amount;
+    this->shake_length = length;
+
+    shake_deplete_amount = amount / length;
+
+    shake_start_x = x;
+    shake_start_y = y;
+
+    shake_counter = 0.0f;
+
+    is_shaking = true;
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+
 #include "../math/types/vector.hpp"
 #include "../game_state/game_state.hpp"
 
@@ -18,9 +19,14 @@ public:
     void zoom_setGoal(float zoom_goal, float goal_speed = 0.05f);
     float getZoom() const;
 
-    void update(float dt);
-
     void focus_positions(std::vector<Vector<float>> &positions, GameState::WindowState &windowState);
+
+    void jerk(float amount);
+    void jerk_directional(float direction_x, float direction_y);
+    void shake(float amount, float length);
+
+    void update(float dt);
+    void update_shake(float dt);
 
 private:
     void update_position(float dt);
@@ -37,4 +43,12 @@ private:
     float zoom_goal = 1.0f;
     float zoom_goal_speed = 0.05f;
     bool zoom_has_goal = false;
+
+    float shake_amount = 0.0f;
+    float shake_deplete_amount = 0.0f;
+    float shake_length = 0.0f;
+    float shake_counter = 0.0f;
+    float shake_start_x = 0.0f;
+    float shake_start_y = 0.0f;
+    bool is_shaking = false;
 };

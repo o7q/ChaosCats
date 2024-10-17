@@ -42,9 +42,15 @@ public:
     // this function only runs on the server
     void serverUpdate();
 
-    void shoot()
+    void shoot(Camera *camera = nullptr)
     {
-        weapon->shoot(position.x, position.y, aimPosition.x, aimPosition.y);
+        Vector<float> kickbackVelocity = weapon->shoot(position.x, position.y, aimPosition.x, aimPosition.y);
+        velocity = kickbackVelocity;
+        enableXAirVelocity = true;
+        if (camera != nullptr)
+        {
+            camera->shake(20.0f, 10.0f);
+        }
     }
 
     void setPosition(float x, float y);
@@ -100,7 +106,7 @@ public:
             int x = (collideInfo.x - body_hitbox.getPosition().x + body_hitbox.half_size.x) / scale;
             int y = (collideInfo.y - body_hitbox.getPosition().y + body_hitbox.half_size.y) / scale;
             damageModel.body->damage(x, y, collideInfo.projectileSettings.damageRadius);
-            
+
             health -= collideInfo.projectileSettings.playerDamage;
         }
         break;
@@ -165,6 +171,8 @@ protected:
 
     int scale = 3;
     bool jumped = false;
+
+    bool enableXAirVelocity = false;
 
     float health = 100.0f;
 };

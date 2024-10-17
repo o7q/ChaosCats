@@ -113,7 +113,6 @@ private:
     int s2c_buffer_count = 0;
 
     float update_counter = 0.0f;
-    float update_start_dt = 0.0f;
 
     void update_particles();
     void p_sand(Particle, int, int, BoundRules);

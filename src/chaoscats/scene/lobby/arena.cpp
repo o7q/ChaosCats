@@ -134,7 +134,7 @@ CurrentScene Scene_LobbyArena::run()
 
             if (gameState.input.MOUSE_LMB_CLICKED && gameState.window.IS_FOCUSED)
             {
-                players[localId]->shoot();
+                players[localId]->shoot(&camera);
                 client_player_action_handleShoot();
             }
         }

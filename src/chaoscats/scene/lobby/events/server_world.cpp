@@ -7,6 +7,7 @@ void Scene_LobbyArena::server_world_handleSyncWorldStart(net::Message<GameMessag
     int pixelSize;
     int operations;
     message >> operations >> pixelSize >> worldSize;
+    
     if (world != nullptr)
     {
         delete world;
