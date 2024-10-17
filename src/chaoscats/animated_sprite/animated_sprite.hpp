@@ -10,7 +10,7 @@ class AnimatedSprite
 public:
     AnimatedSprite(sf::Texture &frameSheet, unsigned int framesX, unsigned int framesY, unsigned int frameCount);
 
-    void play(int framerate, int gameFramerate);
+    void play(int framerate, float dt);
     void render(
         sf::RenderWindow &renderWindow,
         const GameState::WindowState &windowState,

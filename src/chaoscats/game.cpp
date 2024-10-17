@@ -55,7 +55,9 @@ GameWindow::GameWindow(const std::string &name, int width, int height, const std
         update();
 
         // display on-screen framerate counter
-        fpsCountString = "FPS: " + std::to_string(gameState.time.FRAMERATE) + "   DT: " + std::to_string(gameState.time.DELTA_TIME);
+        fpsCountString = "FPS: " + std::to_string(gameState.time.FRAMERATE) +
+                         " /   DT: " + std::to_string(gameState.time.DELTA_TIME) +
+                         "   BDT: " + std::to_string(gameState.time.BASE_DELTA_TIME);
         drawText(renderWindow, gameState.window, fpsCountString, gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(0, height - 15), 15, nullptr, sf::Color(0, 255, 0, 255));
 
         renderWindow.display();

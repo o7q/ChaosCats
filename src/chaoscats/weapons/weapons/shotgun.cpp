@@ -19,11 +19,11 @@ Vector<float> Shotgun::shoot(float playerX, float playerY, float aimX, float aim
     float dx = aimX - x_new;
     float dy = aimY - y_new;
 
-    float baseAngle = std::atan2(dy, dx);
+    float baseAngle = radiansFromPoints(x_new, y_new, aimX, aimY);
 
     ProjectileSettings projectileSettings;
-    projectileSettings.damageRadius = 3;
-    projectileSettings.playerDamage = 3;
+    projectileSettings.damageRadius = 3.0f;
+    projectileSettings.playerDamage = 5.0f;
     projectileSettings.speed = 110.0f;
 
     for (int i = 0; i < shellCount; ++i)

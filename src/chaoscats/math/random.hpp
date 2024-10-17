@@ -50,7 +50,7 @@ namespace Random
         uint32_t next_in_range(uint32_t min, uint32_t max)
         {
             uint32_t value = next();
-            return min + (value & (max - min + 1));
+            return min + (value % (max - min + 1));
         }
     };
 };

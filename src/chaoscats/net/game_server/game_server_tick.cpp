@@ -28,7 +28,7 @@ void GameServer::tick()
 {
     {
         std::lock_guard worldLock(worldMutex);
-        world->update(serverGameState.time.DELTA_TIME);
+        world->update(serverGameState.time.DELTA_TIME, serverGameState.time.BASE_DELTA_TIME);
     }
 
     updateProjectiles();

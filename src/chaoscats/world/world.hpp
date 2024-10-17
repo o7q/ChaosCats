@@ -51,9 +51,9 @@ public:
     void createWorldFromMap(Map &map);
     void initWorldTexture();
 
-    void update(float dt);
+    void update(float dt, float base_dt);
 
-    void render(sf::RenderWindow &renderWindow, GameState::WindowState& windowState, Camera *camera = nullptr);
+    void render(sf::RenderWindow &renderWindow, GameState::WindowState &windowState, Camera *camera = nullptr);
 
     void setParticle(int x, int y, Particle particle);
     void removeParticle(int x, int y);
@@ -111,6 +111,9 @@ private:
     bool s2c_initialized = false;
     int s2c_buffer_progress = 0;
     int s2c_buffer_count = 0;
+
+    float update_counter = 0.0f;
+    float update_start_dt = 0.0f;
 
     void update_particles();
     void p_sand(Particle, int, int, BoundRules);

@@ -11,7 +11,8 @@ public:
     struct TimeState
     {
         int FRAMERATE = 0;
-        float DELTA_TIME = 0;
+        float DELTA_TIME = 0.0f;
+        float BASE_DELTA_TIME = 0.0f;
 
         void refresh(std::chrono::high_resolution_clock::time_point frame_start, std::chrono::high_resolution_clock::time_point frame_end);
 

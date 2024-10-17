@@ -30,6 +30,7 @@ CurrentScene Scene_LobbyArena::run()
         }
         if (!world->is_s2c_initialized())
         {
+            world->render(renderWindow, gameState.window, &camera);
             return CurrentScene::LobbyArena;
         }
 
@@ -90,10 +91,10 @@ CurrentScene Scene_LobbyArena::run()
             camera.zoom_setGoal(1.5f, 0.05f);
         }
 
-        world->update(gameState.time.DELTA_TIME);
+        world->update(gameState.time.DELTA_TIME, gameState.time.BASE_DELTA_TIME);
         world->render(renderWindow, gameState.window, &camera);
 
-        animatedSprite->play(24, gameState.time.FRAMERATE);
+        animatedSprite->play(24, gameState.time.DELTA_TIME);
         animatedSprite->render(renderWindow, gameState.window, sf::Vector2f(200, 200), sf::Vector2f(1000, -1), &camera);
 
         drawText(renderWindow, gameState.window, "hello", gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(200, 200), 20, &camera, sf::Color(255, 255, 255, 255));
@@ -177,9 +178,9 @@ CurrentScene Scene_LobbyArena::run()
         camera.update(gameState.time.DELTA_TIME);
         camera.focus_positions(positions, gameState.window);
 
-        std::string positionInfo = "PX: " +
+        std::string positionInfo = "CX: " +
                                    std::to_string(camera.getX()) +
-                                   "   PY: " + std::to_string(camera.getY()) +
+                                   "   CY: " + std::to_string(camera.getY()) +
                                    "   /   Z: " + std::to_string(camera.getZoom());
         drawText(renderWindow, gameState.window, positionInfo, gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(0, 720 - 30), 15, nullptr, sf::Color(255, 255, 0, 255));
 

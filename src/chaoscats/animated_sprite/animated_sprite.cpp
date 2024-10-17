@@ -21,9 +21,9 @@ AnimatedSprite::AnimatedSprite(sf::Texture &frameSheet, unsigned int framesX, un
     animatedSprite.setTextureRect(sf::IntRect(0, 0, tileSize.x, tileSize.y));
 }
 
-void AnimatedSprite::play(int framerate, int gameFramerate)
+void AnimatedSprite::play(int framerate, float dt)
 {
-    if (frameCounter > static_cast<unsigned int>(gameFramerate / framerate))
+    if (frameCounter > (60.0f / dt) / static_cast<unsigned int>(framerate))
     {
         int x = currentFrame % framesX;
         int y = currentFrame / framesX;

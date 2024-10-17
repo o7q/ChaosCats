@@ -75,5 +75,7 @@ protected:
     float aimX = 0;
     float aimY = 0;
 
+    float aimAngle;
+
     int bulletSprayIndex = 0;
 };
