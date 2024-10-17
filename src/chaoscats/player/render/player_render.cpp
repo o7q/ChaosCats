@@ -1,4 +1,4 @@
-#include "player.hpp"
+#include "../player.hpp"
 
 void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::string &name)
 {
@@ -6,6 +6,8 @@ void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::s
     {
         return;
     }
+
+    sf::Vector2i flipVector = facingRight ? sf::Vector2i(1, 1) : sf::Vector2i(-1, 1);
 
     // draw head
     drawTexture(
@@ -16,7 +18,7 @@ void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::s
                      head_hitbox.getPosition().y - scale / 2),
         sf::Vector2f(head_hitbox.size.x,
                      head_hitbox.size.y),
-        camera);
+        camera, 0.0f, flipVector);
     // draw body
     drawTexture(
         renderWindow,
@@ -26,12 +28,12 @@ void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::s
                      body_hitbox.getPosition().y - scale / 2),
         sf::Vector2f(body_hitbox.size.x,
                      body_hitbox.size.y),
-        camera);
+        camera, 0.0f, flipVector);
 
     // draw legs
     drawTexture(renderWindow,
                 gameState.window,
-                gameAssets.textures.PLAYER_LEG_TEXTURE,
+                gameAssets.textures.PLAYER_LEG_DEFAULT,
                 sf::Vector2f(leftLeg_hitbox.getPosition().x - scale,
                              leftLeg_hitbox.getPosition().y),
                 sf::Vector2f(leftLeg_hitbox.size.x,
@@ -39,7 +41,7 @@ void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::s
                 camera);
     drawTexture(renderWindow,
                 gameState.window,
-                gameAssets.textures.PLAYER_LEG_TEXTURE,
+                gameAssets.textures.PLAYER_LEG_DEFAULT,
                 sf::Vector2f(rightLeg_hitbox.getPosition().x + scale,
                              rightLeg_hitbox.getPosition().y),
                 sf::Vector2f(-rightLeg_hitbox.size.x,
@@ -52,7 +54,7 @@ void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::s
 
     drawTexture(renderWindow,
                 gameState.window,
-                gameAssets.textures.PLAYER_HAND_TEXTURE,
+                gameAssets.textures.PLAYER_HAND_DEFAULT,
                 sf::Vector2f(handPlacements.second.x,
                              handPlacements.second.y),
                 sf::Vector2f(15, -1),
@@ -65,7 +67,7 @@ void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::s
                    aimPosition.y);
     drawTexture(renderWindow,
                 gameState.window,
-                gameAssets.textures.PLAYER_HAND_TEXTURE,
+                gameAssets.textures.PLAYER_HAND_DEFAULT,
                 sf::Vector2f(handPlacements.first.x,
                              handPlacements.first.y),
                 sf::Vector2f(15, -1),

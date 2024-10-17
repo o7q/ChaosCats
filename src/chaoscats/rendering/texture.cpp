@@ -31,7 +31,7 @@ void drawSprite(
 
     std::pair<sf::Vector2f, sf::Vector2f> transformedSprite = sprite_worldToScreen(position, newSize, camera, windowState);
 
-    sprite.setOrigin(spriteSize.x / 2, spriteSize.y / 2);
+    sprite.setOrigin(spriteSize.x / 2.0f, spriteSize.y / 2.0f);
     sprite.setPosition(transformedSprite.first.x, transformedSprite.first.y);
     sprite.setScale(transformedSprite.second.x / spriteSize.x * flipVector.x, transformedSprite.second.y / spriteSize.y * flipVector.y);
     sprite.setRotation(rotation);

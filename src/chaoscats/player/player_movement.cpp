@@ -91,13 +91,17 @@ void Player::handleMovement()
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && gameState.window.IS_FOCUSED)
     {
-        velocity.x = -speed / damping;
-        enableXAirVelocity = false;
+        if (!enableXAirVelocity)
+        {
+            velocity.x = -speed / damping;
+        }
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && gameState.window.IS_FOCUSED)
     {
-        velocity.x = speed / damping;
-        enableXAirVelocity = false;
+        if (!enableXAirVelocity)
+        {
+            velocity.x = speed / damping;
+        }
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameState.window.IS_FOCUSED)
     {

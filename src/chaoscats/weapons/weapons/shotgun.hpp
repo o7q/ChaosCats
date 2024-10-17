@@ -21,7 +21,7 @@ public:
                                              gameAssets)
     {
         scale = 3.0f;
-        initHandPlacementPoint(gameAssets.textures.WEAPON_SHOTGUN_TEXTURE, gameAssets.textures.WEAPON_SHOTGUN_POINTS_TEXTURE);
+        initHandPlacementPoint(gameAssets.textures.WEAPON_SHOTGUN, gameAssets.textures.WEAPON_SHOTGUN_POINTS);
 
         weaponPositionOffset.x = 10;
         weaponPositionOffset.y = 5;

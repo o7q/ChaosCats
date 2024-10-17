@@ -94,7 +94,7 @@ void Shotgun::render(sf::RenderWindow &renderWindow, Camera *camera, float x, fl
 
     drawTexture(renderWindow,
                 gameState.window,
-                gameAssets.textures.WEAPON_SHOTGUN_TEXTURE,
+                gameAssets.textures.WEAPON_SHOTGUN,
                 sf::Vector2f(x + weaponPositionOffset.x,
                              y + weaponPositionOffset.y),
                 sf::Vector2f(weaponSize.x, weaponSize.y),

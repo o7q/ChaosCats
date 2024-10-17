@@ -8,6 +8,9 @@ void Player::clientUpdate(Camera camera)
         return;
     }
 
+    // determine if the player is facing right based off of their aim position
+    facingRight = aimPosition.x > position.x;
+
     handleMovement();
     handleCollision();
 
