@@ -3,6 +3,7 @@
 // this function only runs for the local player (client-side)
 void Player::clientUpdate(Camera camera)
 {
+    // if we are dead, do nothing
     if (isDead())
     {
         return;
@@ -21,8 +22,8 @@ void Player::clientUpdate(Camera camera)
         setAim(worldMouse.x, worldMouse.y);
     }
 
-    damageModel.head->update(position.x, position.y - head_hitbox.half_size.y - leftLeg_hitbox.half_size.y, scale);
-    damageModel.body->update(position.x, position.y + leftLeg_hitbox.half_size.y, scale);
+    damageModel.head->update(head_boundingBox.getPosition().x, head_boundingBox.getPosition().y, scale);
+    damageModel.body->update(body_boundingBox.getPosition().x, body_boundingBox.getPosition().y, scale);
 
     weapon->update(position.x, position.y, aimPosition.x, aimPosition.y);
 }
@@ -35,8 +36,9 @@ void Player::replicatedClientUpdate()
         return;
     }
 
-    damageModel.head->update(position.x, position.y - head_hitbox.half_size.y - leftLeg_hitbox.half_size.y, scale);
-    damageModel.body->update(position.x, position.y + leftLeg_hitbox.half_size.y, scale);
+    damageModel.head->update(head_boundingBox.getPosition().x, head_boundingBox.getPosition().y, scale);
+    damageModel.body->update(body_boundingBox.getPosition().x, body_boundingBox.getPosition().y, scale);
+
     weapon->update(position.x, position.y, aimPosition.x, aimPosition.y);
 }
 
@@ -48,7 +50,7 @@ void Player::serverUpdate()
         return;
     }
 
-    damageModel.head->update(position.x, position.y - head_hitbox.half_size.y - leftLeg_hitbox.half_size.y, scale);
-    damageModel.body->update(position.x, position.y + leftLeg_hitbox.half_size.y, scale);
+    damageModel.head->update(position.x, position.y - head_boundingBox.half_size.y - leftLeg_boundingBox.half_size.y, scale);
+    damageModel.body->update(position.x, position.y + leftLeg_boundingBox.half_size.y, scale);
     weapon->update(position.x, position.y, aimPosition.x, aimPosition.y);
 }

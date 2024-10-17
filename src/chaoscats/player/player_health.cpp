@@ -31,8 +31,8 @@ void Player::damage(ProjectileCollideInfo collideInfo)
     {
     case CollideType::PlayerHead:
     {
-        int x = (collideInfo.x - head_hitbox.getPosition().x + head_hitbox.half_size.x) / scale;
-        int y = (collideInfo.y - head_hitbox.getPosition().y + head_hitbox.half_size.y) / scale;
+        int x = (collideInfo.x - head_boundingBox.getPosition().x + head_boundingBox.half_size.x) / scale;
+        int y = (collideInfo.y - head_boundingBox.getPosition().y + head_boundingBox.half_size.y) / scale;
         damageModel.head->damage(x, y, collideInfo.projectileSettings.damageRadius);
 
         health -= collideInfo.projectileSettings.playerDamage;
@@ -40,8 +40,8 @@ void Player::damage(ProjectileCollideInfo collideInfo)
     break;
     case CollideType::PlayerBody:
     {
-        int x = (collideInfo.x - body_hitbox.getPosition().x + body_hitbox.half_size.x) / scale;
-        int y = (collideInfo.y - body_hitbox.getPosition().y + body_hitbox.half_size.y) / scale;
+        int x = (collideInfo.x - body_boundingBox.getPosition().x + body_boundingBox.half_size.x) / scale;
+        int y = (collideInfo.y - body_boundingBox.getPosition().y + body_boundingBox.half_size.y) / scale;
         damageModel.body->damage(x, y, collideInfo.projectileSettings.damageRadius);
 
         health -= collideInfo.projectileSettings.playerDamage;

@@ -2,7 +2,7 @@
 
 // collision mesh generator/updater
 // implements: https://en.wikipedia.org/wiki/Marching_squares
-void DamageModel::updateHitbox(int playerX, int playerY, int playerScale)
+void DamageModel::updateHitbox(int bodyPartX, int bodyPartY, int playerScale)
 {
     damageHitbox.clear();
 
@@ -20,7 +20,7 @@ void DamageModel::updateHitbox(int playerX, int playerY, int playerScale)
 
             int lookupIndex = getLookupIndex(a, b, c, d);
 
-            appendLookupSegment(lookupIndex, x, y, playerX, playerY, playerScale);
+            appendLookupSegment(lookupIndex, x, y, bodyPartX, bodyPartY, playerScale);
         }
     }
 }
@@ -33,21 +33,21 @@ int DamageModel::getLookupIndex(int a, int b, int c, int d)
     return a * 1 + b * 2 + c * 4 + d * 8;
 }
 
-void DamageModel::appendLookupSegment(int index, int x, int y, int playerX, int playerY, int playerScale)
+void DamageModel::appendLookupSegment(int index, int x, int y, int bodyPartX, int bodyPartY, int playerScale)
 {
     float half_scale = playerScale / 2.0f;
     Vector<float> l(
-        (x + 0  ) * playerScale + half_scale + playerX - (sizeX * playerScale) / 2,
-        (y + 0.5) * playerScale + half_scale + playerY - (sizeY * playerScale) / 2);
+        (x + 0  ) * playerScale + half_scale + bodyPartX - (sizeX * playerScale) / 2,
+        (y + 0.5) * playerScale + half_scale + bodyPartY - (sizeY * playerScale) / 2);
     Vector<float> b(
-        (x + 0.5) * playerScale + half_scale + playerX - (sizeX * playerScale) / 2,
-        (y + 1  ) * playerScale + half_scale + playerY - (sizeY * playerScale) / 2);
+        (x + 0.5) * playerScale + half_scale + bodyPartX - (sizeX * playerScale) / 2,
+        (y + 1  ) * playerScale + half_scale + bodyPartY - (sizeY * playerScale) / 2);
     Vector<float> r(
-        (x + 1  ) * playerScale + half_scale + playerX - (sizeX * playerScale) / 2,
-        (y + 0.5) * playerScale + half_scale + playerY - (sizeY * playerScale) / 2);
+        (x + 1  ) * playerScale + half_scale + bodyPartX - (sizeX * playerScale) / 2,
+        (y + 0.5) * playerScale + half_scale + bodyPartY - (sizeY * playerScale) / 2);
     Vector<float> t(
-        (x + 0.5) * playerScale + half_scale + playerX - (sizeX * playerScale) / 2,
-        (y + 0  ) * playerScale + half_scale + playerY - (sizeY * playerScale) / 2);
+        (x + 0.5) * playerScale + half_scale + bodyPartX - (sizeX * playerScale) / 2,
+        (y + 0  ) * playerScale + half_scale + bodyPartY - (sizeY * playerScale) / 2);
 
     switch (index)
     {

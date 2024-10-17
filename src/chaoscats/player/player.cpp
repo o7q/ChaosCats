@@ -6,7 +6,7 @@ Player::Player(const World *world,
                                          gameState(gameState),
                                          gameAssets(gameAssets)
 {
-    initPlayer();
+    init();
 }
 
 Player::Player(PlayerData playerData,
@@ -16,7 +16,7 @@ Player::Player(PlayerData playerData,
                                          gameState(gameState),
                                          gameAssets(gameAssets)
 {
-    initPlayer();
+    init();
 
     setPosition(playerData.positionX, playerData.positionY);
     health = playerData.health;

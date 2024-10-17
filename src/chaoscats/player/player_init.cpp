@@ -1,25 +1,25 @@
 #include "player.hpp"
 
-void Player::initPlayer()
+void Player::init()
 {
     sf::Vector2u headTextureSize = gameAssets.textures.PLAYER_HEAD_DEFAULT.getSize();
     sf::Vector2f sf_head_size = imageResize(headTextureSize, sf::Vector2f(headTextureSize.x * scale, -1));
     Vector<float> head_size = Vector<float>(sf_head_size.x, sf_head_size.y);
-    head_hitbox = Rect<float>(0, 0, head_size.x, head_size.y);
+    head_boundingBox = Rect<float>(0, 0, head_size.x, head_size.y);
 
     sf::Vector2u bodyTextureSize = gameAssets.textures.PLAYER_BODY_DEFAULT.getSize();
     sf::Vector2f sf_body_size = imageResize(bodyTextureSize, sf::Vector2f(bodyTextureSize.x * scale, -1));
     Vector<float> body_size = Vector<float>(sf_body_size.x, sf_body_size.y);
-    body_hitbox = Rect<float>(0, 0, body_size.x, body_size.y);
+    body_boundingBox = Rect<float>(0, 0, body_size.x, body_size.y);
 
     sf::Vector2u legTextureSize = gameAssets.textures.PLAYER_LEG_DEFAULT.getSize();
     sf::Vector2f sf_leg_size = imageResize(legTextureSize, sf::Vector2f(legTextureSize.x * scale, -1));
     Vector<float> leftLeg_size = Vector<float>(sf_leg_size.x, sf_leg_size.y);
-    leftLeg_hitbox = Rect<float>(0, 0, leftLeg_size.x, leftLeg_size.y);
+    leftLeg_boundingBox = Rect<float>(0, 0, leftLeg_size.x, leftLeg_size.y);
     Vector<float> rightLeg_size = Vector<float>(sf_leg_size.x, sf_leg_size.y);
-    rightLeg_hitbox = Rect<float>(0, 0, rightLeg_size.x, rightLeg_size.y);
+    rightLeg_boundingBox = Rect<float>(0, 0, rightLeg_size.x, rightLeg_size.y);
 
-    player_collisionBox = Rect<float>(0, 0, body_hitbox.size.x, body_hitbox.size.y + head_hitbox.size.y);
+    player_boundingBox = Rect<float>(0, 0, body_boundingBox.size.x, body_boundingBox.size.y + head_boundingBox.size.y);
 
     std::vector<sf::Texture *> headGoreLayers;
     headGoreLayers.push_back(&gameAssets.textures.PLAYER_HEAD_DEFAULT);

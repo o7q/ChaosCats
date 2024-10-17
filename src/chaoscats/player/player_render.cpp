@@ -1,4 +1,4 @@
-#include "../player.hpp"
+#include "player.hpp"
 
 void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::string &name)
 {
@@ -14,38 +14,38 @@ void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::s
         renderWindow,
         gameState.window,
         damageModel.head->getTexture(),
-        sf::Vector2f(head_hitbox.getPosition().x - scale / 2,
-                     head_hitbox.getPosition().y - scale / 2),
-        sf::Vector2f(head_hitbox.size.x,
-                     head_hitbox.size.y),
+        sf::Vector2f(head_boundingBox.getPosition().x - scale / 2,
+                     head_boundingBox.getPosition().y - scale / 2),
+        sf::Vector2f(head_boundingBox.size.x,
+                     head_boundingBox.size.y),
         camera, 0.0f, flipVector);
     // draw body
     drawTexture(
         renderWindow,
         gameState.window,
         damageModel.body->getTexture(),
-        sf::Vector2f(body_hitbox.getPosition().x - scale / 2,
-                     body_hitbox.getPosition().y - scale / 2),
-        sf::Vector2f(body_hitbox.size.x,
-                     body_hitbox.size.y),
+        sf::Vector2f(body_boundingBox.getPosition().x - scale / 2,
+                     body_boundingBox.getPosition().y - scale / 2),
+        sf::Vector2f(body_boundingBox.size.x,
+                     body_boundingBox.size.y),
         camera, 0.0f, flipVector);
 
     // draw legs
     drawTexture(renderWindow,
                 gameState.window,
                 gameAssets.textures.PLAYER_LEG_DEFAULT,
-                sf::Vector2f(leftLeg_hitbox.getPosition().x - scale,
-                             leftLeg_hitbox.getPosition().y),
-                sf::Vector2f(leftLeg_hitbox.size.x,
-                             leftLeg_hitbox.size.y),
+                sf::Vector2f(leftLeg_boundingBox.getPosition().x - scale,
+                             leftLeg_boundingBox.getPosition().y),
+                sf::Vector2f(leftLeg_boundingBox.size.x,
+                             leftLeg_boundingBox.size.y),
                 camera);
     drawTexture(renderWindow,
                 gameState.window,
                 gameAssets.textures.PLAYER_LEG_DEFAULT,
-                sf::Vector2f(rightLeg_hitbox.getPosition().x + scale,
-                             rightLeg_hitbox.getPosition().y),
-                sf::Vector2f(-rightLeg_hitbox.size.x,
-                             rightLeg_hitbox.size.y),
+                sf::Vector2f(rightLeg_boundingBox.getPosition().x + scale,
+                             rightLeg_boundingBox.getPosition().y),
+                sf::Vector2f(-rightLeg_boundingBox.size.x,
+                             rightLeg_boundingBox.size.y),
                 camera);
     //
 
@@ -73,19 +73,19 @@ void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::s
                 sf::Vector2f(15, -1),
                 camera);
 
-    if (renderHitboxes)
+    if (renderDebug)
     {
         // bounding boxes
-        drawRect(renderWindow, gameState.window, body_hitbox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
+        drawRect(renderWindow, gameState.window, body_boundingBox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
 
-        drawRect(renderWindow, gameState.window, head_hitbox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
+        drawRect(renderWindow, gameState.window, head_boundingBox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
 
-        drawRect(renderWindow, gameState.window, leftLeg_hitbox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
-        drawRect(renderWindow, gameState.window, rightLeg_hitbox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
+        drawRect(renderWindow, gameState.window, leftLeg_boundingBox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
+        drawRect(renderWindow, gameState.window, rightLeg_boundingBox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
         //
 
         // collision box
-        drawRect(renderWindow, gameState.window, player_collisionBox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
+        drawRect(renderWindow, gameState.window, player_boundingBox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
         drawPoint(renderWindow, gameState.window, collisionSegment.p1, camera, sf::Color(255, 0, 0, 255));
         drawPoint(renderWindow, gameState.window, collisionSegment.p2, camera, sf::Color(255, 0, 0, 255));
         drawSegment(renderWindow, gameState.window, collisionSegment, camera, sf::Color(255, 0, 0, 255));
@@ -104,5 +104,5 @@ void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::s
         //
     }
 
-    drawText(renderWindow, gameState.window, name, gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(collisionSegment.p1.x - head_hitbox.half_size.x, collisionSegment.p1.y - 30), 10, camera, sf::Color(100, 255, 0, 255));
+    drawText(renderWindow, gameState.window, name, gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(collisionSegment.p1.x - head_boundingBox.half_size.x, collisionSegment.p1.y - 30), 10, camera, sf::Color(100, 255, 0, 255));
 }

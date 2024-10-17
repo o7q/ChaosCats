@@ -80,9 +80,9 @@ public:
         modelTexture.update(modelPixels);
     }
 
-    void update(int playerX, int playerY, int playerScale)
+    void update(int bodyPartX, int bodyPartY, int playerScale)
     {
-        updateHitbox(playerX, playerY, playerScale);
+        updateHitbox(bodyPartX, bodyPartY, playerScale);
     }
 
     std::vector<DamageModelEdgeData> &getDamageHitbox()
@@ -112,9 +112,9 @@ private:
     sf::Uint8 *modelPixels = nullptr;
     sf::Texture modelTexture;
 
-    void updateHitbox(int playerX, int playerY, int playerScale);
+    void updateHitbox(int bodyPartX, int bodyPartY, int playerScale);
     int getLookupIndex(int a, int b, int c, int d);
-    void appendLookupSegment(int index, int x, int y, int playerX, int playerY, int playerScale);
+    void appendLookupSegment(int index, int x, int y, int bodyPartX, int bodyPartY, int playerScale);
 
     void damageCircle(int locationX, int locationY, int radius)
     {

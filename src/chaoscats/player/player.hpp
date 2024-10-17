@@ -24,8 +24,9 @@ public:
     Player(PlayerData playerData, const World *world, GameState &gameState, GameAssets &gameAssets);
     virtual ~Player();
 
-    // this function only runs for the local player (client-side)
+    // these function only runs for the local player (client-side)
     void clientUpdate(Camera camera);
+    void render(sf::RenderWindow &renderWindow, Camera *camera, const std::string &name);
 
     // this function only runs for server replicated clients
     void replicatedClientUpdate();
@@ -42,10 +43,8 @@ public:
 
     Vector<float> getSize() const
     {
-        return player_collisionBox.size;
+        return player_boundingBox.size;
     }
-
-    void shoot(Camera *camera = nullptr);
 
     void setAim(float x, float y)
     {
@@ -58,8 +57,7 @@ public:
         return aimPosition;
     }
 
-    void render(sf::RenderWindow &renderWindow, Camera *camera, const std::string &name);
-
+    void shoot(Camera *camera = nullptr);
     Weapon *getActiveWeapon();
 
     PlayerDamageModel &getDamageModel();
@@ -70,44 +68,55 @@ public:
     void kill();
     bool isDead() const;
 
-protected:
-    void initPlayer();
+private:
+    void init();
+
     void handleMovement();
     void handleCollision();
 
+private:
     const World *world = nullptr;
     GameState &gameState;
     GameAssets &gameAssets;
 
-protected:
+private:
     Vector<float> position = Vector<float>(0, 0);
     Vector<float> velocity = Vector<float>(0, 0);
-
-protected:
-    Weapon *weapon = nullptr;
     Vector<float> aimPosition = Vector<float>(0, 0);
 
-protected:
-    Rect<float> body_hitbox;
-    Rect<float> head_hitbox;
-
-    PlayerDamageModel damageModel;
-
-    Rect<float> leftLeg_hitbox;
-    Rect<float> rightLeg_hitbox;
-
-    Rect<float> player_collisionBox;
-
-    Segment<float> collisionSegment;
-
-    bool renderHitboxes = true;
-
-    int scale = 3;
-    bool jumped = false;
-
+    // if true, a smooth x-velocity falloff will be applied to the player
+    // this is used for weapon kickback velocity
+    // we don't always want the x-velocity to smoothly falloff, thus this boolean
     bool enableXAirVelocity = false;
-
+    bool jumped = false;
+    // used to change direction of player texture
     bool facingRight = true;
 
+private:
+    Weapon *weapon = nullptr;
+
+private:
+    // bounding boxes
+    Rect<float> player_boundingBox;
+
+    Rect<float> body_boundingBox;
+    Rect<float> head_boundingBox;
+
+    Rect<float> leftLeg_boundingBox;
+    Rect<float> rightLeg_boundingBox;
+
+    // dynamic player hitbox
+    PlayerDamageModel damageModel;
+
+    // segment used for world collision
+    Segment<float> collisionSegment;
+
+    // player scale
+    int scale = 3;
+
+private:
     float health = 100.0f;
+
+private:
+    bool renderDebug = true;
 };
