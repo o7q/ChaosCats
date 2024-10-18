@@ -10,7 +10,7 @@ void GameServer::player_action_handleMove(std::shared_ptr<net::Connection<GameMe
 
     {
         std::lock_guard playersLock(playersMutex);
-        serverPlayers[id]->setPosition(position.x, position.y);
+        serverPlayers[id]->setPosition(position);
         serverPlayers[id]->setAim(aimPosition.x, aimPosition.y);
     }
 

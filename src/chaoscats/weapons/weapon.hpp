@@ -21,8 +21,8 @@ class Weapon
 {
 public:
     Weapon(const World *world,
-           GameState &gameState,
-           GameAssets &gameAssets) : world(world),
+           const GameState &gameState,
+           const GameAssets &gameAssets) : world(world),
                                      gameState(gameState),
                                      gameAssets(gameAssets)
     {
@@ -44,7 +44,7 @@ public:
     {
     }
 
-    virtual void initHandPlacementPoint(sf::Texture &weaponTexture, sf::Texture &weaponPointsTexture);
+    virtual void initHandPlacementPoint(const sf::Texture &weaponTexture, const sf::Texture &weaponPointsTexture);
     virtual std::pair<Vector<float>, Vector<float>> getHandPlacementPoints(float x, float y);
 
     virtual std::vector<Projectile> &getActiveProjectiles()
@@ -54,8 +54,8 @@ public:
 
 protected:
     const World *world;
-    GameState &gameState;
-    GameAssets &gameAssets;
+    const GameState &gameState;
+    const GameAssets &gameAssets;
 
     std::vector<Projectile> projectiles;
 

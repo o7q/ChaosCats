@@ -124,26 +124,23 @@ void Player::handleMovement()
     }
 }
 
-void Player::setPosition(float x, float y)
+void Player::updateChildPositions()
 {
-    position.x = x;
-    position.y = y;
-
     body_boundingBox.setPosition(position.x, position.y + body_boundingBox.half_size.y - leftLeg_boundingBox.half_size.y);
     head_boundingBox.setPosition(position.x, position.y - head_boundingBox.half_size.y - leftLeg_boundingBox.half_size.y);
 
     leftLeg_boundingBox.setPosition(position.x - leftLeg_boundingBox.half_size.x, position.y + body_boundingBox.half_size.y + leftLeg_boundingBox.half_size.y);
     rightLeg_boundingBox.setPosition(position.x + leftLeg_boundingBox.half_size.x, position.y + body_boundingBox.half_size.y + leftLeg_boundingBox.half_size.y);
 
-    player_boundingBox.setPosition(position.x, position.y);
+    boundingBox.setPosition(position.x, position.y);
 
     Vector<float> bottomCollisionPoint(
-        player_boundingBox.getPosition().x,
-        player_boundingBox.getPosition().y + player_boundingBox.half_size.y);
+        boundingBox.getPosition().x,
+        boundingBox.getPosition().y + boundingBox.half_size.y);
 
     Vector<float> topCollisionPoint(
-        player_boundingBox.getPosition().x,
-        player_boundingBox.getPosition().y - player_boundingBox.half_size.y);
+        boundingBox.getPosition().x,
+        boundingBox.getPosition().y - boundingBox.half_size.y);
 
     collisionSegment.p1 = topCollisionPoint;
     collisionSegment.p2 = bottomCollisionPoint;

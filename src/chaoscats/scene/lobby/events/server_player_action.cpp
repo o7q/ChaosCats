@@ -10,7 +10,7 @@ void Scene_LobbyArena::server_player_action_handleMove(net::Message<GameMessages
 
     if (mapContains(players, id))
     {
-        players[id]->setPosition(position.x, position.y);
+        players[id]->setPosition(position);
         players[id]->setAim(aimPosition.x, aimPosition.y);
     }
 }

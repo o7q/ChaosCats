@@ -15,10 +15,10 @@ class Shotgun : public Weapon
 {
 public:
     Shotgun(const World *world,
-            GameState &gameState,
-            GameAssets &gameAssets) : Weapon(world,
-                                             gameState,
-                                             gameAssets)
+            const GameState &gameState,
+            const GameAssets &gameAssets) : Weapon(world,
+                                                   gameState,
+                                                   gameAssets)
     {
         scale = 3.0f;
         initHandPlacementPoint(gameAssets.textures.WEAPON_SHOTGUN, gameAssets.textures.WEAPON_SHOTGUN_POINTS);

@@ -70,7 +70,7 @@ public:
     }
 
     virtual void update(float dt);
-    virtual void render(sf::RenderWindow &renderWindow, GameState &gameState, Camera *camera);
+    virtual void render(sf::RenderWindow &renderWindow, const GameState &gameState, const Camera *camera);
 
     virtual bool hasHit() const;
     virtual bool outOfBounds() const;

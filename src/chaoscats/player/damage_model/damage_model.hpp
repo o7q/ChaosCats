@@ -20,9 +20,12 @@ struct DamageModelEdgeData
 class DamageModel
 {
 public:
-    DamageModel(int sizeX, int sizeY, std::vector<sf::Texture *> &goreLayerTextures) : damageIndexes(sizeX, sizeY), binaryHitbox(sizeX, sizeY)
+    DamageModel(int sizeX,
+                int sizeY,
+                const std::vector<const sf::Texture *> &goreLayerTextures) : damageIndexes(sizeX, sizeY),
+                                                                             binaryHitbox(sizeX, sizeY)
     {
-        for (sf::Texture *texture : goreLayerTextures)
+        for (const sf::Texture *texture : goreLayerTextures)
         {
             sf::Image temp = texture->copyToImage();
             goreLayers.push_back(temp);

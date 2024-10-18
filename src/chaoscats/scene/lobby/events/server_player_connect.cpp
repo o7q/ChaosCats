@@ -24,7 +24,7 @@ void Scene_LobbyArena::server_player_connect_handleAdd(net::Message<GameMessages
     PlayerData playerData;
     message >> id >> playerData;
 
-    Player *player = new Player(playerData, world, gameState, gameAssets);
+    Player *player = new Player(playerData, gameState, world, gameAssets);
 
     players.insert_or_assign(id, player);
 

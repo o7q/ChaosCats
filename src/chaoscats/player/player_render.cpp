@@ -85,7 +85,7 @@ void Player::render(sf::RenderWindow &renderWindow, Camera *camera, const std::s
         //
 
         // collision box
-        drawRect(renderWindow, gameState.window, player_boundingBox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
+        drawRect(renderWindow, gameState.window, boundingBox, camera, sf::Color(0, 255, 0, 255), DrawMode::Outline);
         drawPoint(renderWindow, gameState.window, collisionSegment.p1, camera, sf::Color(255, 0, 0, 255));
         drawPoint(renderWindow, gameState.window, collisionSegment.p2, camera, sf::Color(255, 0, 0, 255));
         drawSegment(renderWindow, gameState.window, collisionSegment, camera, sf::Color(255, 0, 0, 255));

@@ -17,11 +17,13 @@
 
 #include "../net/data/player.hpp"
 
-class Player
+#include "../entity/entity.hpp"
+
+class Player : public Entity
 {
 public:
-    Player(const World *world, GameState &gameState, GameAssets &gameAssets);
-    Player(PlayerData playerData, const World *world, GameState &gameState, GameAssets &gameAssets);
+    Player(const GameState &gameState, const World *world, const GameAssets &gameAssets);
+    Player(const PlayerData &playerData, const GameState &gameState, const World *world, const GameAssets &gameAssets);
     virtual ~Player();
 
     // these function only runs for the local player (client-side)
@@ -34,22 +36,15 @@ public:
     // this function only runs on the server
     void serverUpdate();
 
-    void setPosition(float x, float y);
-
-    Vector<float> getPosition() const
-    {
-        return position;
-    }
-
-    Vector<float> getSize() const
-    {
-        return player_boundingBox.size;
-    }
+    void updateChildPositions() override;
 
     void setAim(float x, float y)
     {
         aimPosition.x = x;
         aimPosition.y = y;
+
+        // determine if the player is facing right based off of their aim position
+        facingRight = aimPosition.x > position.x;
     }
 
     Vector<float> getAim() const
@@ -75,13 +70,9 @@ private:
     void handleCollision();
 
 private:
-    const World *world = nullptr;
-    GameState &gameState;
-    GameAssets &gameAssets;
+    const GameAssets &gameAssets;
 
 private:
-    Vector<float> position = Vector<float>(0, 0);
-    Vector<float> velocity = Vector<float>(0, 0);
     Vector<float> aimPosition = Vector<float>(0, 0);
 
     // if true, a smooth x-velocity falloff will be applied to the player
@@ -96,9 +87,6 @@ private:
     Weapon *weapon = nullptr;
 
 private:
-    // bounding boxes
-    Rect<float> player_boundingBox;
-
     Rect<float> body_boundingBox;
     Rect<float> head_boundingBox;
 
@@ -107,9 +95,6 @@ private:
 
     // dynamic player hitbox
     PlayerDamageModel damageModel;
-
-    // segment used for world collision
-    Segment<float> collisionSegment;
 
     // player scale
     int scale = 3;

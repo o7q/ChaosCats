@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../types/types_common.hpp"
+#include "../../math/types/types_common.hpp"
 #include "../../world/collision_mesh/collision_mesh.hpp"
 
 void solveWorldCollision(

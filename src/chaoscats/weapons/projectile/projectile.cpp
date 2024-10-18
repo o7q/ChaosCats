@@ -27,7 +27,7 @@ void Projectile::update(float dt)
     position.y += velocity.y * dt;
 }
 
-void Projectile::render(sf::RenderWindow &renderWindow, GameState &gameState, Camera *camera)
+void Projectile::render(sf::RenderWindow &renderWindow, const GameState &gameState, const Camera *camera)
 {
     float rotation = degreesFromPoints(startPosition.x, startPosition.y, startPosition.x + slope.x, startPosition.y + slope.y);
 

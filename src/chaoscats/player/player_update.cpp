@@ -9,13 +9,9 @@ void Player::clientUpdate(Camera camera)
         return;
     }
 
-    // determine if the player is facing right based off of their aim position
-    facingRight = aimPosition.x > position.x;
-
     handleMovement();
-    handleCollision();
+    moveUpdate(true);
 
-    setPosition(position.x, position.y);
     if (gameState.window.IS_FOCUSED)
     {
         sf::Vector2f worldMouse = point_screenToWorld(sf::Vector2f(gameState.input.MOUSE_POS.x, gameState.input.MOUSE_POS.y), &camera, gameState.window);

@@ -1,6 +1,6 @@
 #include "weapon.hpp"
 
-void Weapon::initHandPlacementPoint(sf::Texture &weaponTexture, sf::Texture &weaponPointsTexture)
+void Weapon::initHandPlacementPoint(const sf::Texture &weaponTexture, const sf::Texture &weaponPointsTexture)
 {
     sf::Vector2u textureSize = weaponTexture.getSize();
 

@@ -1,11 +1,6 @@
 #include "collision.hpp"
 
-#include <iostream>
-
-#include "../number.hpp"
-#include "../intersection.hpp"
-
-#include "../../world/collision_mesh/collision_mesh.hpp"
+#include "../../math/intersection.hpp"
 
 void solveWorldCollision(
     const Segment<float> &collisionSegment,

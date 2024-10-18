@@ -19,16 +19,16 @@ void Player::init()
     Vector<float> rightLeg_size = Vector<float>(sf_leg_size.x, sf_leg_size.y);
     rightLeg_boundingBox = Rect<float>(0, 0, rightLeg_size.x, rightLeg_size.y);
 
-    player_boundingBox = Rect<float>(0, 0, body_boundingBox.size.x, body_boundingBox.size.y + head_boundingBox.size.y);
+    boundingBox = Rect<float>(0, 0, body_boundingBox.size.x, body_boundingBox.size.y + head_boundingBox.size.y);
 
-    std::vector<sf::Texture *> headGoreLayers;
+    std::vector<const sf::Texture *> headGoreLayers;
     headGoreLayers.push_back(&gameAssets.textures.PLAYER_HEAD_DEFAULT);
     headGoreLayers.push_back(&gameAssets.textures.PLAYER_HEAD_GORE1);
     headGoreLayers.push_back(&gameAssets.textures.PLAYER_HEAD_GORE2);
     headGoreLayers.push_back(&gameAssets.textures.PLAYER_HEAD_GORE3);
     damageModel.head = new DamageModel(headTextureSize.x, headTextureSize.y, headGoreLayers);
 
-    std::vector<sf::Texture *> bodyGoreLayers;
+    std::vector<const sf::Texture *> bodyGoreLayers;
     bodyGoreLayers.push_back(&gameAssets.textures.PLAYER_BODY_DEFAULT);
     bodyGoreLayers.push_back(&gameAssets.textures.PLAYER_BODY_GORE1);
     bodyGoreLayers.push_back(&gameAssets.textures.PLAYER_BODY_GORE2);

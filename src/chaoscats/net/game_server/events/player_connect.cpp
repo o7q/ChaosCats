@@ -71,7 +71,7 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
     Logger::log(Logger::LogType::Info, "gameserver", "Client reqested register, assigning ID: " + std::to_string(clientId));
 
     // add new player to the server player list
-    Player *player = new Player(world, serverGameState, gameAssets);
+    Player *player = new Player(serverGameState, world, gameAssets);
 
     {
         std::lock_guard<std::shared_mutex> playersLock(playersMutex);

@@ -10,7 +10,7 @@ struct Segment
 {
     Segment() = default;
     Segment(Vector<T> p1, Vector<T> p2) : p1(p1), p2(p2) {}
-    Segment(float p1_x, float p1_y, float p2_x, float p2_y) : p1(p1_x, p1_y), p2(p2_x, p2_y) {}
+    Segment(T p1_x, T p1_y, T p2_x, T p2_y) : p1(p1_x, p1_y), p2(p2_x, p2_y) {}
 
     Vector<T> p1, p2;
 };
