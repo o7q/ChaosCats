@@ -22,10 +22,6 @@ public:
     {
     }
 
-    virtual void dispose()
-    {
-    }
-
     virtual CurrentScene run() = 0;
 
 protected:

@@ -90,7 +90,6 @@ CurrentScene Scene_Lobby::run()
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::G) && gameState.window.IS_FOCUSED)
         {
-            dispose();
             return CurrentScene::MainMenu;
         }
     }
