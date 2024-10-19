@@ -103,18 +103,29 @@ void Player::handleMovement()
             velocity.x = speed / damping;
         }
     }
+
+    if (standingOnGround)
+    {
+        coyoteTimeCounter = 8.0f;
+    }
+    else if (coyoteTimeCounter > 0.0f)
+    {
+        coyoteTimeCounter -= gameState.time.DELTA_TIME;
+    }
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameState.window.IS_FOCUSED)
     {
-        // let the player jump if they are standing on the ground, and haven't jumped
+        // let the player jump if they are standing on the ground or coyote time lets them, and haven't jumped
         // OR
         // if the player is swimming in liquid
         if (
-            (standingOnGround && !jumped) ||
+            ((standingOnGround || coyoteTimeCounter > 0.0f) && !jumped) ||
             bodyParticle.playerCollisionType == PlayerCollisionType::Liquid)
         {
             // overwrite the player's velocity to -15.0f divided by the damping value
             velocity.y = -15.0f / damping;
             jumped = true;
+            coyoteTimeCounter = 0.0f;
         }
         //
     }

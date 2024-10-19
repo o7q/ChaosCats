@@ -1,5 +1,4 @@
-- Add coyote time to player movement
-- Implement directional player animation
+- Finish implementing directional player animation
 - Implement player leg animation
 - Add sound system
 - Add visual effects

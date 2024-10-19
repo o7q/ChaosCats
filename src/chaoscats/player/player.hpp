@@ -83,6 +83,8 @@ private:
     // used to change direction of player texture
     bool facingRight = true;
 
+    float coyoteTimeCounter = 0.0f;
+
 private:
     Weapon *weapon = nullptr;
 
