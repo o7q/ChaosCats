@@ -74,10 +74,13 @@ void Player::handleMovement()
     }
     //
 
+    // apply x air velocity, used for when the player is knocked back in some way
     if (enableXAirVelocity)
     {
+        // slow down player
         velocity.x *= 0.95f / damping;
 
+        // if the player is moving less than this value, stop the player to prevent the player from infinitely getting slower
         if (std::fabs(velocity.x) < 1.0f)
         {
             velocity.x = 0;
@@ -86,11 +89,13 @@ void Player::handleMovement()
     }
     else
     {
+        // if x air velocity is disabled, just stop the player instantly for smooth and snappy feedback
         velocity.x = 0;
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && gameState.window.IS_FOCUSED)
     {
+        // move the player left
         if (!enableXAirVelocity)
         {
             velocity.x = -speed / damping;
@@ -98,16 +103,19 @@ void Player::handleMovement()
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && gameState.window.IS_FOCUSED)
     {
+        // move the player right
         if (!enableXAirVelocity)
         {
             velocity.x = speed / damping;
         }
     }
 
+    // calculate coyote time
     if (standingOnGround)
     {
         coyoteTimeCounter = 8.0f;
     }
+    // deplete coyote time by delta time if its greater than 0
     else if (coyoteTimeCounter > 0.0f)
     {
         coyoteTimeCounter -= gameState.time.DELTA_TIME;
@@ -124,7 +132,9 @@ void Player::handleMovement()
         {
             // overwrite the player's velocity to -15.0f divided by the damping value
             velocity.y = -15.0f / damping;
+            // jumped prevents the player from holding space and jumping, but it allows the player to buffer future jumps
             jumped = true;
+            // disable coyote time to prevent the player from double jumping
             coyoteTimeCounter = 0.0f;
         }
         //
