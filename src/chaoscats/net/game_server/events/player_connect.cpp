@@ -26,7 +26,7 @@ void GameServer::player_connect_handleRegister(std::shared_ptr<net::Connection<G
         // send the initial header packet to inform the client of the incoming world
         net::Message<GameMessages> worldSyncStartPacket;
         worldSyncStartPacket.header.id = GameMessages::Server2C_SyncWorldStart;
-        worldSyncStartPacket << world->getSize() << world->getPixelSize() << operations;
+        worldSyncStartPacket << world->getSize() << world->getPixelSize() << world->getMapID() << operations;
         sendMessageToClient(client, worldSyncStartPacket);
 
         for (int y = 0; y < worldSize.y; y += chunkSize)

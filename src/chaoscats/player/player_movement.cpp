@@ -113,7 +113,7 @@ void Player::handleMovement()
     // calculate coyote time
     if (standingOnGround)
     {
-        coyoteTimeCounter = 8.0f;
+        coyoteTimeCounter = 10.0f;
     }
     // deplete coyote time by delta time if its greater than 0
     else if (coyoteTimeCounter > 0.0f)

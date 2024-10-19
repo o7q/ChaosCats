@@ -7,7 +7,8 @@ void drawRect(
     const Camera *camera,
     const sf::Color &color,
     const DrawMode &drawMode,
-    const float &rotation)
+    const float &rotation,
+    const float &outlineThickness)
 {
     sf::RectangleShape rectShape;
 
@@ -19,7 +20,7 @@ void drawRect(
     case DrawMode::Outline:
         rectShape.setOutlineColor(color);
         rectShape.setFillColor(sf::Color::Transparent);
-        rectShape.setOutlineThickness(1);
+        rectShape.setOutlineThickness(outlineThickness);
         break;
     }
 

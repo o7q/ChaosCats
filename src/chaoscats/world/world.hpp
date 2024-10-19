@@ -85,6 +85,16 @@ public:
         return Vector<int>(width, height);
     }
 
+    const MapID getMapID()
+    {
+        return mapID;
+    }
+
+    void setBackgroundTexture(sf::Texture &backgroundTexture)
+    {
+        this->backgroundTexture = &backgroundTexture;
+    }
+
     // net
     void updateFromMessage(net::Message<GameMessages> &message);
 
@@ -104,6 +114,10 @@ private:
     sf::VertexArray quad;
     sf::Uint8 *worldPixels;
     sf::Texture worldTexture;
+
+    sf::Texture *backgroundTexture = nullptr;
+
+    MapID mapID = MapID::None;
 
     int width, height;
     int pixelSize;

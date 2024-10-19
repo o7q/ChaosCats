@@ -5,9 +5,10 @@ void Scene_LobbyArena::server_world_handleSyncWorldStart(net::Message<GameMessag
 {
     Vector<int> worldSize;
     int pixelSize;
+    MapID mapID;
     int operations;
-    message >> operations >> pixelSize >> worldSize;
-    
+    message >> operations >> mapID >> pixelSize >> worldSize;
+
     if (world != nullptr)
     {
         delete world;
@@ -16,6 +17,20 @@ void Scene_LobbyArena::server_world_handleSyncWorldStart(net::Message<GameMessag
 
     world = new World(worldSize.x, worldSize.y, pixelSize);
     world->set_s2c_buffer_count(operations);
+
+    switch (mapID)
+    {
+    case MapID::Beach:
+    {
+        if (gameAssets.maps.BEACH.hasBackground)
+        {
+            world->setBackgroundTexture(gameAssets.maps.BEACH.map_background);
+        }
+    }
+    break;
+    default:
+        break;
+    }
 }
 
 // Server2C_SyncWorldChunk

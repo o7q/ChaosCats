@@ -85,7 +85,8 @@ void drawRect(
     const Camera *camera = nullptr,
     const sf::Color &color = sf::Color(255, 255, 255, 255),
     const DrawMode &drawMode = DrawMode::Solid,
-    const float &rotation = 0.0f);
+    const float &rotation = 0.0f,
+    const float &outlineThickness = 1.0f);
 //
 
 // point
