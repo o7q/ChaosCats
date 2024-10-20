@@ -94,11 +94,6 @@ CurrentScene Scene_LobbyArena::run()
         world->update(gameState.time.DELTA_TIME, gameState.time.BASE_DELTA_TIME);
         world->render(renderWindow, gameState.window, &camera);
 
-        animatedSprite->play(24, gameState.time.DELTA_TIME);
-        animatedSprite->render(renderWindow, gameState.window, sf::Vector2f(200, 200), sf::Vector2f(1000, -1), &camera);
-
-        drawText(renderWindow, gameState.window, "hello", gameAssets.fonts.ALAGARD_FONT, sf::Vector2f(200, 200), 20, &camera, sf::Color(255, 255, 255, 255));
-
         // packet limiter, only allows packets to send at 'packetSendRate'
         if (packetSendCounter > gameState.time.FRAMERATE / packetSendRate)
         {

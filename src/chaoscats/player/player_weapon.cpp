@@ -7,6 +7,11 @@ Weapon *Player::getActiveWeapon()
 
 void Player::shoot(Camera *camera)
 {
+    if (isDead())
+    {
+        return;
+    }
+
     Vector<float> kickbackVelocity = weapon->shoot(position.x, position.y, aimPosition.x, aimPosition.y);
     velocity = kickbackVelocity;
     enableXAirVelocity = true;

@@ -68,6 +68,11 @@ float Camera::getZoom() const
 
 void Camera::focus_positions(std::vector<Vector<float>> &positions, GameState::WindowState &windowState)
 {
+    if (positions.size() == 0)
+    {
+        return;
+    }
+
     constexpr float FLOAT_MIN = std::numeric_limits<float>::min();
     constexpr float FLOAT_MAX = std::numeric_limits<float>::max();
 
