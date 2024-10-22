@@ -18,3 +18,23 @@ void GameState::InputState::refresh(sf::RenderWindow &renderWindow)
 
     mouseDownPrev = MOUSE_LMB_DOWN;
 }
+
+bool GameState::InputState::left()
+{
+    return false;
+}
+
+bool GameState::InputState::right()
+{
+    return false;
+}
+
+bool GameState::InputState::up()
+{
+    return false;
+}
+
+bool GameState::InputState::down()
+{
+    return false;
+}

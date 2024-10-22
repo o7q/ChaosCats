@@ -8,8 +8,9 @@
 class GameState
 {
 public:
-    struct TimeState
+    class TimeState
     {
+    public:
         int FRAMERATE = 0;
         float DELTA_TIME = 0.0f;
         float BASE_DELTA_TIME = 0.0f;
@@ -22,8 +23,9 @@ public:
         float timeModifier = 1.0f;
     };
 
-    struct WindowState
+    class WindowState
     {
+    public:
         float ASPECT = 1.0f;
         unsigned int WIDTH = 1;
         unsigned int HEIGHT = 1;
@@ -37,18 +39,25 @@ public:
 
         void refresh(sf::RenderWindow &renderWindow);
 
+    private:
         float calculateResizeScale(const sf::Vector2u &windowSize);
         float calculateAspectScale(const sf::Vector2u &windowSize);
         std::pair<float, float> calculateResizeOffset(const sf::Vector2u &windowSize);
     };
 
-    struct InputState
+    class InputState
     {
+    public:
         bool MOUSE_LMB_CLICKED = false;
         bool MOUSE_LMB_DOWN = false;
         sf::Vector2i MOUSE_POS;
 
         void refresh(sf::RenderWindow &renderWindow);
+
+        bool left();
+        bool right();
+        bool up();
+        bool down();
 
     private:
         bool mouseDownPrev = false;
